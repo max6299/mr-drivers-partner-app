@@ -1,6 +1,7 @@
 import axios from "axios";
 import { createContext, useEffect, useRef, useState } from "react";
 import { useAuth } from "./useAuth";
+import Toast from "react-native-toast-message";
 
 export const RideContext = createContext();
 
@@ -80,8 +81,8 @@ export const RideProvider = ({ children }) => {
 
       setOngoingRide(rides.ongoingRide);
       setAssignedRides(rides.acceptedRides || []);
-      setRideHistory(history || []);
-      setNotificaitons(notifications);
+      setRideHistory(history.history || []);
+      setNotificaitons(notifications.notifications);
 
       if (rides?.ongoingRide?.rideStartTime) {
         setStartTime(new Date(rides.ongoingRide.rideStartTime).getTime());
@@ -111,7 +112,6 @@ export const RideProvider = ({ children }) => {
     const secs = sec % 60;
     return `${hrs.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
-
 
   const mapboxDirections = async ({ origin, destination }) => {
     try {
@@ -199,6 +199,7 @@ export const RideProvider = ({ children }) => {
         startTimer,
         stopTimer,
         timerRef,
+        notificaitons,
       }}
     >
       {children}

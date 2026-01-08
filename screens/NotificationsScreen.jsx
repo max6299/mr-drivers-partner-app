@@ -66,24 +66,18 @@ export default function NotificationsScreen() {
   const finalList = [...formatted, defaultWelcomeNotification];
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
 
-      {/* Header */}
       <View style={styles.header}>
         <Text style={styles.screenTitle}>Notifications</Text>
         <Text style={styles.screenSubtitle}>Stay updated with your ride activity</Text>
       </View>
 
-      {/* List */}
       <FlatList data={finalList} keyExtractor={(item) => item.id} renderItem={({ item }) => <NotificationCard item={item} />} showsVerticalScrollIndicator={false} contentContainerStyle={styles.listContent} />
-    </SafeAreaView>
+    </View>
   );
 }
-
-/* -------------------- */
-/* Styles */
-/* -------------------- */
 
 const styles = StyleSheet.create({
   container: {
@@ -91,7 +85,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#F9FAFB",
   },
 
-  /* Header */
   header: {
     paddingHorizontal: 16,
     paddingTop: 24,

@@ -6,7 +6,7 @@ import RidesScreen from "./RidesScreen";
 import NotificationsScreen from "./NotificationsScreen";
 import ProfileScreen from "./ProfileScreen";
 import FindRideScreen from "./FindRideScreen";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 const Tabs = createBottomTabNavigator();
 const PRIMARY = "#0193e0";
@@ -56,28 +56,22 @@ const TabIcon = ({ iconLibrary, name, label, focused, color, size }) => {
 };
 
 export default function DashboardTabs() {
-  const insets = useSafeAreaInsets();
-
   return (
-    <Tabs.Navigator
-      screenOptions={({ route }) => ({
-        headerShown: false,
-        tabBarShowLabel: false,
-        tabBarStyle: [
-          styles.tabBar,
-          {
-            paddingBottom: insets.bottom,
-            height: 60 + insets.bottom,
-          },
-        ],
-        tabBarIcon: ({ focused }) => renderTabIcon(route.name, focused),
-      })}
-    >
-      <Tabs.Screen name="find-ride" component={FindRideScreen} />
-      <Tabs.Screen name="rides" component={RidesScreen} />
-      <Tabs.Screen name="notifications" component={NotificationsScreen} />
-      <Tabs.Screen name="profile-screen" component={ProfileScreen} />
-    </Tabs.Navigator>
+    <SafeAreaView style={{ flex: 1 }}>
+      <Tabs.Navigator
+        screenOptions={({ route }) => ({
+          headerShown: false,
+          tabBarShowLabel: false,
+          tabBarStyle: [styles.tabBar],
+          tabBarIcon: ({ focused }) => renderTabIcon(route.name, focused),
+        })}
+      >
+        <Tabs.Screen name="find-ride" component={FindRideScreen} />
+        <Tabs.Screen name="rides" component={RidesScreen} />
+        <Tabs.Screen name="notifications" component={NotificationsScreen} />
+        <Tabs.Screen name="profile-screen" component={ProfileScreen} />
+      </Tabs.Navigator>
+    </SafeAreaView>
   );
 }
 

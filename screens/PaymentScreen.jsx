@@ -5,34 +5,28 @@ import React, { useEffect, useState } from "react";
 import { Modal, StatusBar, Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
+import { useRide } from "../context/useRide";
 
 export default function PaymentScreen() {
   const [openPaymentSuccess, setOpenPaymentSuccess] = useState(false);
+  const { ridePostFetch } = useRide();
 
   const navigation = useNavigation();
   const route = useRoute();
-  const { rideId, origin, destination, distancekm } = route.params || {};
+  const { rideId, origin, destination, distancekm, totalAmount } = route.params || {};
 
   const collectCash = async () => {
     try {
-      const res = await axios.post(`${process.env.EXPO_PUBLIC_BASE_URL}/driver/updateRide`, { rideId, cashCollected: true });
+      const res = await ridePostFetch("driver/updateRide", { rideId: rideId, cashCollected: true });
 
-      if (!res.data.success) {
+      if (!res.success) {
         Toast.show({
           type: "error",
           text1: "Unable to update",
-          text2: res.data.message || "Something went wrong",
+          text2: "Something went wrong",
         });
         return;
       }
-
-      const ride = res.data.ride;
-
-      await axios.post(`${process.env.EXPO_PUBLIC_BASE_URL}/driver/payment`, {
-        rideId: ride.rideId,
-        userId: ride.userId,
-        driverId: ride.driverId,
-      });
 
       setOpenPaymentSuccess(true);
     } catch (err) {
@@ -44,9 +38,10 @@ export default function PaymentScreen() {
     }
   };
 
-  useEffect(() => {
-    return () => {};
-  }, []);
+  const redirectDashboard = () => {
+    navigation.navigate("dashboard");
+    setOpenPaymentSuccess(false);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -61,7 +56,7 @@ export default function PaymentScreen() {
         <View style={styles.fareCard}>
           <Text style={styles.fareLabel}>Total Fare</Text>
 
-          {/* <Text style={styles.fareAmount}>₹ {(elapsed)}.00</Text> */}
+          <Text style={styles.fareAmount}>₹ {totalAmount}.00</Text>
 
           <View style={styles.paymentBadgeWrapper}>
             <View style={styles.paymentBadge}>
@@ -87,13 +82,11 @@ export default function PaymentScreen() {
           </View>
         </View>
 
-        {/* Action */}
         <TouchableOpacity activeOpacity={0.85} onPress={collectCash} style={styles.collectButton}>
           <Text style={styles.collectButtonText}>Cash Collected</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Success Modal */}
       <Modal animationType="fade" transparent={false} visible={openPaymentSuccess} onRequestClose={() => setOpenPaymentSuccess(false)}>
         <SafeAreaView style={styles.modalContainer}>
           <View style={styles.modalContent}>
@@ -106,7 +99,7 @@ export default function PaymentScreen() {
             <Text style={styles.modalSubtitle}>You can now accept new ride requests</Text>
 
             <View style={styles.modalButtonWrapper}>
-              <TouchableOpacity style={styles.collectButton} onPress={() => navigation.navigate("dashboard")}>
+              <TouchableOpacity style={styles.collectButton} onPress={redirectDashboard}>
                 <Text style={styles.collectButtonText}>Go to Home</Text>
               </TouchableOpacity>
             </View>

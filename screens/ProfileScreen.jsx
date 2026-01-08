@@ -29,8 +29,13 @@ export default function ProfileScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
+
+      <View style={styles.header}>
+        <Text style={styles.screenTitle}>Profile</Text>
+        <Text style={styles.screenSubtitle}>View and manage your personal information</Text>
+      </View>
 
       <FlatList
         data={menuItems}
@@ -88,7 +93,7 @@ export default function ProfileScreen() {
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -99,7 +104,22 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F8FAFC",
   },
-
+  header: {
+    paddingHorizontal: 16,
+    paddingTop: 24,
+    paddingBottom: 12,
+  },
+  screenTitle: {
+    fontSize: 24,
+    color: "#111827",
+    fontFamily: "interBold",
+  },
+  screenSubtitle: {
+    marginTop: 4,
+    fontSize: 14,
+    color: "#6B7280",
+    fontFamily: "interMedium",
+  },
   listContent: {
     paddingHorizontal: 16,
     paddingBottom: 40,

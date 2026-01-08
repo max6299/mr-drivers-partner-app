@@ -35,9 +35,8 @@ const getDistance = (lat1, lon1, lat2, lon2) => {
 };
 
 export default function FindRideScreen() {
-  // const token = useUserStore((state) => state.token);
   const { ownUser } = useAuth();
-  const { coords, setCoords, currentLocation, setCurrentLocation, isLoading, timerRef, setIsLoading, startTimer, stopTimer, permissionAsked, setPermissionAsked, assignedRides, setAssignedRides, ongoingRide, setOngoingRide, currentRide, setCurrentRide, ridePostFetch, setStartTime,  setEndTime, elapsed, setElapsed, otp, setOtp, mapboxDirections, formatTime } = useRide();
+  const { coords, setCoords, currentLocation, setCurrentLocation, isLoading, timerRef, setIsLoading, startTimer, stopTimer, permissionAsked, setPermissionAsked, assignedRides, setAssignedRides, ongoingRide, setOngoingRide, currentRide, setCurrentRide, ridePostFetch, setStartTime, setEndTime, elapsed, setElapsed, otp, setOtp, mapboxDirections, formatTime } = useRide();
   const navigation = useNavigation();
 
   const [openArrivalInfo, setOpenArrivalInfo] = useState(false);
@@ -106,6 +105,7 @@ export default function FindRideScreen() {
       if (!res.success) {
         throw new Error(res.message || "Failed to update ride");
       }
+      setAssignedRides((prev) => prev.filter((ride) => ride._id !== res.ride._id));
 
       const updatedRide = res.ride;
 
@@ -250,17 +250,14 @@ export default function FindRideScreen() {
   const completeRide = async (ongoingRide) => {
     try {
       const bodyTxt = { rideId: ongoingRide?.rideId, userId: ongoingRide?.userId, driverId: ongoingRide?.driverId };
-      console.log(bodyTxt);
 
       const res = await ridePostFetch("driver/end", bodyTxt);
-
-      console.log(res);
 
       if (!res?.success) {
         throw new Error("Failed to complete ride");
       }
 
-      navigation.navigate("payment", { rideId: ongoingRide?.rideId, userId: ongoingRide?.userId, origin: ongoingRide.origin.name, destination: ongoingRide.destination.name, distancekm: ongoingRide.distancekm });
+      navigation.navigate("payment", { rideId: ongoingRide?.rideId, userId: ongoingRide?.userId, totalAmount: res.ride.totalAmount, origin: ongoingRide.origin.name, destination: ongoingRide.destination.name, distancekm: ongoingRide.distancekm });
 
       setOpenCompleteRide(false);
       setOngoingModal(false);
@@ -337,7 +334,7 @@ export default function FindRideScreen() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaView style={styles.screen}>
+      <View style={styles.screen}>
         <StatusBar backgroundColor="#61dafb" barStyle="dark-content" />
 
         <View style={styles.header}>
@@ -525,7 +522,7 @@ export default function FindRideScreen() {
             </View>
           </View>
         </Modal>
-      </SafeAreaView>
+      </View>
     </GestureHandlerRootView>
   );
 }
@@ -819,8 +816,7 @@ const styles = StyleSheet.create({
   ongoingModal: {
     backgroundColor: "#fff",
     padding: 24,
-    borderTopLeftRadius: 40,
-    borderTopRightRadius: 40,
+    borderRadius: 40,
   },
 
   dragHandle: {

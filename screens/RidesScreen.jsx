@@ -2,6 +2,7 @@ import React from "react";
 import { FlatList, StatusBar, Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../context/useAuth";
+import { useRide } from "../context/useRide";
 
 const PRIMARY = "#0193e0";
 
@@ -68,10 +69,11 @@ function RideCard({ ride }) {
 }
 
 export default function RidesScreen() {
-  const { rideHistory = [] } = useAuth();
+  const { rideHistory } = useRide();
+  console.log("ride", rideHistory);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
 
       <View style={styles.header}>
@@ -86,7 +88,7 @@ export default function RidesScreen() {
           <Text style={styles.emptyText}>No previous ride history available.</Text>
         </View>
       )}
-    </SafeAreaView>
+    </View>
   );
 }
 

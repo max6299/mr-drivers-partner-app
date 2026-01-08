@@ -79,6 +79,7 @@ const styles = StyleSheet.create({
   wrapper: {
     paddingHorizontal: 8,
     paddingTop: 24,
+    marginTop: 10,
     paddingBottom: 20,
   },
 
