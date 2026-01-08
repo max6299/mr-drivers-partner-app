@@ -5,23 +5,13 @@ import React, { useEffect, useState } from "react";
 import { Modal, StatusBar, Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
-import { useAuth } from "../context/useAuth";
 
 export default function PaymentScreen() {
-  const { elapsed } = useAuth();
-
   const [openPaymentSuccess, setOpenPaymentSuccess] = useState(false);
 
   const navigation = useNavigation();
   const route = useRoute();
   const { rideId, origin, destination, distancekm } = route.params || {};
-
-  const calculateAmount = (elapsedSeconds) => {
-    if (!elapsedSeconds) return 50;
-
-    const hours = Math.ceil((elapsedSeconds || 1) / 3600);
-    return hours * 50;
-  };
 
   const collectCash = async () => {
     try {
@@ -62,18 +52,16 @@ export default function PaymentScreen() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
 
-      {/* Main Content */}
       <View style={styles.content}>
         <View style={styles.header}>
           <Text style={styles.title}>Collect Cash</Text>
           <Text style={styles.subtitle}>Confirm payment received from the rider</Text>
         </View>
 
-        {/* Fare Card */}
         <View style={styles.fareCard}>
           <Text style={styles.fareLabel}>Total Fare</Text>
 
-          <Text style={styles.fareAmount}>₹ {calculateAmount(elapsed)}.00</Text>
+          {/* <Text style={styles.fareAmount}>₹ {(elapsed)}.00</Text> */}
 
           <View style={styles.paymentBadgeWrapper}>
             <View style={styles.paymentBadge}>
@@ -82,7 +70,6 @@ export default function PaymentScreen() {
           </View>
         </View>
 
-        {/* Trip Info */}
         <View style={styles.tripCard}>
           <View style={styles.tripSection}>
             <Text style={styles.tripLabel}>Pickup</Text>

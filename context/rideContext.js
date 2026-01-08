@@ -53,6 +53,23 @@ export const RideProvider = ({ children }) => {
     }
   };
 
+  const startTimer = (startMs) => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+
+    timerRef.current = setInterval(() => {
+      setElapsed(Math.floor((Date.now() - startMs) / 1000));
+    }, 1000);
+  };
+
+  const stopTimer = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+  };
+
   useEffect(() => {
     const loadRides = async () => {
       if (!accessToken) return;
@@ -68,6 +85,8 @@ export const RideProvider = ({ children }) => {
 
       if (rides?.ongoingRide?.rideStartTime) {
         setStartTime(new Date(rides.ongoingRide.rideStartTime).getTime());
+        startTimer(new Date(rides.ongoingRide.rideStartTime).getTime());
+
         setEndTime(Date.now());
       }
     };
@@ -85,8 +104,6 @@ export const RideProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, [startTime, endTime]);
 
-  console.log("startTime", startTime);
-
   const formatTime = (seconds) => {
     const sec = Number(seconds);
     const hrs = Math.floor(sec / 3600);
@@ -95,12 +112,6 @@ export const RideProvider = ({ children }) => {
     return `${hrs.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
-  const calculateAmount = (elapsedSeconds) => {
-    if (!elapsedSeconds) return 50;
-
-    const hours = Math.ceil((elapsedSeconds || 1) / 3600);
-    return hours * 50;
-  };
 
   const mapboxDirections = async ({ origin, destination }) => {
     try {
@@ -184,8 +195,10 @@ export const RideProvider = ({ children }) => {
         getRideHistory,
         mapboxDirections,
         formatTime,
-        calculateAmount,
         ridePostFetch,
+        startTimer,
+        stopTimer,
+        timerRef,
       }}
     >
       {children}

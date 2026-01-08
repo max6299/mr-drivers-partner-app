@@ -37,9 +37,8 @@ const getDistance = (lat1, lon1, lat2, lon2) => {
 export default function FindRideScreen() {
   // const token = useUserStore((state) => state.token);
   const { ownUser } = useAuth();
-  const { coords, setCoords, currentLocation, setCurrentLocation, isLoading, setIsLoading, permissionAsked, setPermissionAsked, assignedRides, setAssignedRides, ongoingRide, setOngoingRide, currentRide, setCurrentRide, ridePostFetch, setRideHistory, startTime, setStartTime, endTime, setEndTime, elapsed, setElapsed, otp, setOtp, getRideHistory, mapboxDirections, formatTime, calculateAmount } = useRide();
+  const { coords, setCoords, currentLocation, setCurrentLocation, isLoading, timerRef, setIsLoading, startTimer, stopTimer, permissionAsked, setPermissionAsked, assignedRides, setAssignedRides, ongoingRide, setOngoingRide, currentRide, setCurrentRide, ridePostFetch, setRideHistory, startTime, setStartTime, endTime, setEndTime, elapsed, setElapsed, otp, setOtp, getRideHistory, mapboxDirections, formatTime, calculateAmount } = useRide();
   const navigation = useNavigation();
-  console.log(elapsed);
 
   const [openArrivalInfo, setOpenArrivalInfo] = useState(false);
   const [openStartRide, setOpenStartRide] = useState(false);
@@ -54,7 +53,6 @@ export default function FindRideScreen() {
 
   const mapRef = useRef();
   const cameraRef = useRef(null);
-  const liveTrackingRef = useRef(null);
 
   const db = getFirestore(getApp());
 
@@ -65,57 +63,6 @@ export default function FindRideScreen() {
     value: otp,
     setValue: setOtp,
   });
-
-  // const startLiveTracking = async () => {
-  //   try {
-  //     if (!currentLocation) {
-  //       alert("Permission to access location was denied, Please enable your location access");
-  //       return;
-  //     }
-
-  //     let lastSent = 0;
-
-  //     const subcription = await Location.watchPositionAsync(
-  //       {
-  //         accuracy: Location.Accuracy.Balanced,
-  //         timeInterval: 10000,
-  //         distanceInterval: 100,
-  //       },
-  //       async (loc) => {
-  //         const now = Date.now();
-  //         const coords = loc?.coords;
-  //         if (now - lastSent < 10000) return;
-
-  //         lastSent = now;
-
-  //         const bodyTxt = {
-  //           rideId: currentRide.rideId,
-  //           latitude: coords.latitude,
-  //           longitude: coords.longitude,
-  //         };
-
-  //         const config = {
-  //           headers: { Authorization: `Bearer ${token}` },
-  //         };
-
-  //         await axios.post(`${process.env.EXPO_PUBLIC_BASE_URL}/driver/driverLocation`, bodyTxt, config);
-
-  //         // if (pickup1?.destination) {
-  //         //   const distance = getDistance(coords.latitude, coords.longitude, pickup1.destination.latitude, pickup1.destination.longitude);
-
-  //         //   if (distance <= 50 && !hasArrived) {
-  //         //     setHasArrived(true);
-  //         //     setOpenArrivalInfo(true);
-  //         //   }
-  //         // }
-  //       }
-  //     );
-
-  //     liveTrackingRef.current = subcription;
-  //   } catch (error) {
-  //     console.error("Live tracking error:", error);
-  //   }
-  // };
 
   const getDirections = async (destination) => {
     if (!destination || !currentLocation) {
@@ -136,26 +83,6 @@ export default function FindRideScreen() {
     }
   };
 
-  const cancelRide = async () => {
-    Alert.alert("Cancel Ride", "Are you sure you want to cancel this ride?", [
-      { text: "No" },
-      {
-        text: "Yes, Cancel",
-        style: "destructive",
-        onPress: async () => {
-          if (liveTrackingRef.current) {
-            await liveTrackingRef.current.remove();
-            liveTrackingRef.current = null;
-          }
-          setCoords([]);
-          setOpenStartRide(false);
-          setOpenArrivalInfo(false);
-          await axios.post(`${process.env.EXPO_PUBLIC_BASE_URL}/driver/cancelRide`, { driverId: ownUser._id });
-        },
-      },
-    ]);
-  };
-
   const bottomSheetRef = useRef(null);
 
   const snapPoints = useMemo(() => ["4%", "40%", "60%", "90%"], []);
@@ -165,17 +92,6 @@ export default function FindRideScreen() {
       bottomSheetRef.current.snapToIndex(1);
     }
   }, [assignedRides, sheetReady]);
-
-  // const clearDirections = () => {
-  //   setSelectedDestination(null);
-  //   setCoords([]);
-  //   mapRef.current?.animateToRegion({
-  //     latitude: currentLocation.latitude,
-  //     longitude: currentLocation.longitude,
-  //     latitudeDelta: 0.01,
-  //     longitudeDelta: 0.01,
-  //   });
-  // };
 
   const acceptRide = async () => {
     try {
@@ -312,6 +228,7 @@ export default function FindRideScreen() {
         const startMs = data.rideStartTime.toDate().getTime();
 
         setStartTime(startMs);
+        startTimer(startMs);
       }
 
       if (data.status === "completed" && data.rideEndTime) {
@@ -333,20 +250,17 @@ export default function FindRideScreen() {
   const completeRide = async (ongoingRide) => {
     try {
       const bodyTxt = { rideId: ongoingRide?.rideId, userId: ongoingRide?.userId, driverId: ongoingRide?.driverId };
-      const config = { headers: { Authorization: `Bearer ${token}` } };
+      console.log(bodyTxt);
 
-      const res = await axios.post(`${process.env.EXPO_PUBLIC_BASE_URL}/driver/end`, bodyTxt, config);
+      const res = await ridePostFetch("driver/end", bodyTxt);
 
-      if (!res.data?.success) {
+      console.log(res);
+
+      if (!res?.success) {
         throw new Error("Failed to complete ride");
       }
 
       navigation.navigate("payment", { rideId: ongoingRide?.rideId, userId: ongoingRide?.userId, origin: ongoingRide.origin.name, destination: ongoingRide.destination.name, distancekm: ongoingRide.distancekm });
-
-      if (liveTrackingRef.current) {
-        liveTrackingRef.current.remove();
-        liveTrackingRef.current = null;
-      }
 
       setOpenCompleteRide(false);
       setOngoingModal(false);
@@ -357,18 +271,13 @@ export default function FindRideScreen() {
       setOngoingRide(null);
       setSelectedDestination(null);
       stopTimer();
-
-      if (ownUser?._id) {
-        const history = await getRideHistory(ownUser._id);
-        setRideHistory(history);
-      }
     } catch (err) {
       console.error("Complete ride error:", err);
 
       Toast.show({
         type: "error",
         text1: "Unable to complete ride",
-        text2: err.message || "Please try again",
+        text2: "Please try again",
       });
     }
   };
@@ -561,7 +470,7 @@ export default function FindRideScreen() {
         <Modal visible={ongoingModal} transparent animationType="slide" onRequestClose={() => setOngoingModal(false)}>
           <View style={styles.modalOverlayDark}>
             <View style={styles.ongoingModal}>
-              {/* <View style={styles.dragHandle} /> */}
+              <View style={styles.dragHandle} />
 
               <View style={styles.rideTimeCard}>
                 <Text style={styles.rideTimeLabel}>Ride Time</Text>
@@ -1035,8 +944,6 @@ const styles = StyleSheet.create({
     fontFamily: "interSemiBold",
   },
 
-  /* ✅ canonical button styles */
-
   btnPrimaryRow: {
     flex: 1,
     flexDirection: "row",
@@ -1074,6 +981,19 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: "center",
     marginBottom: 12,
+  },
+  primaryButton: {
+    backgroundColor: "#0193e0",
+    paddingVertical: 16,
+    borderRadius: 16,
+    alignItems: "center",
+    marginBottom: 12,
+  },
+
+  primaryButtonText: {
+    fontSize: 16,
+    color: "#fff",
+    fontFamily: "interBold",
   },
 
   btnSuccessSolidText: {
