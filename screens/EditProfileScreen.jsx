@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { Alert, Modal, ScrollView, StatusBar, Text, TextInput, TouchableOpacity, View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../context/useAuth";
+import appStyle from "../lib/style";
+const { Colors, Fonts } = appStyle;
 
 export default function EditProfileScreen({ navigation }) {
   const { ownUser, setOwnUser, authPostFetch } = useAuth();
@@ -65,22 +67,30 @@ export default function EditProfileScreen({ navigation }) {
       <StatusBar barStyle="dark-content" />
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* Header */}
         <View style={styles.headerRow}>
-          <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.8} style={styles.backButton}>
-            <Ionicons name="chevron-back" size={22} color={PRIMARY} />
-          </TouchableOpacity>
+          <View style={styles.headerSide}>
+            <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.9} style={styles.iconButton}>
+              <Ionicons name="chevron-back" size={22} color={Colors.peter_river_600} />
+            </TouchableOpacity>
+          </View>
 
-          <Text style={styles.headerTitle}>Edit Profile</Text>
+          <View style={styles.headerCenter}>
+            <Text style={styles.headerTitle}>Edit Profile</Text>
+          </View>
+
+          <View style={styles.headerSide} />
         </View>
 
+        {/* Card */}
         <View style={styles.card}>
           <View style={styles.inputGroup}>
             <View style={styles.labelRow}>
-              <Ionicons name="person-outline" size={20} color={PRIMARY} />
+              <Ionicons name="person-outline" size={18} color={Colors.peter_river_600} />
               <Text style={styles.labelText}>Full Name</Text>
             </View>
 
-            <TextInput value={fullName} onChangeText={setFullName} placeholder="Enter your full name" placeholderTextColor="#9CA3AF" style={styles.input} />
+            <TextInput value={fullName} onChangeText={setFullName} placeholder="Enter your full name" placeholderTextColor={Colors.concrete} style={styles.input} />
           </View>
 
           <TouchableOpacity onPress={handleSave} style={styles.saveButton}>
@@ -92,6 +102,7 @@ export default function EditProfileScreen({ navigation }) {
           </TouchableOpacity>
         </View>
 
+        {/* Delete Modal */}
         <Modal visible={showDeleteModal} transparent animationType="fade" statusBarTranslucent>
           <View style={styles.modalOverlay}>
             <View style={styles.modalCard}>
@@ -119,64 +130,56 @@ export default function EditProfileScreen({ navigation }) {
 const PRIMARY = "#0193e0";
 
 const styles = StyleSheet.create({
-  /* Empty State */
-  emptyContainer: {
-    flex: 1,
-    backgroundColor: "#F8FAFC",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  emptyText: {
-    fontSize: 15,
-    color: "#94A3B8",
-    fontFamily: "interRegular",
-  },
-
-  /* Main */
   container: {
     flex: 1,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: Colors.bodyBackColor,
   },
+
   scrollContent: {
     paddingHorizontal: 16,
     paddingVertical: 24,
   },
 
-  /* Header */
   headerRow: {
-    position: "relative",
+    flexDirection: "row",
     alignItems: "center",
     marginBottom: 24,
   },
 
-  backButton: {
-    position: "absolute",
-    left: 0,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "#EFF6FF",
-    justifyContent: "center",
+  headerSide: {
+    width: 48,
+    alignItems: "center",
+  },
+
+  headerCenter: {
+    flex: 1,
     alignItems: "center",
   },
 
   headerTitle: {
     fontSize: 22,
-    color: "#0F172A",
-    fontFamily: "interSemiBold",
-    letterSpacing: -0.2,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: Colors.midnight_blue_900,
   },
 
-  /* Card */
+  iconButton: {
+    width: 38,
+    height: 38,
+    borderRadius: 12,
+    backgroundColor: Colors.peter_river_50,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
   card: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.whiteColor,
     padding: 24,
-    borderRadius: 20,
+    borderRadius: 22,
     borderWidth: 1,
-    borderColor: "#F1F5F9",
+    borderColor: Colors.clouds_300,
   },
 
-  /* Input */
   inputGroup: {
     marginBottom: 24,
   },
@@ -185,25 +188,26 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 8,
+    gap: 8,
   },
 
   labelText: {
-    marginLeft: 8,
-    color: "#475569",
-    fontFamily: "interMedium",
     fontSize: 13,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+    color: Colors.asbestos,
   },
 
   input: {
     height: 52,
     paddingHorizontal: 14,
     borderWidth: 1,
-    borderColor: "#E2E8F0",
+    borderColor: Colors.clouds_400,
     borderRadius: 14,
-    backgroundColor: "#FFFFFF",
-    color: "#0F172A",
-    fontFamily: "interRegular",
+    backgroundColor: Colors.whiteColor,
     fontSize: 15,
+    fontFamily: Fonts.GoogleSansFlex,
+    color: Colors.midnight_blue_900,
   },
 
   /* Buttons */
@@ -217,8 +221,9 @@ const styles = StyleSheet.create({
 
   saveButtonText: {
     fontSize: 16,
-    color: "#FFFFFF",
-    fontFamily: "interSemiBold",
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: Colors.whiteColor,
   },
 
   deleteButton: {
@@ -226,36 +231,38 @@ const styles = StyleSheet.create({
     height: 52,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: "#FCA5A5",
+    borderColor: Colors.alizarin_200,
     justifyContent: "center",
     alignItems: "center",
   },
 
   deleteButtonText: {
     fontSize: 15,
-    color: "#DC2626",
-    fontFamily: "interMedium",
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+    color: Colors.alizarin_600,
   },
 
   /* Modal */
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(15,23,42,0.45)",
+    backgroundColor: "rgba(23,32,42,0.45)",
     justifyContent: "center",
     paddingHorizontal: 24,
   },
 
   modalCard: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.whiteColor,
     padding: 22,
-    borderRadius: 20,
+    borderRadius: 22,
   },
 
   modalTitle: {
     fontSize: 18,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
     textAlign: "center",
-    color: "#0F172A",
-    fontFamily: "interSemiBold",
+    color: Colors.midnight_blue_900,
   },
 
   modalDescription: {
@@ -263,8 +270,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     textAlign: "center",
-    color: "#64748B",
-    fontFamily: "interRegular",
+    fontFamily: Fonts.GoogleSansFlex,
+    color: Colors.asbestos,
   },
 
   modalActions: {
@@ -277,27 +284,29 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 44,
     borderRadius: 14,
-    backgroundColor: "#F1F5F9",
+    backgroundColor: Colors.clouds_300,
     justifyContent: "center",
     alignItems: "center",
   },
 
   cancelText: {
-    color: "#334155",
-    fontFamily: "interMedium",
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+    color: Colors.midnight_blue_700,
   },
 
   confirmButton: {
     flex: 1,
     height: 44,
     borderRadius: 14,
-    backgroundColor: "#DC2626",
+    backgroundColor: Colors.alizarin_600,
     justifyContent: "center",
     alignItems: "center",
   },
 
   confirmText: {
-    color: "#FFFFFF",
-    fontFamily: "interSemiBold",
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: Colors.whiteColor,
   },
 });

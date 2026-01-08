@@ -1,11 +1,13 @@
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Modal, StatusBar, Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import { useRide } from "../context/useRide";
+import appStyle from "../lib/style";
+
+const { Colors, Fonts } = appStyle;
 
 export default function PaymentScreen() {
   const [openPaymentSuccess, setOpenPaymentSuccess] = useState(false);
@@ -17,9 +19,12 @@ export default function PaymentScreen() {
 
   const collectCash = async () => {
     try {
-      const res = await ridePostFetch("driver/updateRide", { rideId: rideId, cashCollected: true });
+      const res = await ridePostFetch("driver/updateRide", {
+        rideId,
+        cashCollected: true,
+      });
 
-      if (!res.success) {
+      if (!res?.success) {
         Toast.show({
           type: "error",
           text1: "Unable to update",
@@ -29,7 +34,7 @@ export default function PaymentScreen() {
       }
 
       setOpenPaymentSuccess(true);
-    } catch (err) {
+    } catch {
       Toast.show({
         type: "error",
         text1: "Network Error",
@@ -39,8 +44,8 @@ export default function PaymentScreen() {
   };
 
   const redirectDashboard = () => {
-    navigation.navigate("dashboard");
     setOpenPaymentSuccess(false);
+    navigation.navigate("dashboard");
   };
 
   return (
@@ -48,23 +53,23 @@ export default function PaymentScreen() {
       <StatusBar barStyle="dark-content" />
 
       <View style={styles.content}>
+        {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>Collect Cash</Text>
           <Text style={styles.subtitle}>Confirm payment received from the rider</Text>
         </View>
 
+        {/* Fare */}
         <View style={styles.fareCard}>
           <Text style={styles.fareLabel}>Total Fare</Text>
-
           <Text style={styles.fareAmount}>₹ {totalAmount}.00</Text>
 
-          <View style={styles.paymentBadgeWrapper}>
-            <View style={styles.paymentBadge}>
-              <Text style={styles.paymentBadgeText}>CASH PAYMENT</Text>
-            </View>
+          <View style={styles.paymentBadge}>
+            <Text style={styles.paymentBadgeText}>CASH PAYMENT</Text>
           </View>
         </View>
 
+        {/* Trip Info */}
         <View style={styles.tripCard}>
           <View style={styles.tripSection}>
             <Text style={styles.tripLabel}>Pickup</Text>
@@ -72,39 +77,39 @@ export default function PaymentScreen() {
           </View>
 
           <View style={styles.tripSection}>
-            <Text style={styles.tripLabel}>Drop</Text>
+            <Text style={styles.tripLabel}>Destination</Text>
             <Text style={styles.tripValue}>{destination}</Text>
           </View>
 
           <View style={styles.tripFooter}>
             <Text style={styles.distanceLabel}>Distance</Text>
-            <Text style={styles.distanceValue}>{Number(distancekm).toFixed(1)} KM</Text>
+            <Text style={styles.distanceValue}>{Number(distancekm).toFixed(1)} km</Text>
           </View>
         </View>
 
-        <TouchableOpacity activeOpacity={0.85} onPress={collectCash} style={styles.collectButton}>
-          <Text style={styles.collectButtonText}>Cash Collected</Text>
+        {/* Action */}
+        <TouchableOpacity activeOpacity={0.9} onPress={collectCash} style={styles.primaryButton}>
+          <Text style={styles.primaryButtonText}>Cash Collected</Text>
         </TouchableOpacity>
       </View>
 
-      <Modal animationType="fade" transparent={false} visible={openPaymentSuccess} onRequestClose={() => setOpenPaymentSuccess(false)}>
-        <SafeAreaView style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <View style={styles.successIconWrapper}>
-              <Ionicons name="checkmark" size={36} color="#22C55E" />
+      {/* Success Modal */}
+      <Modal animationType="fade" transparent visible={openPaymentSuccess} onRequestClose={() => setOpenPaymentSuccess(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalCard}>
+            <View style={styles.successIcon}>
+              <Ionicons name="checkmark" size={36} color={Colors.emerald_600} />
             </View>
 
             <Text style={styles.modalTitle}>Payment Received</Text>
 
             <Text style={styles.modalSubtitle}>You can now accept new ride requests</Text>
 
-            <View style={styles.modalButtonWrapper}>
-              <TouchableOpacity style={styles.collectButton} onPress={redirectDashboard}>
-                <Text style={styles.collectButtonText}>Go to Home</Text>
-              </TouchableOpacity>
-            </View>
+            <TouchableOpacity style={styles.primaryButton2} onPress={redirectDashboard}>
+              <Text style={styles.primaryButtonText}>Go to Home</Text>
+            </TouchableOpacity>
           </View>
-        </SafeAreaView>
+        </View>
       </Modal>
     </SafeAreaView>
   );
@@ -113,11 +118,11 @@ export default function PaymentScreen() {
 const PRIMARY = "#0193e0";
 
 const styles = StyleSheet.create({
-  /* Main */
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: Colors.whiteColor,
   },
+
   content: {
     flex: 1,
     paddingHorizontal: 24,
@@ -128,148 +133,179 @@ const styles = StyleSheet.create({
     marginTop: 24,
     marginBottom: 32,
   },
+
   title: {
-    fontSize: 30,
+    fontSize: 26,
     textAlign: "center",
-    color: "#111827",
-    fontFamily: "interBold",
-  },
-  subtitle: {
-    marginTop: 8,
-    fontSize: 14,
-    textAlign: "center",
-    color: "#6B7280",
-    fontFamily: "interMedium",
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: Colors.midnight_blue_900,
   },
 
-  /* Fare Card */
+  subtitle: {
+    marginTop: 6,
+    fontSize: 14,
+    textAlign: "center",
+    fontFamily: Fonts.GoogleSansFlex,
+    color: Colors.asbestos,
+  },
+
+  /* Fare */
   fareCard: {
     padding: 24,
     marginBottom: 32,
-    backgroundColor: "rgba(1,147,224,0.1)",
     borderRadius: 24,
-  },
-  fareLabel: {
-    fontSize: 14,
-    textAlign: "center",
-    color: "#4B5563",
-    fontFamily: "interMedium",
-  },
-  fareAmount: {
-    marginTop: 8,
-    fontSize: 44,
-    textAlign: "center",
-    color: "#111827",
-    fontFamily: "interBold",
-    letterSpacing: -1,
-  },
-  paymentBadgeWrapper: {
-    marginTop: 12,
+    backgroundColor: Colors.peter_river_50,
+    borderWidth: 1,
+    borderColor: Colors.peter_river_200,
     alignItems: "center",
   },
-  paymentBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    backgroundColor: "#DCFCE7",
-    borderRadius: 999,
-  },
-  paymentBadgeText: {
-    fontSize: 12,
-    color: "#15803D",
-    fontFamily: "interSemiBold",
+
+  fareLabel: {
+    fontSize: 13,
+    fontFamily: Fonts.GoogleSansFlex,
+    color: Colors.asbestos,
   },
 
-  /* Trip Card */
+  fareAmount: {
+    marginTop: 8,
+    fontSize: 40,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: Colors.midnight_blue_900,
+    letterSpacing: -1,
+  },
+
+  paymentBadge: {
+    marginTop: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 999,
+    backgroundColor: Colors.emerald_50,
+  },
+
+  paymentBadgeText: {
+    fontSize: 12,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+    color: Colors.emerald_700,
+  },
+
+  /* Trip */
   tripCard: {
     padding: 20,
     marginBottom: 32,
-    backgroundColor: "#fff",
+    backgroundColor: Colors.whiteColor,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
+    borderColor: Colors.clouds_300,
     borderRadius: 24,
+    borderColor: "#E5E4E2",
   },
+
   tripSection: {
     marginBottom: 16,
   },
+
   tripLabel: {
     fontSize: 12,
-    letterSpacing: 1,
     textTransform: "uppercase",
-    color: "#6B7280",
-    fontFamily: "interMedium",
+    fontFamily: Fonts.GoogleSansFlex,
+    color: Colors.asbestos,
+    letterSpacing: 0.8,
   },
+
   tripValue: {
     marginTop: 4,
     fontSize: 16,
-    color: "#111827",
-    fontFamily: "interSemiBold",
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+    color: Colors.midnight_blue_900,
   },
+
   tripFooter: {
     flexDirection: "row",
     justifyContent: "space-between",
     paddingTop: 12,
     borderTopWidth: 1,
-    borderTopColor: "#F3F4F6",
+    borderTopColor: Colors.clouds_300,
   },
+
   distanceLabel: {
-    fontSize: 14,
-    color: "#6B7280",
-    fontFamily: "interMedium",
+    fontSize: 13,
+    fontFamily: Fonts.GoogleSansFlex,
+    color: Colors.asbestos,
   },
+
   distanceValue: {
-    fontSize: 14,
-    color: "#111827",
-    fontFamily: "interSemiBold",
+    fontSize: 13,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+    color: Colors.midnight_blue_900,
   },
 
   /* Button */
-  collectButton: {
+  primaryButton: {
     paddingVertical: 16,
     borderRadius: 16,
     backgroundColor: PRIMARY,
+    alignItems: "center",
   },
-  collectButtonText: {
-    fontSize: 18,
-    textAlign: "center",
-    color: "#fff",
-    fontFamily: "interBold",
+  primaryButton2: {
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+    borderRadius: 16,
+    backgroundColor: PRIMARY,
+    alignItems: "center",
+  },
+
+  primaryButtonText: {
+    fontSize: 16,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: Colors.whiteColor,
   },
 
   /* Modal */
-  modalContainer: {
+  modalOverlay: {
     flex: 1,
-    backgroundColor: "#fff",
-  },
-  modalContent: {
-    flex: 1,
+    backgroundColor: "rgba(23,32,42,0.5)",
     justifyContent: "center",
-    alignItems: "center",
     paddingHorizontal: 24,
   },
-  successIconWrapper: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: "#DCFCE7",
+
+  modalCard: {
+    backgroundColor: Colors.whiteColor,
+    borderRadius: 28,
+    padding: 24,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: Colors.clouds_300,
+  },
+
+  successIcon: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: Colors.emerald_50,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 24,
+    marginBottom: 20,
   },
+
   modalTitle: {
-    fontSize: 30,
+    fontSize: 22,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: Colors.midnight_blue_900,
     textAlign: "center",
-    color: "#111827",
-    fontFamily: "interBold",
   },
+
   modalSubtitle: {
-    marginTop: 8,
+    marginTop: 6,
     fontSize: 14,
+    fontFamily: Fonts.GoogleSansFlex,
+    color: Colors.asbestos,
     textAlign: "center",
-    color: "#6B7280",
-    fontFamily: "interMedium",
-  },
-  modalButtonWrapper: {
-    width: "100%",
-    marginTop: 40,
+    marginBottom: 24,
   },
 });

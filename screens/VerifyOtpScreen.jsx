@@ -5,6 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import { useAuth } from "../context/useAuth";
 import { useNavigation } from "@react-navigation/native";
+import { Colors, Fonts } from "../lib/style";
 
 const CELL_COUNT = 4;
 const PRIMARY = "#0193e0";
@@ -131,96 +132,126 @@ export default function VerifyOtpScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: Colors.whiteColor,
   },
+
   content: {
     flex: 1,
     justifyContent: "center",
     paddingHorizontal: 24,
   },
 
+  /* Header */
   header: {
     alignItems: "center",
-    marginBottom: 40,
-  },
-  title: {
-    fontSize: 30,
-    color: "#111827",
-    fontFamily: "interBold",
-  },
-  subtitle: {
-    marginTop: 12,
-    fontSize: 18,
-    textAlign: "center",
-    color: "#6B7280",
-    fontFamily: "interMedium",
-  },
-  mobile: {
-    marginTop: 4,
-    fontSize: 16,
-    color: PRIMARY,
-    fontFamily: "interSemiBold",
+    marginBottom: 36,
   },
 
+  title: {
+    fontSize: 32,
+    color: Colors.midnight_blue_900,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    letterSpacing: -0.4,
+  },
+
+  subtitle: {
+    marginTop: 10,
+    fontSize: 15,
+    lineHeight: 22,
+    textAlign: "center",
+    color: Colors.asbestos,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "400",
+  },
+
+  mobile: {
+    marginTop: 6,
+    fontSize: 15,
+    color: Colors.peter_river_600,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+  },
+
+  /* OTP */
   codeFieldWrapper: {
     alignItems: "center",
-    marginBottom: 32,
+    marginBottom: 28,
   },
+
   codeFieldRoot: {
     justifyContent: "center",
+    gap: 10,
   },
+
   cell: {
     width: 56,
     height: 56,
-    marginHorizontal: 4,
-    borderRadius: 16,
+    borderRadius: 14,
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
-  },
-  cellDefault: {
-    borderColor: "#D1D5DB",
-    backgroundColor: "#fff",
-  },
-  cellFocused: {
-    borderColor: PRIMARY,
-    backgroundColor: "rgba(1,147,224,0.05)",
-  },
-  cellText: {
-    fontSize: 20,
-    color: "#111827",
-    fontFamily: "interSemiBold",
+    backgroundColor: Colors.clouds_100,
   },
 
+  cellDefault: {
+    borderColor: Colors.clouds_600,
+  },
+
+  cellFocused: {
+    borderColor: Colors.peter_river_600,
+    backgroundColor: Colors.peter_river_50,
+  },
+
+  cellText: {
+    fontSize: 22,
+    color: Colors.midnight_blue_900,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    textAlign: "center",
+    lineHeight: 24,
+  },
+
+  /* Resend */
   resendRow: {
     flexDirection: "row",
     justifyContent: "center",
-    marginBottom: 32,
-  },
-  resendText: {
-    fontSize: 14,
-    color: "#6B7280",
-    fontFamily: "interMedium",
-  },
-  resendAction: {
-    marginLeft: 8,
-    fontSize: 14,
-    color: PRIMARY,
-    fontFamily: "interSemiBold",
+    marginBottom: 28,
   },
 
+  resendText: {
+    fontSize: 14,
+    color: Colors.asbestos,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "400",
+  },
+
+  resendAction: {
+    marginLeft: 6,
+    fontSize: 14,
+    color: Colors.peter_river_600,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+  },
+
+  /* Button */
   verifyButton: {
-    paddingVertical: 16,
+    height: 54,
     borderRadius: 16,
     backgroundColor: PRIMARY,
+    justifyContent: "center",
+    alignItems: "center",
   },
+
   verifyButtonDisabled: {
-    backgroundColor: "rgba(1,147,224,0.7)",
+    opacity: 0.7,
   },
+
   verifyButtonText: {
     fontSize: 16,
-    textAlign: "center",
-    color: "#fff",
-    fontFamily: "interBold",
+    color: Colors.whiteColor,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+    letterSpacing: 0.3,
   },
 });

@@ -19,6 +19,7 @@ import CompleteRideConfirmation from "../components/CompleteRideConfirmation";
 import { rideFarePerHour } from "../constants/data";
 import Navbar from "../components/Navbar";
 import { StyleSheet } from "react-native";
+import { Colors, Fonts } from "../lib/style";
 
 const getDistance = (lat1, lon1, lat2, lon2) => {
   const toRad = (val) => (val * Math.PI) / 180;
@@ -433,7 +434,13 @@ export default function FindRideScreen() {
                   textContentType="oneTimeCode"
                   renderCell={({ index, symbol, isFocused }) => (
                     <View key={index} onLayout={getCellOnLayoutHandler(index)} style={[styles.otpCell, isFocused && styles.otpCellFocused]}>
-                      <Text style={styles.otpCellText}>{symbol || (isFocused ? <Cursor /> : null)}</Text>
+                      {symbol ? (
+                        <Text style={styles.otpCellText}>{symbol}</Text>
+                      ) : isFocused ? (
+                        <Text style={styles.otpCellText}>
+                          <Cursor />
+                        </Text>
+                      ) : null}
                     </View>
                   )}
                 />
@@ -527,15 +534,12 @@ export default function FindRideScreen() {
   );
 }
 
+const PRIMARY = "#0193e0";
+
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    backgroundColor: "#fff",
-  },
-
-  header: {
-    padding: 16,
-    gap: 20,
+    backgroundColor: Colors.whiteColor,
   },
 
   mapWrapper: {
@@ -544,24 +548,24 @@ const styles = StyleSheet.create({
   },
 
   sheetBackground: {
-    borderRadius: 40,
-    borderWidth: 2,
-    borderColor: "#e5e7eb",
-    backgroundColor: "#fff",
+    borderRadius: 32,
+    borderWidth: 1,
+    borderColor: "#E5E4E2",
+    backgroundColor: Colors.whiteColor,
   },
 
   sheetContent: {
     padding: 16,
   },
 
+  /* Ride Card */
   rideCard: {
-    backgroundColor: "#fff",
-    borderRadius: 16,
+    backgroundColor: Colors.whiteColor,
+    borderRadius: 20,
     padding: 16,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: "#f1f5f9",
-    elevation: 2,
+    borderColor: Colors.clouds_300,
   },
 
   rideHeader: {
@@ -571,9 +575,10 @@ const styles = StyleSheet.create({
   },
 
   rideTitle: {
-    fontSize: 18,
-    color: "#111827",
-    fontFamily: "interSemiBold",
+    fontSize: 17,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: Colors.midnight_blue_900,
   },
 
   badgeRow: {
@@ -584,62 +589,67 @@ const styles = StyleSheet.create({
   badge: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 8,
+    paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 999,
-    backgroundColor: "#eff6ff",
-    gap: 4,
+    backgroundColor: Colors.peter_river_50,
+    gap: 6,
   },
 
   badgeText: {
     fontSize: 12,
-    color: "#2563eb",
-    fontFamily: "interSemiBold",
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+    color: Colors.peter_river_700,
   },
 
+  /* Sections */
   sectionRow: {
     flexDirection: "row",
     marginBottom: 16,
   },
 
   primaryLine: {
-    width: 4,
-    borderRadius: 4,
-    backgroundColor: "#0193e0",
+    width: 3,
+    borderRadius: 3,
+    backgroundColor: Colors.peter_river_600,
     marginRight: 12,
   },
 
   successLine: {
-    width: 4,
-    borderRadius: 4,
-    backgroundColor: "#22c55e",
+    width: 3,
+    borderRadius: 3,
+    backgroundColor: Colors.emerald_600,
     marginRight: 12,
   },
 
   sectionTitle: {
-    fontSize: 16,
-    color: "#111827",
-    fontFamily: "interBold",
+    fontSize: 15,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+    color: Colors.midnight_blue_900,
   },
 
   locationRow: {
     flexDirection: "row",
     marginTop: 8,
+    alignItems: "center",
   },
 
   locationText: {
     flex: 1,
     marginLeft: 12,
     fontSize: 14,
-    color: "#1f2937",
-    fontFamily: "interSemiBold",
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "500",
+    color: Colors.midnight_blue_800,
   },
 
   iconBoxBlue: {
     width: 32,
     height: 32,
     borderRadius: 12,
-    backgroundColor: "#dbeafe",
+    backgroundColor: Colors.peter_river_50,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -648,14 +658,33 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 12,
-    backgroundColor: "#dcfce7",
+    backgroundColor: Colors.emerald_50,
     justifyContent: "center",
     alignItems: "center",
   },
 
+  /* Actions */
   actionRow: {
     flexDirection: "row",
     gap: 12,
+  },
+
+  btnPrimaryRow: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 12,
+    borderRadius: 16,
+    backgroundColor: PRIMARY,
+    gap: 8,
+  },
+
+  btnPrimaryRowText: {
+    fontSize: 15,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: Colors.whiteColor,
   },
 
   secondaryButton: {
@@ -666,26 +695,27 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: "#d1d5db",
+    borderColor: "#E5E4E2",
     gap: 8,
   },
 
-  disabledButton: {
-    backgroundColor: "#f3f4f6",
+  secondaryButtonText: {
+    fontSize: 15,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+    color: Colors.midnight_blue_700,
   },
 
-  secondaryButtonText: {
-    fontSize: 16,
-    color: "#374151",
-    fontFamily: "interSemiBold",
+  disabledButton: {
+    backgroundColor: Colors.clouds_200,
   },
 
   disabledText: {
-    color: "#9ca3af",
+    color: Colors.concrete,
   },
 
+  /* Empty State */
   emptyState: {
-    flex: 1,
     alignItems: "center",
     marginTop: 40,
   },
@@ -693,137 +723,106 @@ const styles = StyleSheet.create({
   emptyTitle: {
     marginTop: 12,
     fontSize: 18,
-    color: "#6b7280",
-    fontFamily: "interSemiBold",
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+    color: Colors.asbestos,
   },
 
   emptySubtitle: {
     marginTop: 4,
     fontSize: 14,
-    color: "#9ca3af",
-    fontFamily: "interMedium",
+    fontFamily: Fonts.GoogleSansFlex,
+    color: Colors.concrete,
   },
 
-  modalOverlayLight: {
-    flex: 1,
-    justifyContent: "flex-end",
-    backgroundColor: "rgba(0,0,0,0.3)",
-  },
-
+  /* OTP Modal */
   modalOverlayDark: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.5)",
-  },
-
-  startRideModal: {
-    backgroundColor: "#fff",
-    padding: 24,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-  },
-
-  modalHeader: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#e5e7eb",
-    paddingBottom: 12,
-    marginBottom: 16,
-  },
-
-  modalTitle: {
-    fontSize: 22,
-    textAlign: "center",
-    color: "#1f2937",
-    fontFamily: "interSemiBold",
-  },
-
-  modalSubtitle: {
-    marginTop: 8,
-    textAlign: "center",
-    color: "#6b7280",
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
+    backgroundColor: "rgba(23,32,42,0.5)",
   },
 
   otpModal: {
     width: "92%",
-    backgroundColor: "#fff",
+    backgroundColor: Colors.whiteColor,
     padding: 24,
     borderRadius: 24,
   },
 
   otpTitle: {
-    fontSize: 22,
+    fontSize: 20,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: PRIMARY,
     textAlign: "center",
-    fontFamily: "interBold",
-    color: "#111827",
   },
 
   otpSubtitle: {
     marginTop: 8,
+    fontSize: 14,
+    fontFamily: Fonts.GoogleSansFlex,
+    color: Colors.asbestos,
     textAlign: "center",
-    color: "#6b7280",
-  },
-
-  otpFieldWrapper: {
-    marginTop: 32,
-    marginBottom: 40,
-    alignItems: "center",
+    marginBottom: 20,
   },
 
   otpCell: {
     width: 56,
     height: 56,
-    marginHorizontal: 4,
-    borderRadius: 16,
-    backgroundColor: "#f9fafb",
+    marginHorizontal: 6,
+    borderRadius: 14,
+
+    backgroundColor: Colors.clouds_200,
     borderWidth: 1,
-    borderColor: "#e5e7eb",
+    borderColor: PRIMARY,
+
     justifyContent: "center",
     alignItems: "center",
   },
 
   otpCellFocused: {
-    backgroundColor: "#eff6ff",
-    borderColor: "#0193e0",
+    backgroundColor: Colors.peter_river_50,
+    borderColor: Colors.peter_river_600,
     borderWidth: 2,
   },
-
   otpCellText: {
-    fontSize: 20,
-    color: "#111827",
-    fontFamily: "interSemiBold",
+    fontSize: 22,
+    lineHeight: 26,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: "#36454F",
+    textAlign: "center",
   },
-
+  /* Floating Button */
   floatingButton: {
     position: "absolute",
-    bottom: 100,
+    bottom: 96,
     right: 20,
   },
 
   floatingButtonInner: {
-    backgroundColor: "#0193e0",
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    backgroundColor: PRIMARY,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     justifyContent: "center",
     alignItems: "center",
-    elevation: 5,
-    shadowColor: "#000",
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
   },
 
+  /* Ongoing Ride Modal */
   ongoingModal: {
-    backgroundColor: "#fff",
+    backgroundColor: Colors.whiteColor,
     padding: 24,
-    borderRadius: 40,
+    borderRadius: 32,
+    justifyContent: "flex-end",
   },
 
   dragHandle: {
-    width: 56,
+    width: 48,
     height: 4,
     borderRadius: 4,
-    backgroundColor: "#d1d5db",
+    backgroundColor: Colors.clouds_400,
     alignSelf: "center",
     marginBottom: 20,
   },
@@ -832,58 +831,62 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: "#bae6fd",
-    backgroundColor: "#e0f2fe",
+    borderColor: Colors.peter_river_200,
+    backgroundColor: Colors.peter_river_50,
     alignItems: "center",
     marginBottom: 20,
   },
 
   rideTimeLabel: {
-    fontSize: 14,
-    color: "#0193e0",
-    fontFamily: "interMedium",
+    fontSize: 13,
+    fontFamily: Fonts.GoogleSansFlex,
+    color: Colors.peter_river_700,
   },
 
   rideTimeValue: {
-    fontSize: 52,
-    fontFamily: "interBold",
-    color: "#111827",
+    fontSize: 48,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: Colors.midnight_blue_900,
   },
 
   activeBadge: {
     marginTop: 8,
     paddingHorizontal: 12,
     paddingVertical: 4,
-    backgroundColor: "#dcfce7",
+    backgroundColor: Colors.emerald_50,
     borderRadius: 999,
   },
 
   activeBadgeText: {
     fontSize: 12,
-    color: "#15803d",
-    fontFamily: "interSemiBold",
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: Colors.emerald_700,
   },
 
   locationCard: {
     padding: 16,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: "#e5e7eb",
-    backgroundColor: "#f9fafb",
+    borderColor: Colors.clouds_300,
+    backgroundColor: Colors.clouds_100,
     marginBottom: 12,
   },
 
   locationLabel: {
     fontSize: 12,
-    color: "#6b7280",
+    fontFamily: Fonts.GoogleSansFlex,
+    color: Colors.asbestos,
     textTransform: "uppercase",
   },
 
   locationValue: {
     marginTop: 4,
-    fontSize: 18,
-    color: "#111827",
-    fontFamily: "interSemiBold",
+    fontSize: 17,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+    color: Colors.midnight_blue_900,
   },
 
   row: {
@@ -897,89 +900,74 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor: "#e5e7eb",
-    backgroundColor: "#fff",
+    borderColor: Colors.clouds_300,
+    backgroundColor: Colors.whiteColor,
   },
 
   infoLabel: {
     fontSize: 12,
-    color: "#6b7280",
+    fontFamily: Fonts.GoogleSansFlex,
+    color: Colors.asbestos,
     textTransform: "uppercase",
   },
 
   infoValue: {
     marginTop: 4,
-    fontSize: 20,
-    fontFamily: "interBold",
-    color: "#111827",
-  },
-
-  outlineButton: {
-    borderWidth: 1,
-    borderColor: "#d1d5db",
-    paddingVertical: 14,
-    borderRadius: 999,
-    alignItems: "center",
-  },
-
-  outlineButtonText: {
-    color: "#374151",
-    fontFamily: "interSemiBold",
+    fontSize: 18,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: Colors.midnight_blue_900,
   },
 
   cancelSoftButton: {
     paddingVertical: 14,
     borderRadius: 16,
-    backgroundColor: "#f3f4f6",
+    backgroundColor: Colors.clouds_300,
     alignItems: "center",
     marginTop: 8,
+    borderColor: "#E5E4E2",
+    borderWidth: 1,
   },
 
   cancelSoftText: {
-    color: "#6b7280",
-    fontFamily: "interSemiBold",
-  },
-
-  btnPrimaryRow: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    paddingVertical: 12,
-    borderRadius: 16,
-    backgroundColor: "#0193e0",
-    gap: 8,
-  },
-
-  btnPrimaryRowText: {
-    fontSize: 16,
-    color: "#fff",
-    fontFamily: "interBold",
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+    color: "#899499",
   },
 
   btnPrimarySolid: {
-    backgroundColor: "#0193e0",
+    backgroundColor: PRIMARY,
     paddingVertical: 16,
     borderRadius: 16,
     alignItems: "center",
     marginBottom: 12,
+    marginTop: 40,
   },
 
   btnPrimarySolidText: {
     fontSize: 16,
-    color: "#fff",
-    fontFamily: "interBold",
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: Colors.whiteColor,
   },
 
   btnSuccessSolid: {
-    backgroundColor: "#22c55e",
+    backgroundColor: Colors.emerald_600,
     paddingVertical: 16,
     borderRadius: 16,
     alignItems: "center",
     marginBottom: 12,
   },
+
+  btnSuccessSolidText: {
+    fontSize: 16,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: Colors.whiteColor,
+  },
+
   primaryButton: {
-    backgroundColor: "#0193e0",
+    backgroundColor: PRIMARY,
     paddingVertical: 16,
     borderRadius: 16,
     alignItems: "center",
@@ -988,13 +976,8 @@ const styles = StyleSheet.create({
 
   primaryButtonText: {
     fontSize: 16,
-    color: "#fff",
-    fontFamily: "interBold",
-  },
-
-  btnSuccessSolidText: {
-    fontSize: 16,
-    color: "#fff",
-    fontFamily: "interBold",
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: Colors.whiteColor,
   },
 });

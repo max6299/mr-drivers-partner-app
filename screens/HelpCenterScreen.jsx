@@ -1,44 +1,51 @@
-import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { Linking, StatusBar, Text, TouchableOpacity, View, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { ScrollView } from "react-native-gesture-handler";
 import ScreenGradient from "../components/ScreenGradient";
 import { faqs } from "../constants/data";
-import { ScrollView } from "react-native-gesture-handler";
+import appStyle from "../lib/style";
+
+const { Colors, Fonts } = appStyle;
 
 export default function HelpCenterScreen() {
   const navigation = useNavigation();
 
   const callSupport = () => {
-    Linking.openURL("tel:+919715835816");
+    Linking.openURL("tel:+123456789");
   };
 
   return (
     <ScreenGradient>
-      <ScrollView contentContainerStyle={styles.wrapper} showsVerticalScrollIndicator={false}>
+      <SafeAreaView style={styles.container}>
         <StatusBar barStyle="dark-content" />
 
-        <View style={styles.wrapper}>
+        <ScrollView contentContainerStyle={styles.wrapper} showsVerticalScrollIndicator={false}>
+          {/* Header */}
           <View style={styles.headerRow}>
-            <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.8} style={styles.backButton}>
-              <Ionicons name="chevron-back" size={22} color={PRIMARY} />
-            </TouchableOpacity>
+            <View style={styles.headerSide}>
+              <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.9} style={styles.iconButton}>
+                <Ionicons name="chevron-back" size={22} color={Colors.peter_river_600} />
+              </TouchableOpacity>
+            </View>
 
             <View style={styles.headerCenter}>
               <Text style={styles.headerTitle}>Help Center</Text>
-              <Text style={styles.headerSubtitle}>Find answers to common questions.</Text>
+              <Text style={styles.headerSubtitle}>Find answers to common questions</Text>
             </View>
+
+            <View style={styles.headerSide} />
           </View>
 
-          <View style={styles.spacer} />
-
+          {/* FAQ Section */}
           <View style={styles.faqSection}>
             {faqs?.map((item, index) => (
               <View key={index} style={styles.faqCard}>
                 <View style={styles.faqRow}>
                   <View style={styles.faqIconWrapper}>
-                    <Ionicons name="help-circle-outline" size={18} color="#0193e0" />
+                    <Ionicons name="help-circle-outline" size={18} color={Colors.peter_river_600} />
                   </View>
 
                   <View style={styles.faqContent}>
@@ -50,21 +57,22 @@ export default function HelpCenterScreen() {
             ))}
           </View>
 
+          {/* Support Card */}
           <View style={styles.supportCard}>
             <View style={styles.supportIcon}>
-              <Ionicons name="chatbubbles-outline" size={28} color="#0193e0" />
+              <Ionicons name="chatbubbles-outline" size={26} color={Colors.peter_river_600} />
             </View>
 
             <Text style={styles.supportTitle}>Still need help?</Text>
 
             <Text style={styles.supportSubtitle}>Our support team is available 24/7 to assist you.</Text>
 
-            <TouchableOpacity onPress={callSupport} activeOpacity={0.85} style={styles.contactButton}>
+            <TouchableOpacity onPress={callSupport} activeOpacity={0.9} style={styles.contactButton}>
               <Text style={styles.contactButtonText}>Contact Support</Text>
             </TouchableOpacity>
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </SafeAreaView>
     </ScreenGradient>
   );
 }
@@ -77,51 +85,49 @@ const styles = StyleSheet.create({
   },
 
   wrapper: {
-    paddingHorizontal: 8,
+    paddingHorizontal: 16,
     paddingTop: 24,
-    marginTop: 10,
-    paddingBottom: 20,
+    paddingBottom: 32,
   },
 
   headerRow: {
-    position: "relative",
+    flexDirection: "row",
     alignItems: "center",
-    marginBottom: 24,
+    marginBottom: 28,
   },
 
-  backButton: {
-    position: "absolute",
-    left: 0,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "#EFF6FF",
-    justifyContent: "center",
+  headerSide: {
+    width: 48,
     alignItems: "center",
   },
 
   headerCenter: {
+    flex: 1,
     alignItems: "center",
-    paddingHorizontal: 48,
   },
 
   headerTitle: {
     fontSize: 22,
-    color: "#0F172A",
-    fontFamily: "interSemiBold",
-    letterSpacing: -0.2,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: Colors.midnight_blue_900,
   },
 
   headerSubtitle: {
     marginTop: 4,
     fontSize: 13,
-    color: "#64748B",
-    fontFamily: "interRegular",
+    fontFamily: Fonts.GoogleSansFlex,
+    color: Colors.asbestos,
     textAlign: "center",
   },
 
-  spacer: {
-    marginBottom: 24,
+  iconButton: {
+    width: 38,
+    height: 38,
+    borderRadius: 12,
+    backgroundColor: Colors.peter_river_50,
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   faqSection: {
@@ -129,12 +135,12 @@ const styles = StyleSheet.create({
   },
 
   faqCard: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.whiteColor,
     padding: 18,
     borderRadius: 18,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: "#F1F5F9",
+    borderColor: Colors.clouds_300,
   },
 
   faqRow: {
@@ -143,10 +149,10 @@ const styles = StyleSheet.create({
   },
 
   faqIconWrapper: {
-    width: 32,
-    height: 32,
-    borderRadius: 10,
-    backgroundColor: "#EFF6FF",
+    width: 34,
+    height: 34,
+    borderRadius: 12,
+    backgroundColor: Colors.peter_river_50,
     justifyContent: "center",
     alignItems: "center",
     marginRight: 12,
@@ -158,8 +164,9 @@ const styles = StyleSheet.create({
 
   faqQuestion: {
     fontSize: 15,
-    color: "#0F172A",
-    fontFamily: "interMedium",
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+    color: Colors.midnight_blue_900,
     lineHeight: 22,
   },
 
@@ -167,25 +174,24 @@ const styles = StyleSheet.create({
     marginTop: 6,
     fontSize: 14,
     lineHeight: 20,
-    color: "#64748B",
-    fontFamily: "interRegular",
+    fontFamily: Fonts.GoogleSansFlex,
+    color: Colors.asbestos,
   },
 
-  /* Support Card */
   supportCard: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.whiteColor,
     padding: 22,
-    borderRadius: 20,
+    borderRadius: 22,
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#F1F5F9",
+    borderColor: Colors.clouds_300,
   },
 
   supportIcon: {
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: "#EFF6FF",
+    backgroundColor: Colors.peter_river_50,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -193,8 +199,9 @@ const styles = StyleSheet.create({
   supportTitle: {
     marginTop: 14,
     fontSize: 17,
-    color: "#0F172A",
-    fontFamily: "interSemiBold",
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: Colors.midnight_blue_900,
   },
 
   supportSubtitle: {
@@ -202,8 +209,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     textAlign: "center",
-    color: "#64748B",
-    fontFamily: "interRegular",
+    fontFamily: Fonts.GoogleSansFlex,
+    color: Colors.asbestos,
   },
 
   contactButton: {
@@ -218,7 +225,8 @@ const styles = StyleSheet.create({
   contactButtonText: {
     fontSize: 16,
     textAlign: "center",
-    color: "#FFFFFF",
-    fontFamily: "interSemiBold",
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: Colors.whiteColor,
   },
 });

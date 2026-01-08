@@ -6,6 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import { useAuth } from "../context/useAuth";
 import { useNavigation } from "@react-navigation/native";
+import { Colors, Fonts } from "../lib/style";
 
 const PRIMARY = "#0193e0";
 
@@ -172,96 +173,126 @@ function PickerField({ label, selectedValue, onValueChange, items }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F9FAFB",
+    backgroundColor: Colors.bodyBackColor,
   },
+
   scrollContent: {
     padding: 24,
-    paddingTop: 10,
+    paddingTop: 12,
     paddingBottom: 32,
   },
 
+  /* Header */
   headerTitle: {
-    fontSize: 30,
+    fontSize: 28,
     textAlign: "center",
-    color: "#111827",
-    fontFamily: "interBold",
+    color: Colors.midnight_blue_900,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    letterSpacing: -0.3,
   },
+
   headerSubtitle: {
     marginTop: 8,
-    fontSize: 16,
+    fontSize: 15,
+    lineHeight: 22,
     textAlign: "center",
-    color: "#6B7280",
-    fontFamily: "interMedium",
+    color: Colors.asbestos,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "400",
   },
 
+  /* Card */
   formCard: {
-    backgroundColor: "#fff",
+    backgroundColor: Colors.whiteColor,
     padding: 24,
     borderRadius: 24,
-    gap: 20,
+    gap: 18,
     marginBottom: 24,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: Colors.clouds_600,
   },
 
+  /* Labels */
   label: {
-    marginBottom: 8,
-    fontSize: 14,
-    color: "#4B5563",
-    fontFamily: "interMedium",
+    marginBottom: 15,
+    fontSize: 13,
+    color: Colors.asbestos,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "500",
   },
+
+  /* Inputs */
   input: {
     height: 56,
     paddingHorizontal: 16,
+    borderRadius: 14,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
-    borderRadius: 16,
-    backgroundColor: "#F9FAFB",
-    color: "#111827",
-    fontFamily: "interRegular",
+    borderColor: Colors.clouds_600,
+    backgroundColor: Colors.clouds_100,
+    color: Colors.midnight_blue_900,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontSize: 15,
+    fontWeight: "500",
   },
 
+  /* Picker */
   pickerWrapper: {
     height: 56,
+    borderRadius: 14,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
-    borderRadius: 16,
-    backgroundColor: "#F9FAFB",
+    borderColor: Colors.clouds_600,
+    backgroundColor: Colors.clouds_100,
     justifyContent: "center",
     overflow: "hidden",
   },
+
   picker: {
-    color: "#111827",
+    color: Colors.midnight_blue_900,
+    fontFamily: Fonts.GoogleSansFlex,
   },
 
+  /* Terms */
   termsRow: {
     flexDirection: "row",
     alignItems: "flex-start",
-    gap: 12,
-    marginTop: 8,
+    gap: 10,
+    marginTop: 6,
   },
+
   termsText: {
     flex: 1,
     fontSize: 14,
-    color: "#4B5563",
-    fontFamily: "interMedium",
-  },
-  termsLink: {
-    color: PRIMARY,
-    fontFamily: "interSemiBold",
+    lineHeight: 20,
+    color: Colors.asbestos,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "400",
   },
 
+  termsLink: {
+    color: PRIMARY,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+  },
+
+  /* Submit */
   submitButton: {
-    paddingVertical: 16,
+    height: 54,
     borderRadius: 16,
     backgroundColor: PRIMARY,
+    justifyContent: "center",
+    alignItems: "center",
   },
+
   submitButtonDisabled: {
-    backgroundColor: "rgba(1,147,224,0.7)",
+    opacity: 0.7,
   },
+
   submitButtonText: {
     fontSize: 16,
-    textAlign: "center",
-    color: "#fff",
-    fontFamily: "interBold",
+    color: Colors.whiteColor,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+    letterSpacing: 0.3,
   },
 });

@@ -6,6 +6,7 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import Toast from "react-native-toast-message";
 import { useAuth } from "../context/useAuth";
 import { useNavigation } from "@react-navigation/native";
+import { Colors, Fonts } from "../lib/style";
 
 const PRIMARY = "#0193e0";
 
@@ -199,104 +200,130 @@ export default function DrivingLicenseScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: Colors.whiteColor,
   },
+
   scrollContent: {
     paddingBottom: 40,
   },
 
+  /* Header */
   header: {
     alignItems: "center",
     paddingHorizontal: 24,
-    paddingTop: 40,
-  },
-  title: {
-    fontSize: 30,
-    color: "#111827",
-    fontFamily: "interBold",
-  },
-  subtitle: {
-    marginTop: 8,
-    fontSize: 14,
-    textAlign: "center",
-    color: "#6B7280",
-    fontFamily: "interMedium",
+    paddingTop: 36,
   },
 
+  title: {
+    fontSize: 28,
+    color: Colors.midnight_blue_900,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    letterSpacing: -0.3,
+  },
+
+  subtitle: {
+    marginTop: 8,
+    fontSize: 15,
+    lineHeight: 22,
+    textAlign: "center",
+    color: Colors.asbestos,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "400",
+  },
+
+  /* Input */
   inputWrapper: {
     paddingHorizontal: 24,
-    marginTop: 32,
+    marginTop: 28,
   },
+
   input: {
     height: 56,
     paddingHorizontal: 16,
+    borderRadius: 14,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
-    borderRadius: 16,
-    backgroundColor: "#F9FAFB",
-    color: "#111827",
-    fontFamily: "interRegular",
+    borderColor: Colors.clouds_600,
+    backgroundColor: Colors.clouds_100,
+    color: Colors.midnight_blue_900,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontSize: 15,
+    fontWeight: "500",
   },
 
+  /* Guidelines */
   guidelines: {
     paddingHorizontal: 24,
     marginTop: 24,
   },
+
   guidelineTitle: {
-    marginBottom: 12,
+    marginBottom: 10,
     fontSize: 14,
-    color: "#111827",
-    fontFamily: "interSemiBold",
+    color: Colors.midnight_blue_900,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
   },
+
   guidelineCard: {
-    backgroundColor: "#F9FAFB",
+    backgroundColor: Colors.clouds_100,
     padding: 16,
     borderRadius: 16,
     gap: 12,
+    borderWidth: 1,
+    borderColor: Colors.clouds_600,
   },
+
   guidelineRow: {
     flexDirection: "row",
-    gap: 12,
+    alignItems: "flex-start",
+    gap: 10,
   },
+
   guidelineText: {
     flex: 1,
     fontSize: 14,
     lineHeight: 20,
-    color: "#4B5563",
-    fontFamily: "interMedium",
+    color: Colors.asbestos,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "400",
   },
 
+  /* Upload */
   uploadRow: {
     flexDirection: "row",
     gap: 16,
     paddingHorizontal: 24,
-    marginTop: 32,
+    marginTop: 28,
   },
+
   uploadBox: {
     flex: 1,
     height: 176,
     borderWidth: 2,
     borderStyle: "dashed",
-    borderColor: "#D1D5DB",
+    borderColor: Colors.clouds_600,
     borderRadius: 16,
-    backgroundColor: "#F9FAFB",
+    backgroundColor: Colors.clouds_100,
     overflow: "hidden",
   },
+
   imageWrapper: {
     width: "100%",
     height: "100%",
   },
+
   uploadedImage: {
     width: "100%",
     height: "100%",
   },
+
   removeButton: {
     position: "absolute",
     top: 8,
     right: 8,
-    backgroundColor: "#fff",
+    backgroundColor: Colors.whiteColor,
     borderRadius: 20,
-    elevation: 4,
   },
 
   uploadPlaceholder: {
@@ -304,43 +331,56 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+
   uploadLabel: {
     marginTop: 8,
     fontSize: 14,
-    color: "#6B7280",
-    fontFamily: "interMedium",
+    color: Colors.asbestos,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "500",
   },
+
   uploadActions: {
     flexDirection: "row",
     gap: 12,
     marginTop: 12,
   },
+
   iconButton: {
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderWidth: 1,
-    borderColor: "#D1D5DB",
+    borderColor: Colors.clouds_600,
     borderRadius: 12,
+    backgroundColor: Colors.whiteColor,
   },
 
+  /* Footer */
   footer: {
     paddingHorizontal: 24,
     paddingBottom: 24,
     borderTopWidth: 1,
-    borderTopColor: "#F3F4F6",
+    borderTopColor: Colors.clouds_600,
+    backgroundColor: Colors.whiteColor,
   },
+
   submitButton: {
-    paddingVertical: 16,
+    height: 54,
     borderRadius: 16,
     backgroundColor: PRIMARY,
+    justifyContent: "center",
+    alignItems: "center",
   },
+
   submitButtonDisabled: {
-    backgroundColor: "rgba(1,147,224,0.7)",
+    opacity: 0.7,
   },
+
   submitText: {
     fontSize: 16,
-    textAlign: "center",
-    color: "#fff",
-    fontFamily: "interBold",
+    color: Colors.whiteColor,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+    letterSpacing: 0.3,
   },
 });

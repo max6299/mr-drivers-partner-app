@@ -1,9 +1,12 @@
-import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { ScrollView, StatusBar, Text, TouchableOpacity, View, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ScreenGradient from "../components/ScreenGradient";
+import appStyle from "../lib/style";
+
+const { Colors, Fonts } = appStyle;
 
 export default function PrivacyPolicyScreen() {
   const navigation = useNavigation();
@@ -14,23 +17,28 @@ export default function PrivacyPolicyScreen() {
         <StatusBar barStyle="dark-content" />
 
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-          <View style={styles.headerWrapper}>
-            <View style={styles.headerRow}>
-              <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.8} style={styles.backButton}>
-                <Ionicons name="chevron-back" size={22} color={PRIMARY} />
+          {/* Header */}
+          <View style={styles.headerRow}>
+            <View style={styles.headerSide}>
+              <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.9} style={styles.iconButton}>
+                <Ionicons name="chevron-back" size={22} color={Colors.peter_river_600} />
               </TouchableOpacity>
-
-              <View style={styles.headerCenter}>
-                <Text style={styles.headerTitle}>Privacy Policy</Text>
-                <Text style={styles.headerSubtitle}>Last updated: {new Date().toLocaleDateString()}</Text>
-              </View>
             </View>
+
+            <View style={styles.headerCenter}>
+              <Text style={styles.headerTitle}>Privacy Policy</Text>
+              <Text style={styles.headerSubtitle}>Last updated: {new Date().toLocaleDateString()}</Text>
+            </View>
+
+            <View style={styles.headerSide} />
           </View>
 
+          {/* Intro */}
           <View style={styles.card}>
             <Text style={styles.cardText}>Your privacy is important to us. This Privacy Policy explains how we collect, use, and protect your personal information when you use our app.</Text>
           </View>
 
+          {/* Sections */}
           <PolicySection number="1" title="Information We Collect" text="We may collect personal information such as your name, email address, phone number, and payment details when you register or use our services." />
 
           <PolicySection number="2" title="How We Use Information" text="The information collected is used to provide, maintain, and improve our services, communicate with you, and ensure account security." />
@@ -69,66 +77,66 @@ const styles = StyleSheet.create({
   },
 
   scrollContent: {
-    padding: 16,
-    paddingTop: 10,
+    paddingHorizontal: 16,
+    paddingTop: 12,
     paddingBottom: 40,
   },
 
-  headerWrapper: {
-    marginBottom: 16,
-  },
-
+  /* Header */
   headerRow: {
-    position: "relative",
+    flexDirection: "row",
     alignItems: "center",
-    marginBottom: 16,
+    marginBottom: 20,
   },
 
-  backButton: {
-    position: "absolute",
-    left: 0,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "#EFF6FF",
-    justifyContent: "center",
+  headerSide: {
+    width: 48,
     alignItems: "center",
   },
 
   headerCenter: {
+    flex: 1,
     alignItems: "center",
-    paddingHorizontal: 48,
   },
 
   headerTitle: {
     fontSize: 22,
-    color: "#0F172A",
-    fontFamily: "interSemiBold",
-    letterSpacing: -0.2,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: Colors.midnight_blue_900,
   },
 
   headerSubtitle: {
     marginTop: 4,
     fontSize: 13,
-    color: "#64748B",
-    fontFamily: "interRegular",
+    fontFamily: Fonts.GoogleSansFlex,
+    color: Colors.asbestos,
+  },
+
+  iconButton: {
+    width: 38,
+    height: 38,
+    borderRadius: 12,
+    backgroundColor: Colors.peter_river_50,
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   /* Card */
   card: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.whiteColor,
     padding: 20,
-    borderRadius: 20,
+    borderRadius: 22,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: "#F1F5F9",
+    borderColor: Colors.clouds_300,
   },
 
   cardText: {
     fontSize: 15,
     lineHeight: 24,
-    color: "#334155",
-    fontFamily: "interRegular",
+    fontFamily: Fonts.GoogleSansFlex,
+    color: Colors.midnight_blue_800,
   },
 
   /* Section */
@@ -142,28 +150,30 @@ const styles = StyleSheet.create({
     width: 26,
     height: 26,
     borderRadius: 13,
-    backgroundColor: "#EFF6FF",
+    backgroundColor: Colors.peter_river_50,
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 8,
+    marginRight: 10,
   },
 
   sectionNumberText: {
     fontSize: 12,
-    color: PRIMARY,
-    fontFamily: "interSemiBold",
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: Colors.peter_river_600,
   },
 
   sectionTitle: {
     fontSize: 16,
-    color: "#0F172A",
-    fontFamily: "interMedium",
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+    color: Colors.midnight_blue_900,
   },
 
   sectionText: {
     fontSize: 15,
     lineHeight: 24,
-    color: "#334155",
-    fontFamily: "interRegular",
+    fontFamily: Fonts.GoogleSansFlex,
+    color: Colors.midnight_blue_800,
   },
 });

@@ -1,14 +1,16 @@
-import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import { FlatList, Image, Modal, StatusBar, Text, TouchableOpacity, View, StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../context/useAuth";
 import { menuItems, user } from "../constants/data";
+import appStyle from "../lib/style";
+
+const { Colors, Fonts } = appStyle;
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
-  const { ownUser, setOwnUser, mrDriverPartnerLogout } = useAuth();
+  const { ownUser, mrDriverPartnerLogout } = useAuth();
   const [modalVisible, setModalVisible] = useState(false);
 
   const handleLogout = async () => {
@@ -17,14 +19,15 @@ export default function ProfileScreen() {
   };
 
   const renderMenuItem = ({ item }) => (
-    <TouchableOpacity onPress={() => navigation.navigate(item.route)} activeOpacity={0.85} style={styles.menuItem}>
+    <TouchableOpacity activeOpacity={0.92} style={styles.menuItem} onPress={() => navigation.navigate(item.route)}>
       <View style={styles.menuLeft}>
         <View style={styles.menuIconWrapper}>
-          <Ionicons name={item.icon} size={20} color={PRIMARY} />
+          <Ionicons name={item.icon} size={20} color={Colors.peter_river_600} />
         </View>
         <Text style={styles.menuTitle}>{item.title}</Text>
       </View>
-      <Ionicons name="chevron-forward" size={18} color="#9CA3AF" />
+
+      <Ionicons name="chevron-forward" size={18} color={Colors.concrete} />
     </TouchableOpacity>
   );
 
@@ -34,17 +37,17 @@ export default function ProfileScreen() {
 
       <View style={styles.header}>
         <Text style={styles.screenTitle}>Profile</Text>
-        <Text style={styles.screenSubtitle}>View and manage your personal information</Text>
+        <Text style={styles.screenSubtitle}>Manage your account & preferences</Text>
       </View>
 
       <FlatList
         data={menuItems}
-        renderItem={renderMenuItem}
         keyExtractor={(_, i) => i.toString()}
+        renderItem={renderMenuItem}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
         ListHeaderComponent={
-          <View style={styles.profileHeader}>
+          <View style={styles.profileCard}>
             <View style={styles.avatarWrapper}>
               <Image
                 source={{
@@ -56,21 +59,38 @@ export default function ProfileScreen() {
 
             <Text style={styles.userName}>{ownUser?.fullName}</Text>
 
-            <View style={styles.statusBadge}>
-              <Ionicons name={ownUser?.isVerified ? "checkmark-circle" : "close-circle"} size={16} color={ownUser?.isVerified ? PRIMARY : "#EF4444"} />
-              <Text style={[styles.statusText, ownUser?.isVerified ? styles.verified : styles.notVerified]}>{ownUser?.isVerified ? "Verified Driver" : "Not Verified"}</Text>
+            <View
+              style={[
+                styles.statusBadge,
+                {
+                  backgroundColor: ownUser?.isVerified ? Colors.emerald_50 : Colors.alizarin_50,
+                },
+              ]}
+            >
+              <Ionicons name={ownUser?.isVerified ? "checkmark-circle" : "close-circle"} size={16} color={ownUser?.isVerified ? Colors.emerald_600 : Colors.alizarin_600} />
+              <Text
+                style={[
+                  styles.statusText,
+                  {
+                    color: ownUser?.isVerified ? Colors.emerald_700 : Colors.alizarin_600,
+                  },
+                ]}
+              >
+                {ownUser?.isVerified ? "Verified Driver" : "Not Verified"}
+              </Text>
             </View>
           </View>
         }
         ListFooterComponent={
-          <TouchableOpacity onPress={() => setModalVisible(true)} activeOpacity={0.85} style={styles.logoutItem}>
+          <TouchableOpacity activeOpacity={0.92} style={styles.logoutItem} onPress={() => setModalVisible(true)}>
             <View style={styles.menuLeft}>
               <View style={styles.logoutIconWrapper}>
-                <Ionicons name="log-out-outline" size={20} color="#EF4444" />
+                <Ionicons name="log-out-outline" size={20} color={Colors.alizarin_600} />
               </View>
               <Text style={styles.logoutText}>Logout</Text>
             </View>
-            <Ionicons name="chevron-forward" size={18} color="#EF4444" />
+
+            <Ionicons name="chevron-forward" size={18} color={Colors.alizarin_600} />
           </TouchableOpacity>
         }
       />
@@ -82,11 +102,11 @@ export default function ProfileScreen() {
             <Text style={styles.modalSubtitle}>You’ll need to log in again to access your account.</Text>
 
             <View style={styles.modalActions}>
-              <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.cancelButton}>
+              <TouchableOpacity style={styles.cancelButton} onPress={() => setModalVisible(false)}>
                 <Text style={styles.cancelText}>Cancel</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={handleLogout} style={styles.confirmButton}>
+              <TouchableOpacity style={styles.confirmButton} onPress={handleLogout}>
                 <Text style={styles.confirmText}>Logout</Text>
               </TouchableOpacity>
             </View>
@@ -97,172 +117,168 @@ export default function ProfileScreen() {
   );
 }
 
-const PRIMARY = "#0193e0";
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: Colors.bodyBackColor,
   },
+
   header: {
-    paddingHorizontal: 16,
-    paddingTop: 24,
+    paddingHorizontal: 20,
+    paddingTop: 16,
     paddingBottom: 12,
   },
+
   screenTitle: {
-    fontSize: 24,
-    color: "#111827",
-    fontFamily: "interBold",
+    fontSize: 26,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: Colors.midnight_blue_900,
   },
+
   screenSubtitle: {
     marginTop: 4,
     fontSize: 14,
-    color: "#6B7280",
-    fontFamily: "interMedium",
-  },
-  listContent: {
-    paddingHorizontal: 16,
-    paddingBottom: 40,
+    fontFamily: Fonts.GoogleSansFlex,
+    color: Colors.asbestos,
   },
 
-  /* Header */
-  profileHeader: {
+  listContent: {
+    paddingHorizontal: 14,
+    paddingBottom: 30,
+  },
+
+  profileCard: {
+    backgroundColor: Colors.whiteColor,
+    borderRadius: 22,
+    padding: 22,
     alignItems: "center",
-    marginTop: 28,
-    marginBottom: 32,
+    marginBottom: 24,
+    shadowColor: "#000",
+    shadowOpacity: 0.06,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 0.5,
   },
 
   avatarWrapper: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: "#FFFFFF",
+    width: 112,
+    height: 112,
+    borderRadius: 56,
     justifyContent: "center",
     alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#F1F5F9",
+    backgroundColor: Colors.clouds_200,
   },
 
   avatar: {
-    width: 104,
-    height: 104,
-    borderRadius: 52,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
   },
 
   userName: {
     marginTop: 14,
     fontSize: 22,
-    color: "#0F172A",
-    fontFamily: "interSemiBold",
-    letterSpacing: -0.2,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: Colors.midnight_blue_900,
   },
 
   statusBadge: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    marginTop: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     borderRadius: 999,
-    backgroundColor: "#F1F5F9",
+    marginTop: 8,
+    gap: 6,
   },
 
   statusText: {
     fontSize: 13,
-    fontFamily: "interMedium",
-  },
-
-  verified: {
-    color: PRIMARY,
-  },
-
-  notVerified: {
-    color: "#EF4444",
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
   },
 
   menuItem: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 18,
-    paddingVertical: 14,
-    marginBottom: 10,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 14,
+    backgroundColor: Colors.whiteColor,
+    padding: 14,
+    borderRadius: 18,
+    marginBottom: 12,
     borderWidth: 1,
-    borderColor: "#F1F5F9",
+    borderColor: Colors.clouds_300,
   },
 
   menuLeft: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 12,
+    gap: 14,
   },
 
   menuIconWrapper: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    backgroundColor: "#EFF6FF",
+    width: 42,
+    height: 42,
+    borderRadius: 14,
+    backgroundColor: Colors.peter_river_50,
     justifyContent: "center",
     alignItems: "center",
   },
 
   menuTitle: {
     fontSize: 15,
-    color: "#0F172A",
-    fontFamily: "interMedium",
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+    color: Colors.midnight_blue_900,
   },
-
   logoutItem: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 18,
-    paddingVertical: 14,
-    borderRadius: 14,
-    borderWidth: 1,
-    backgroundColor: "#FFFFFF",
-    borderColor: "#F1F5F9",
-    marginTop: 4,
+    backgroundColor: Colors.whiteColor,
+    padding: 16,
+    borderRadius: 18,
+    marginTop: 6,
   },
 
   logoutIconWrapper: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    backgroundColor: "#FEF2F2",
+    width: 42,
+    height: 42,
+    borderRadius: 14,
+    backgroundColor: Colors.alizarin_50,
     justifyContent: "center",
     alignItems: "center",
   },
 
   logoutText: {
     fontSize: 15,
-    color: "#DC2626",
-    fontFamily: "interMedium",
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+    color: Colors.alizarin_600,
   },
 
-  /* Modal */
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(15,23,42,0.45)",
+    backgroundColor: "rgba(23,32,42,0.45)",
     justifyContent: "center",
     alignItems: "center",
   },
 
   modalCard: {
     width: "82%",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.whiteColor,
+    borderRadius: 22,
     padding: 22,
-    borderRadius: 20,
   },
 
   modalTitle: {
     fontSize: 18,
     textAlign: "center",
-    color: "#0F172A",
-    fontFamily: "interSemiBold",
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: Colors.midnight_blue_900,
   },
 
   modalSubtitle: {
@@ -270,8 +286,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     textAlign: "center",
-    color: "#64748B",
-    fontFamily: "interRegular",
+    fontFamily: Fonts.GoogleSansFlex,
+    color: Colors.asbestos,
   },
 
   modalActions: {
@@ -283,26 +299,28 @@ const styles = StyleSheet.create({
   cancelButton: {
     flex: 1,
     paddingVertical: 12,
-    backgroundColor: "#F1F5F9",
+    backgroundColor: Colors.clouds_300,
     borderRadius: 14,
   },
 
   cancelText: {
     textAlign: "center",
-    color: "#334155",
-    fontFamily: "interMedium",
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+    color: Colors.midnight_blue_700,
   },
 
   confirmButton: {
     flex: 1,
     paddingVertical: 12,
-    backgroundColor: "#EF4444",
+    backgroundColor: Colors.alizarin_600,
     borderRadius: 14,
   },
 
   confirmText: {
     textAlign: "center",
-    color: "#FFFFFF",
-    fontFamily: "interSemiBold",
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: Colors.whiteColor,
   },
 });

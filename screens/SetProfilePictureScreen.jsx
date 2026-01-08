@@ -6,6 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import { useAuth } from "../context/useAuth";
 import { useNavigation } from "@react-navigation/native";
+import { Colors, Fonts } from "../lib/style";
 
 const PRIMARY = "#0193e0";
 
@@ -85,7 +86,7 @@ export default function SetProfilePictureScreen() {
       const bodyTxt = {
         regiStatus: "drivlic",
         profilePicture: image,
-      }
+      };
       const res = await authPostFetch("driver/update", bodyTxt);
 
       if (!res?.success) {
@@ -158,7 +159,6 @@ export default function SetProfilePictureScreen() {
   );
 }
 
-
 function ActionButton({ icon, label, onPress }) {
   return (
     <TouchableOpacity activeOpacity={0.85} onPress={onPress} style={styles.actionButton}>
@@ -168,61 +168,73 @@ function ActionButton({ icon, label, onPress }) {
   );
 }
 
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: Colors.whiteColor,
   },
+
   scrollContent: {
     paddingBottom: 40,
   },
 
+  /* Header */
   header: {
     alignItems: "center",
     paddingHorizontal: 24,
-    paddingTop: 40,
-  },
-  title: {
-    fontSize: 30,
-    color: "#111827",
-    fontFamily: "interBold",
-  },
-  subtitle: {
-    marginTop: 8,
-    fontSize: 14,
-    textAlign: "center",
-    color: "#6B7280",
-    fontFamily: "interMedium",
+    paddingTop: 36,
   },
 
+  title: {
+    fontSize: 28,
+    color: Colors.midnight_blue_900,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    letterSpacing: -0.3,
+  },
+
+  subtitle: {
+    marginTop: 8,
+    fontSize: 15,
+    lineHeight: 22,
+    textAlign: "center",
+    color: Colors.asbestos,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "400",
+  },
+
+  /* Avatar */
   avatarSection: {
     alignItems: "center",
-    marginTop: 40,
+    marginTop: 36,
   },
+
   avatarWrapper: {
     width: 160,
     height: 160,
     borderRadius: 80,
     borderWidth: 2,
     borderStyle: "dashed",
-    borderColor: "#D1D5DB",
-    backgroundColor: "#F9FAFB",
+    borderColor: Colors.clouds_600,
+    backgroundColor: Colors.clouds_100,
     justifyContent: "center",
     alignItems: "center",
     overflow: "hidden",
   },
+
   avatarImage: {
     width: "100%",
     height: "100%",
     borderRadius: 80,
   },
 
+  /* Actions */
   actionRow: {
     flexDirection: "row",
-    gap: 16,
-    marginTop: 16,
+    gap: 12,
+    marginTop: 18,
   },
+
   actionButton: {
     flexDirection: "row",
     alignItems: "center",
@@ -230,69 +242,90 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderWidth: 1,
-    borderColor: "#D1D5DB",
-    borderRadius: 12,
+    borderColor: Colors.clouds_600,
+    borderRadius: 14,
+    backgroundColor: Colors.whiteColor,
   },
+
   actionText: {
     fontSize: 14,
-    color: "#374151",
-    fontFamily: "interSemiBold",
+    color: Colors.midnight_blue_900,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
   },
 
   removeText: {
-    marginTop: 12,
+    marginTop: 14,
     fontSize: 14,
-    color: "#EF4444",
-    fontFamily: "interMedium",
+    color: Colors.alizarin_600,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "500",
   },
 
+  /* Guidelines */
   guidelines: {
     paddingHorizontal: 24,
     marginTop: 32,
   },
+
   guidelineTitle: {
-    marginBottom: 12,
+    marginBottom: 10,
     fontSize: 14,
-    color: "#111827",
-    fontFamily: "interSemiBold",
+    color: Colors.midnight_blue_900,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
   },
+
   guidelineCard: {
-    backgroundColor: "#F9FAFB",
+    backgroundColor: Colors.clouds_100,
     padding: 16,
     borderRadius: 16,
     gap: 12,
+    borderWidth: 1,
+    borderColor: Colors.clouds_600,
   },
+
   guidelineRow: {
     flexDirection: "row",
     alignItems: "flex-start",
-    gap: 12,
+    gap: 10,
   },
+
   guidelineText: {
     flex: 1,
     fontSize: 14,
     lineHeight: 20,
-    color: "#4B5563",
-    fontFamily: "interMedium",
+    color: Colors.asbestos,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "400",
   },
 
+  /* Footer */
   footer: {
     paddingHorizontal: 24,
     paddingBottom: 24,
     borderTopWidth: 1,
-    borderTopColor: "#F3F4F6",
+    borderTopColor: Colors.clouds_600,
+    backgroundColor: Colors.whiteColor,
   },
+
   submitButton: {
-    paddingVertical: 16,
+    height: 54,
     borderRadius: 16,
     backgroundColor: PRIMARY,
+    justifyContent: "center",
+    alignItems: "center",
   },
+
   submitButtonDisabled: {
-    backgroundColor: "rgba(1,147,224,0.7)",
+    opacity: 0.7,
   },
+
   submitButtonText: {
     fontSize: 16,
-    textAlign: "center",
-    color: "#fff",
-    fontFamily: "interBold",
+    color: Colors.whiteColor,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+    letterSpacing: 0.3,
   },
 });

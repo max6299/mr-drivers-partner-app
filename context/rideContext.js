@@ -17,8 +17,8 @@ export const RideProvider = ({ children }) => {
   const [elapsed, setElapsed] = useState(0);
   const [currentRide, setCurrentRide] = useState(null);
   const [otp, setOtp] = useState(null);
-  const [rideHistory, setRideHistory] = useState(null);
-  const [notificaitons, setNotificaitons] = useState(null);
+  const [rideHistory, setRideHistory] = useState([]);
+  const [notifications, setNotifications] = useState([]);
 
   const timerRef = useRef();
 
@@ -72,8 +72,12 @@ export const RideProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    let isMounted = true;
+
     const loadRides = async () => {
       if (!accessToken) return;
+      setNotifications([]);
+      setRideHistory([]);
 
       const rides = await getAssignedRides();
       const history = await getRideHistory(10, 1);
@@ -81,8 +85,8 @@ export const RideProvider = ({ children }) => {
 
       setOngoingRide(rides.ongoingRide);
       setAssignedRides(rides.acceptedRides || []);
-      setRideHistory(history.history || []);
-      setNotificaitons(notifications.notifications);
+      setRideHistory((prev) => [...prev, ...(history.history || [])]);
+      setNotifications((prev) => [...prev, ...(notifications.notifications || [])]);
 
       if (rides?.ongoingRide?.rideStartTime) {
         setStartTime(new Date(rides.ongoingRide.rideStartTime).getTime());
@@ -93,6 +97,10 @@ export const RideProvider = ({ children }) => {
     };
 
     loadRides();
+
+    return () => {
+      isMounted = false;
+    };
   }, [accessToken]);
 
   useEffect(() => {
@@ -199,7 +207,9 @@ export const RideProvider = ({ children }) => {
         startTimer,
         stopTimer,
         timerRef,
-        notificaitons,
+        notifications,
+        getNotifications,
+        setNotifications,
       }}
     >
       {children}

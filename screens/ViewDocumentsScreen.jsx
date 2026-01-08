@@ -1,9 +1,12 @@
-import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { Image, StatusBar, Text, TouchableOpacity, View, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../context/useAuth";
+import appStyle from "../lib/style";
+
+const { Colors, Fonts } = appStyle;
 
 export default function ViewDocumentsScreen() {
   const { ownUser } = useAuth();
@@ -16,18 +19,26 @@ export default function ViewDocumentsScreen() {
       <StatusBar barStyle="dark-content" />
 
       <View style={styles.wrapper}>
+        {/* Header */}
         <View style={styles.headerRow}>
-          <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.8} style={styles.backButton}>
-            <Ionicons name="chevron-back" size={22} color={PRIMARY} />
-          </TouchableOpacity>
+          <View style={styles.headerSide}>
+            <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.9} style={styles.iconButton}>
+              <Ionicons name="chevron-back" size={22} color={Colors.peter_river_600} />
+            </TouchableOpacity>
+          </View>
 
-          <Text style={styles.headerTitle}>Uploaded Documents</Text>
+          <View style={styles.headerCenter}>
+            <Text style={styles.headerTitle}>Uploaded Documents</Text>
+          </View>
+
+          <View style={styles.headerSide} />
         </View>
 
+        {/* Card */}
         <View style={styles.card}>
           <View style={styles.cardHeader}>
             <View style={styles.cardIcon}>
-              <Ionicons name="car-outline" size={20} color={PRIMARY} />
+              <Ionicons name="car-outline" size={20} color={Colors.peter_river_600} />
             </View>
             <Text style={styles.cardTitle}>Driving Licence</Text>
           </View>
@@ -52,7 +63,6 @@ export default function ViewDocumentsScreen() {
     </SafeAreaView>
   );
 }
-
 function DocumentImage({ uri, label }) {
   return (
     <View style={styles.documentWrapper}>
@@ -60,7 +70,7 @@ function DocumentImage({ uri, label }) {
         <Image source={{ uri }} style={styles.documentImage} resizeMode="cover" />
       ) : (
         <View style={styles.documentPlaceholder}>
-          <Ionicons name="image-outline" size={24} color="#9CA3AF" />
+          <Ionicons name="image-outline" size={24} color={Colors.concrete} />
           <Text style={styles.placeholderText}>No image uploaded</Text>
         </View>
       )}
@@ -73,19 +83,15 @@ function DocumentImage({ uri, label }) {
 function EmptyState({ text }) {
   return (
     <View style={styles.emptyState}>
-      <Ionicons name="document-outline" size={32} color="#9CA3AF" />
+      <Ionicons name="document-outline" size={32} color={Colors.concrete} />
       <Text style={styles.emptyText}>{text}</Text>
     </View>
   );
 }
-
-const PRIMARY = "#0193e0";
-
 const styles = StyleSheet.create({
-  /* Main */
   container: {
     flex: 1,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: Colors.bodyBackColor,
   },
 
   wrapper: {
@@ -96,36 +102,44 @@ const styles = StyleSheet.create({
 
   /* Header */
   headerRow: {
-    position: "relative",
+    flexDirection: "row",
     alignItems: "center",
     marginBottom: 24,
   },
 
-  backButton: {
-    position: "absolute",
-    left: 0,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "#EFF6FF",
-    justifyContent: "center",
+  headerSide: {
+    width: 48,
+    alignItems: "center",
+  },
+
+  headerCenter: {
+    flex: 1,
     alignItems: "center",
   },
 
   headerTitle: {
     fontSize: 22,
-    color: "#0F172A",
-    fontFamily: "interSemiBold",
-    letterSpacing: -0.2,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: Colors.midnight_blue_900,
+  },
+
+  iconButton: {
+    width: 38,
+    height: 38,
+    borderRadius: 12,
+    backgroundColor: Colors.peter_river_50,
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   /* Card */
   card: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.whiteColor,
     padding: 20,
-    borderRadius: 20,
+    borderRadius: 22,
     borderWidth: 1,
-    borderColor: "#F1F5F9",
+    borderColor: Colors.clouds_300,
   },
 
   cardHeader: {
@@ -135,19 +149,20 @@ const styles = StyleSheet.create({
   },
 
   cardIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    backgroundColor: "#EFF6FF",
+    width: 38,
+    height: 38,
+    borderRadius: 12,
+    backgroundColor: Colors.peter_river_50,
     justifyContent: "center",
     alignItems: "center",
   },
 
   cardTitle: {
-    marginLeft: 10,
-    fontSize: 17,
-    color: "#0F172A",
-    fontFamily: "interMedium",
+    marginLeft: 12,
+    fontSize: 16,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+    color: Colors.midnight_blue_900,
   },
 
   /* Licence Info */
@@ -157,15 +172,16 @@ const styles = StyleSheet.create({
 
   licenceLabel: {
     fontSize: 12,
-    color: "#64748B",
-    fontFamily: "interRegular",
+    fontFamily: Fonts.GoogleSansFlex,
+    color: Colors.asbestos,
   },
 
   licenceValue: {
     marginTop: 4,
     fontSize: 15,
-    color: "#0F172A",
-    fontFamily: "interMedium",
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+    color: Colors.midnight_blue_900,
   },
 
   /* Images */
@@ -181,15 +197,15 @@ const styles = StyleSheet.create({
   documentImage: {
     width: "100%",
     height: 176,
-    backgroundColor: "#F1F5F9",
-    borderRadius: 14,
+    borderRadius: 16,
+    backgroundColor: Colors.clouds_200,
   },
 
   documentPlaceholder: {
     width: "100%",
     height: 176,
-    backgroundColor: "#F1F5F9",
-    borderRadius: 14,
+    borderRadius: 16,
+    backgroundColor: Colors.clouds_200,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -197,16 +213,16 @@ const styles = StyleSheet.create({
   placeholderText: {
     marginTop: 6,
     fontSize: 12,
-    color: "#94A3B8",
-    fontFamily: "interRegular",
+    fontFamily: Fonts.GoogleSansFlex,
+    color: Colors.concrete,
   },
 
   documentLabel: {
     marginTop: 8,
     fontSize: 12,
     textAlign: "center",
-    color: "#64748B",
-    fontFamily: "interRegular",
+    fontFamily: Fonts.GoogleSansFlex,
+    color: Colors.asbestos,
   },
 
   /* Empty State */
@@ -219,7 +235,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontSize: 14,
     textAlign: "center",
-    color: "#94A3B8",
-    fontFamily: "interRegular",
+    fontFamily: Fonts.GoogleSansFlex,
+    color: Colors.asbestos,
   },
 });

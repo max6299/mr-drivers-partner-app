@@ -1,9 +1,12 @@
-import { Ionicons } from "@expo/vector-icons";
-import Feather from "@expo/vector-icons/Feather";
 import React from "react";
 import { ScrollView, StatusBar, Text, TouchableOpacity, View, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import Feather from "@expo/vector-icons/Feather";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "../context/useAuth";
+import appStyle from "../lib/style";
+
+const { Colors, Fonts } = appStyle;
 
 export default function AccountDetailsScreen({ navigation }) {
   const { ownUser } = useAuth();
@@ -23,21 +26,30 @@ export default function AccountDetailsScreen({ navigation }) {
       <StatusBar barStyle="dark-content" />
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* Header */}
         <View style={styles.headerRow}>
-          <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.8} style={styles.backButton}>
-            <Ionicons name="chevron-back" size={22} color={PRIMARY} />
-          </TouchableOpacity>
+          {/* Left */}
+          <View style={styles.headerSide}>
+            <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.9} style={styles.iconButton}>
+              <Ionicons name="chevron-back" size={22} color={Colors.peter_river_600} />
+            </TouchableOpacity>
+          </View>
 
+          {/* Center */}
           <View style={styles.headerCenter}>
             <Text style={styles.headerTitle}>Account Details</Text>
             <Text style={styles.headerSubtitle}>View and manage your profile information</Text>
           </View>
 
-          <TouchableOpacity onPress={() => navigation.navigate("edit-profile")} activeOpacity={0.8} style={styles.editButton}>
-            <Feather name="edit" size={18} color={PRIMARY} />
-          </TouchableOpacity>
+          {/* Right */}
+          <View style={styles.headerSide}>
+            <TouchableOpacity onPress={() => navigation.navigate("edit-profile")} activeOpacity={0.9} style={styles.iconButton}>
+              <Feather name="edit" size={18} color={Colors.peter_river_600} />
+            </TouchableOpacity>
+          </View>
         </View>
 
+        {/* Details Card */}
         <View style={styles.detailsCard}>
           <DetailRow icon="person-outline" label="Full Name" value={ownUser.fullName} />
 
@@ -60,9 +72,9 @@ export default function AccountDetailsScreen({ navigation }) {
 
 function DetailRow({ icon, label, value, isLast }) {
   return (
-    <View style={[styles.detailRow, !isLast && styles.detailRowBorder]}>
+    <View style={[styles.detailRow, !isLast && styles.detailDivider]}>
       <View style={styles.detailIcon}>
-        <Ionicons name={icon} size={18} color={PRIMARY} />
+        <Ionicons name={icon} size={18} color={Colors.peter_river_600} />
       </View>
 
       <View style={styles.detailContent}>
@@ -72,104 +84,97 @@ function DetailRow({ icon, label, value, isLast }) {
     </View>
   );
 }
-
-const PRIMARY = "#0193e0";
-
 const styles = StyleSheet.create({
-  emptyContainer: {
-    flex: 1,
-    backgroundColor: "#F8FAFC",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  emptyText: {
-    fontSize: 15,
-    color: "#94A3B8",
-    fontFamily: "interRegular",
-  },
-
   container: {
     flex: 1,
-    backgroundColor: "#F8FAFC",
+    backgroundColor: Colors.bodyBackColor,
   },
+
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: Colors.bodyBackColor,
+  },
+
+  emptyText: {
+    fontSize: 14,
+    fontFamily: Fonts.GoogleSansFlex,
+    color: Colors.asbestos,
+  },
+
   scrollContent: {
     padding: 16,
     paddingBottom: 32,
   },
 
+  /* Header */
   headerRow: {
-    position: "relative",
+    flexDirection: "row",
     alignItems: "center",
     marginBottom: 24,
   },
 
-  backButton: {
-    position: "absolute",
-    left: 0,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "#EFF6FF",
-    justifyContent: "center",
+  headerSide: {
+    width: 48,
     alignItems: "center",
   },
 
   headerCenter: {
+    flex: 1,
     alignItems: "center",
-    paddingHorizontal: 48,
   },
 
   headerTitle: {
     fontSize: 22,
-    color: "#0F172A",
-    fontFamily: "interSemiBold",
-    letterSpacing: -0.2,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    color: Colors.midnight_blue_900,
   },
 
   headerSubtitle: {
     marginTop: 4,
     fontSize: 13,
-    color: "#64748B",
-    fontFamily: "interRegular",
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "400",
+    color: Colors.asbestos,
     textAlign: "center",
   },
 
-  editButton: {
-    position: "absolute",
-    right: 0,
-    width: 36,
-    height: 36,
+  iconButton: {
+    width: 38,
+    height: 38,
     borderRadius: 12,
-    backgroundColor: "#EFF6FF",
+    backgroundColor: Colors.peter_river_50,
     justifyContent: "center",
     alignItems: "center",
   },
 
   detailsCard: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.whiteColor,
+    borderRadius: 22,
     paddingHorizontal: 20,
-    paddingVertical: 8,
-    borderRadius: 20,
+    paddingVertical: 6,
     borderWidth: 1,
-    borderColor: "#F1F5F9",
+    borderColor: Colors.clouds_300,
   },
 
   detailRow: {
     flexDirection: "row",
     alignItems: "flex-start",
-    paddingVertical: 14,
+    paddingVertical: 16,
   },
 
-  detailRowBorder: {
+  detailDivider: {
     borderBottomWidth: 1,
-    borderBottomColor: "#F1F5F9",
+    borderBottomColor: Colors.clouds_300,
   },
 
   detailIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: 10,
-    backgroundColor: "#F0F7FF",
+    width: 34,
+    height: 34,
+    borderRadius: 12,
+    backgroundColor: Colors.peter_river_50,
     justifyContent: "center",
     alignItems: "center",
     marginRight: 14,
@@ -181,15 +186,16 @@ const styles = StyleSheet.create({
 
   detailLabel: {
     fontSize: 12,
-    color: "#64748B",
-    fontFamily: "interRegular",
+    fontFamily: Fonts.GoogleSansFlex,
+    color: Colors.asbestos,
   },
 
   detailValue: {
     marginTop: 4,
     fontSize: 15,
-    color: "#0F172A",
-    fontFamily: "interMedium",
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+    color: Colors.midnight_blue_900,
     lineHeight: 22,
   },
 });

@@ -2,6 +2,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import { ImageBackground, StatusBar, Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Colors, Fonts } from "../lib/style";
 
 export default function HomeScreen({ navigation }) {
   return (
@@ -9,18 +10,20 @@ export default function HomeScreen({ navigation }) {
       <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
 
       <ImageBackground source={require("../assets/images/getstarted.jpg")} resizeMode="cover" style={styles.imageBackground}>
-        <LinearGradient colors={["rgba(0,0,0,0.1)", "rgba(0,0,0,0.8)"]} style={styles.gradientOverlay} />
+        {/* Dark cinematic overlay */}
+        <LinearGradient colors={["rgba(0,0,0,0.05)", "rgba(0,0,0,0.55)", "rgba(0,0,0,0.85)"]} style={styles.gradientOverlay} />
 
+        {/* Bottom Card */}
         <View style={styles.bottomCard}>
           <Text style={styles.title}>
-            A Smarter Way{"\n"}
-            <Text style={styles.highlight}>to Drive & Earn.</Text>
+            A smarter way{"\n"}
+            <Text style={styles.highlight}>to drive & earn</Text>
           </Text>
 
-          <Text style={styles.description}>Receive verified trip requests, get assigned by dispatch, and focus on delivering safe, reliable rides without the chaos.</Text>
+          <Text style={styles.description}>Receive verified trip requests, get assigned by dispatch, and focus on delivering safe, reliable rides — without the chaos.</Text>
 
           <TouchableOpacity onPress={() => navigation.navigate("sign-up")} activeOpacity={0.9} style={styles.buttonWrapper}>
-            <LinearGradient colors={["#0193e0", "#00b4ff"]} style={styles.buttonGradient}>
+            <LinearGradient colors={["#0193e0", "#00b4ff"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.buttonGradient}>
               <Text style={styles.buttonText}>Get Started</Text>
             </LinearGradient>
           </TouchableOpacity>
@@ -37,69 +40,86 @@ export default function HomeScreen({ navigation }) {
   );
 }
 
+const PRIMARY = "#0193e0";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#000",
   },
+
   imageBackground: {
     flex: 1,
   },
+
   gradientOverlay: {
     ...StyleSheet.absoluteFillObject,
   },
+
   bottomCard: {
     position: "absolute",
     bottom: 0,
     width: "100%",
     paddingHorizontal: 24,
-    paddingTop: 32,
-    paddingBottom: 40,
-    backgroundColor: "#fff",
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    paddingTop: 28,
+    paddingBottom: 36,
+    backgroundColor: "#FFFFFF",
+    borderTopLeftRadius: 28,
+    borderTopRightRadius: 28,
   },
   title: {
-    fontSize: 36,
-    lineHeight: 44,
+    fontSize: 30,
+    lineHeight: 38,
     textAlign: "center",
-    color: "#111827",
-    fontFamily: "interBold",
+    color: Colors.midnight_blue_900,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
+    letterSpacing: -0.4,
   },
+
   highlight: {
-    color: "#0193e0",
+    color: PRIMARY,
   },
   description: {
-    marginTop: 16,
-    fontSize: 18,
-    lineHeight: 26,
+    marginTop: 14,
+    fontSize: 16,
+    lineHeight: 24,
     textAlign: "center",
-    color: "#6B7280", 
-    fontFamily: "interRegular",
+    color: Colors.asbestos,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "400",
+    paddingHorizontal: 6,
   },
   buttonWrapper: {
-    marginTop: 32,
+    marginTop: 28,
     borderRadius: 16,
     overflow: "hidden",
   },
+
   buttonGradient: {
     paddingVertical: 16,
+    borderRadius: 16,
   },
+
   buttonText: {
-    fontSize: 18,
+    fontSize: 16,
     textAlign: "center",
-    color: "#fff",
-    fontFamily: "interBold",
+    color: Colors.whiteColor,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+    letterSpacing: 0.2,
   },
+
   footerText: {
-    marginTop: 24,
+    marginTop: 22,
     textAlign: "center",
-    color: "#6B7280",
-    fontFamily: "interRegular",
+    color: Colors.asbestos,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontSize: 14,
+    fontWeight: "400",
   },
   signInText: {
-    color: "#0193e0",
-    fontFamily: "interMedium",
-    textDecorationLine: "underline",
+    color: PRIMARY,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
   },
 });

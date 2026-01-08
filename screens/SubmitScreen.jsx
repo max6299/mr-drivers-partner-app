@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import React from "react";
 import { StatusBar, Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Colors, Fonts } from "../lib/style";
 
 const PRIMARY = "#0193E0";
 
@@ -12,7 +13,7 @@ export default function SubmitScreen({ navigation }) {
 
       <View style={styles.content}>
         <View style={styles.iconWrapper}>
-          <Ionicons name="checkmark" size={40} color={'#fff'} />
+          <Ionicons name="checkmark" size={40} color={"#fff"} />
         </View>
 
         <Text style={styles.title}>Application submitted</Text>
@@ -36,7 +37,7 @@ export default function SubmitScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.whiteColor,
   },
 
   content: {
@@ -50,42 +51,46 @@ const styles = StyleSheet.create({
     width: 96,
     height: 96,
     borderRadius: 48,
-    backgroundColor: "#0193E0",
+    backgroundColor: PRIMARY,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 28,
   },
 
   title: {
-    fontSize: 30,
-    lineHeight: 38,
+    fontSize: 28,
+    lineHeight: 36,
     textAlign: "center",
-    color: "#0F172A",
-    fontFamily: "interSemiBold",
+    color: Colors.midnight_blue_900,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "700",
     marginBottom: 12,
-    letterSpacing: -0.2,
+    letterSpacing: -0.3,
   },
 
   description: {
-    fontSize: 17,
-    lineHeight: 26,
-    textAlign: "center",
-    color: "#475569",
-    fontFamily: "interRegular",
-    marginBottom: 8,
-  },
-
-  descriptionSecondary: {
     fontSize: 16,
     lineHeight: 24,
     textAlign: "center",
-    color: "#64748B",
-    fontFamily: "interRegular",
+    color: Colors.asbestos,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "400",
+    marginBottom: 6,
+  },
+
+  descriptionSecondary: {
+    fontSize: 15,
+    lineHeight: 22,
+    textAlign: "center",
+    color: Colors.silver_600,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "400",
   },
 
   highlight: {
-    color: "#0F172A",
-    fontFamily: "interMedium",
+    color: Colors.midnight_blue_900,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
   },
 
   footer: {
@@ -94,8 +99,8 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    height: 52,
-    borderRadius: 14,
+    height: 54,
+    borderRadius: 16,
     backgroundColor: PRIMARY,
     justifyContent: "center",
     alignItems: "center",
@@ -103,7 +108,9 @@ const styles = StyleSheet.create({
 
   buttonText: {
     fontSize: 16,
-    color: "#FFFFFF",
-    fontFamily: "interSemiBold",
+    color: Colors.whiteColor,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+    letterSpacing: 0.3,
   },
 });

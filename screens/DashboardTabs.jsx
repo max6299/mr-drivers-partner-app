@@ -7,6 +7,7 @@ import NotificationsScreen from "./NotificationsScreen";
 import ProfileScreen from "./ProfileScreen";
 import FindRideScreen from "./FindRideScreen";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { Colors, Fonts } from "../lib/style";
 
 const Tabs = createBottomTabNavigator();
 const PRIMARY = "#0193e0";
@@ -77,15 +78,15 @@ export default function DashboardTabs() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    height: 80,
-    paddingTop: 14,
-    paddingBottom: 16,
-    backgroundColor: "#fff",
-    borderTopWidth: 0,
-    elevation: 10,
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: -1 },
-    shadowRadius: 5,
+    backgroundColor: Colors.whiteColor,
+    borderTopWidth: 1,
+    borderTopColor: Colors.clouds_300,
+
+    height: 64,
+    paddingTop: 6,
+
+    elevation: 0,
+    shadowOpacity: 0,
   },
 
   tabIconContainer: {
@@ -93,19 +94,19 @@ const styles = StyleSheet.create({
     minWidth: 70,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 4,
   },
 
   tabLabel: {
     marginTop: 4,
-    fontSize: 12,
-    color: "#9CA3AF",
-    fontFamily: "Inter-Regular",
+    fontSize: 11,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "500",
+    color: Colors.concrete,
     textAlign: "center",
   },
 
   tabLabelFocused: {
     color: PRIMARY,
-    fontFamily: "Inter-SemiBold",
+    fontWeight: "700",
   },
 });
