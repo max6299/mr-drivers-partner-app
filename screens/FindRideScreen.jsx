@@ -36,25 +36,12 @@ const getDistance = (lat1, lon1, lat2, lon2) => {
 };
 
 export default function FindRideScreen() {
-  const { coords, 
-    currentLocation, 
-    startTimer, 
-    stopTimer, 
-    assignedRides, 
-    ongoingRide, 
-    updateOngoingRide,
-    currentRide, 
-    ridePostFetch, 
-    elapsed, 
-    mapboxDirections, 
-    formatTime, appInfo ,
-    updateCurrentRide, 
-    updateAssingedRide, 
-    updateStartTime, 
-    updateElapsed, 
-    updateEndTime, 
-    updateCoords, 
-  } = useRide();
+  const { coords, currentLocation, 
+    startTimer, stopTimer, assignedRides, 
+    ongoingRide, updateOngoingRide, currentRide, 
+    ridePostFetch, elapsed, mapboxDirections, formatTime, 
+    appInfo, updateCurrentRide, updateAssingedRide, 
+    updateStartTime, updateElapsed, updateEndTime, updateCoords } = useRide();
 
   const navigation = useNavigation();
 
@@ -409,7 +396,7 @@ export default function FindRideScreen() {
                             fontWeight: "500",
                           }}
                         >
-                          Date <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.startDate}</Text>
+                          Date: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.startDate}</Text>
                         </Text>
 
                         <Text
@@ -420,7 +407,27 @@ export default function FindRideScreen() {
                             fontWeight: "500",
                           }}
                         >
-                          Time <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.startTime}</Text>
+                          Time: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.startTime}</Text>
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            color: "#374151",
+                            marginVertical: 6,
+                            fontWeight: "500",
+                          }}
+                        >
+                          Car Model: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.car?.model}</Text>
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            color: "#374151",
+                            marginVertical: 6,
+                            fontWeight: "500",
+                          }}
+                        >
+                          Transmission: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.car?.transmission}</Text>
                         </Text>
                         {/* <Text style={styles.sectionTitle}>Destination</Text>
 
