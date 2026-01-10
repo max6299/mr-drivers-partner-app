@@ -49,7 +49,6 @@ export default function AccountDetailsScreen({ navigation }) {
           </View>
         </View>
 
-        {/* Details Card */}
         <View style={styles.detailsCard}>
           <DetailRow icon="person-outline" label="Full Name" value={ownUser.fullName} />
 
@@ -60,6 +59,8 @@ export default function AccountDetailsScreen({ navigation }) {
           <DetailRow icon="shield-checkmark-outline" label="Verified Account" value={formatBoolean(ownUser.isVerified)} />
 
           <DetailRow icon="car-outline" label="Acting Driver" value={formatBoolean(ownUser.isActingDriver)} />
+          <DetailRow icon="car-outline" label="Car Model" value={(ownUser.carModel)} />
+          <DetailRow icon="car-outline" label="Skill" value={(ownUser.skill)} />
 
           <DetailRow icon="time-outline" label="Created At" value={new Date(ownUser.createdAt).toDateString()} />
         </View>
