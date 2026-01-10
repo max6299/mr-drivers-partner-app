@@ -9,7 +9,7 @@ import ScreenGradient from "../components/ScreenGradient";
 const { Fonts, Colors } = appStyle;
 const PRIMARY = "#0193e0";
 
-const TermsAndConditionsScreen = () => {
+const TermsAndConditionsScreenProfile = () => {
   const navigation = useNavigation();
 
   return (
@@ -66,7 +66,7 @@ const TermsAndConditionsScreen = () => {
   );
 };
 
-export default TermsAndConditionsScreen;
+export default TermsAndConditionsScreenProfile;
 
 function Section({ title, content }) {
   return (

@@ -7,11 +7,14 @@ import Toast from "react-native-toast-message";
 import { useAuth } from "../context/useAuth";
 import { useNavigation } from "@react-navigation/native";
 import { Colors, Fonts } from "../lib/style";
+import { useRide } from "../context/useRide";
 
 const PRIMARY = "#0193e0";
 
 export default function CompleteProfileScreen() {
-  const { ownUser, setOwnUser, authPostFetch } = useAuth();
+  const { authPostFetch } = useAuth();
+  const { appInfo } = useRide();
+
   const navigation = useNavigation();
 
   const [email, setEmail] = useState("");
@@ -20,9 +23,11 @@ export default function CompleteProfileScreen() {
   const [exp, setExp] = useState("");
   const [gender, setGender] = useState("");
   const [city, setCity] = useState("");
+  const [carModel, setCarModel] = useState("");
   const [accepted, setAccepted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const carModels = appInfo?.appData[0]?.carModels || [];
   const showError = (title, message) => {
     Toast.show({
       type: "error",
@@ -68,15 +73,15 @@ export default function CompleteProfileScreen() {
         city,
         age: ageNum,
         experience: expNum,
+        carModel,
         skill,
         email,
-      });
+      }, true);
 
       if (!res?.success) {
         return showError("Update failed", res?.message || "Please try again.");
       }
 
-      setOwnUser(res.data);
       navigation.navigate("set-profile-pic");
     } catch (err) {
       showError("Something went wrong", err.message || "Please try again later.");
@@ -112,6 +117,19 @@ export default function CompleteProfileScreen() {
               { label: "Male", value: "male" },
               { label: "Female", value: "female" },
               { label: "Other", value: "other" },
+            ]}
+          />
+
+          <PickerField
+            label="Car Model"
+            selectedValue={carModel}
+            onValueChange={setCarModel}
+            items={[
+              { label: "Select car model", value: "", color: "#9CA3AF" },
+              ...carModels.map((model) => ({
+                label: model,
+                value: model,
+              })),
             ]}
           />
 

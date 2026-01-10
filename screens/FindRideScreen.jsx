@@ -36,8 +36,26 @@ const getDistance = (lat1, lon1, lat2, lon2) => {
 };
 
 export default function FindRideScreen() {
-  const { ownUser } = useAuth();
-  const { coords, setCoords, currentLocation, startTimer, stopTimer, assignedRides, setAssignedRides, ongoingRide, setOngoingRide, currentRide, setCurrentRide, ridePostFetch, setStartTime, setEndTime, elapsed, setElapsed, otp, setOtp, mapboxDirections, formatTime, appInfo } = useRide();
+  const { coords, 
+    currentLocation, 
+    startTimer, 
+    stopTimer, 
+    assignedRides, 
+    ongoingRide, 
+    updateOngoingRide,
+    currentRide, 
+    ridePostFetch, 
+    elapsed, 
+    mapboxDirections, 
+    formatTime, appInfo ,
+    updateCurrentRide, 
+    updateAssingedRide, 
+    updateStartTime, 
+    updateElapsed, 
+    updateEndTime, 
+    updateCoords, 
+  } = useRide();
+
   const navigation = useNavigation();
 
   const [hasArrived, setHasArrived] = useState(false);
@@ -45,6 +63,7 @@ export default function FindRideScreen() {
   const [ongoingModal, setOngoingModal] = useState(false);
   const [otpModal, setOtpModal] = useState(false);
   const [sheetReady, setSheetReady] = useState(false);
+  const [otp, setOtp] = useState(null);
 
   const [openCompleteRide, setOpenCompleteRide] = useState(false);
 
@@ -73,7 +92,7 @@ export default function FindRideScreen() {
         destination,
       });
       if (routes?.length) {
-        setCoords(routes);
+        updateCoords(routes);
       }
     } catch (error) {
       console.error("Route fetch error:", error.message);
@@ -82,7 +101,7 @@ export default function FindRideScreen() {
 
   const bottomSheetRef = useRef(null);
 
-  const snapPoints = useMemo(() => ["3%", "45%", "60%", "90%"], []);
+  const snapPoints = useMemo(() => ["10%", "35%", "60%", "90%"], []);
 
   useEffect(() => {
     if (sheetReady && assignedRides?.length > 0 && bottomSheetRef.current) {
@@ -102,7 +121,7 @@ export default function FindRideScreen() {
       if (!res.success) {
         throw new Error(res.message || "Failed to update ride");
       }
-      setAssignedRides((prev) => prev.filter((ride) => ride._id !== res.ride._id));
+      updateAssingedRide((prev) => prev.filter((ride) => ride._id !== res.ride._id));
 
       const updatedRide = res.ride;
 
@@ -117,7 +136,7 @@ export default function FindRideScreen() {
       if (!res1.success) {
         throw new Error("Failed to start ride");
       }
-      setOngoingRide(updatedRide);
+      updateOngoingRide(updatedRide);
 
       getDirections(updatedRide.destination);
       // await startLiveTracking();
@@ -222,7 +241,7 @@ export default function FindRideScreen() {
       if (data.status === "ongoing" && data.rideStartTime) {
         const startMs = data.rideStartTime.toDate().getTime();
 
-        setStartTime(startMs);
+        updateStartTime(startMs);
         startTimer(startMs);
       }
 
@@ -230,9 +249,9 @@ export default function FindRideScreen() {
         stopTimer();
 
         const endMs = data.rideEndTime.toDate().getTime();
-        setEndTime(endMs);
+        updateEndTime(endMs);
 
-        setElapsed(Math.floor((endMs - data.rideStartTime.toDate().getTime()) / 1000));
+        updateElapsed(Math.floor((endMs - data.rideStartTime.toDate().getTime()) / 1000));
       }
     });
 
@@ -252,15 +271,15 @@ export default function FindRideScreen() {
         throw new Error("Failed to complete ride");
       }
 
-      navigation.navigate("payment", { rideId: ongoingRide?.rideId, userId: ongoingRide?.userId, totalAmount: res.ride.totalAmount, origin: ongoingRide.origin.name, destination: ongoingRide.destination.name, distancekm: ongoingRide.distancekm });
+      navigation.navigate("payment", { rideId: ongoingRide?.rideId, userId: ongoingRide?.userId, totalAmount: res.ride.totalAmount, origin: ongoingRide?.origin?.name, destination: ongoingRide?.destination?.name, distancekm: ongoingRide?.distancekm });
 
       setOpenCompleteRide(false);
       setOngoingModal(false);
-      setElapsed(0);
-      setStartTime(null);
-      setEndTime(null);
-      setCoords(null);
-      setOngoingRide(null);
+      updateElapsed(0);
+      updateStartTime(null);
+      updateEndTime(null);
+      updateCoords(null);
+      updateOngoingRide(null);
       setSelectedDestination(null);
       stopTimer();
     } catch (err) {
@@ -294,7 +313,7 @@ export default function FindRideScreen() {
 
   const sendOTP = async (ride) => {
     try {
-      setCurrentRide(ride);
+      updateCurrentRide(ride);
 
       const bodyTxt = {
         rideId: ride.rideId,
@@ -354,10 +373,10 @@ export default function FindRideScreen() {
                       <Text style={styles.rideTitle}>Ride Request #{index + 1}</Text>
 
                       <View style={styles.badgeRow}>
-                        <View style={styles.badge}>
+                        {/* <View style={styles.badge}>
                           <Entypo name="location" size={12} color="#0193e0" />
                           <Text style={styles.badgeText}>{Number(ride.distancekm).toFixed(1)} km</Text>
-                        </View>
+                        </View> */}
 
                         <View style={styles.badge}>
                           <Text style={styles.badgeText}>{ride.status === "accepted" ? "Waiting" : ride.status}</Text>
@@ -368,13 +387,13 @@ export default function FindRideScreen() {
                     <View style={styles.sectionRow}>
                       <View style={styles.primaryLine} />
                       <View style={{ flex: 1 }}>
-                        <Text style={styles.sectionTitle}>Passenger Location</Text>
+                        <Text style={styles.sectionTitle}>Passenger Start Location</Text>
 
                         <View style={styles.locationRow}>
                           <View style={styles.iconBoxBlue}>
                             <Entypo name="location-pin" size={16} color="#0193e0" />
                           </View>
-                          <Text style={styles.locationText}>{ride.origin?.name}</Text>
+                          <Text style={styles.locationText}>{ride?.origin?.name}</Text>
                         </View>
                       </View>
                     </View>
@@ -382,28 +401,51 @@ export default function FindRideScreen() {
                     <View style={styles.sectionRow}>
                       <View style={styles.successLine} />
                       <View style={{ flex: 1 }}>
-                        <Text style={styles.sectionTitle}>Destination</Text>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            color: "#374151",
+                            marginVertical: 6,
+                            fontWeight: "500",
+                          }}
+                        >
+                          Date <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.startDate}</Text>
+                        </Text>
+
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            color: "#374151",
+                            marginVertical: 6,
+                            fontWeight: "500",
+                          }}
+                        >
+                          Time <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.startTime}</Text>
+                        </Text>
+                        {/* <Text style={styles.sectionTitle}>Destination</Text>
 
                         <View style={styles.locationRow}>
                           <View style={styles.iconBoxGreen}>
                             <Entypo name="location-pin" size={16} color="#16a34a" />
                           </View>
-                          <Text style={styles.locationText}>{ride.destination.name}</Text>
-                        </View>
+                          <Text style={styles.locationText}>{ride?.destination?.name || "Ask the passenger for the destination"}</Text>
+                        </View> */}
                       </View>
                     </View>
 
                     <View style={styles.actionRow}>
-                      <TouchableOpacity
-                        onPress={() => {
-                          bottomSheetRef?.current?.snapToIndex(0);
-                          getDirections(ride.destination);
-                        }}
-                        style={styles.btnPrimaryRow}
-                      >
-                        <Entypo name="direction" size={18} color="#fff" />
-                        <Text style={styles.btnPrimaryRowText}>Directions</Text>
-                      </TouchableOpacity>
+                      {ride?.destination && (
+                        <TouchableOpacity
+                          onPress={() => {
+                            bottomSheetRef?.current?.snapToIndex(0);
+                            getDirections(ride.destination);
+                          }}
+                          style={styles.btnPrimaryRow}
+                        >
+                          <Entypo name="direction" size={18} color="#fff" />
+                          <Text style={styles.btnPrimaryRowText}>Directions</Text>
+                        </TouchableOpacity>
+                      )}
 
                       <TouchableOpacity disabled={ongoingRide !== null} onPress={() => sendOTP(ride)} style={[styles.secondaryButton, ongoingRide && styles.disabledButton]}>
                         <Entypo name="key" size={18} color={ongoingRide ? "#9ca3af" : "#374151"} />
@@ -460,7 +502,7 @@ export default function FindRideScreen() {
                 style={styles.cancelSoftButton}
                 onPress={() => {
                   setOtpModal(false);
-                  setCurrentRide(null);
+                  updateCurrentRide(null);
                 }}
               >
                 <Text style={styles.cancelSoftText}>Cancel</Text>
@@ -470,11 +512,73 @@ export default function FindRideScreen() {
         </Modal>
 
         {ongoingRide && (
-          <Animated.View style={[styles.floatingButton, animatedStyle]}>
-            <TouchableOpacity onPress={() => setOngoingModal(true)} style={styles.floatingButtonInner}>
-              <MaterialIcons name="directions-car" size={28} color="#fff" />
-            </TouchableOpacity>
-          </Animated.View>
+          <View
+            style={{
+              position: "absolute",
+              bottom: 110,
+              right: 20,
+              zIndex: 100,
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 12,
+            }}
+          >
+            <View
+              style={{
+                paddingHorizontal: 14,
+                paddingVertical: 10,
+                borderRadius: 16,
+                backgroundColor: "#fff",
+                shadowColor: "#000",
+                shadowOpacity: 0.12,
+                shadowRadius: 10,
+                shadowOffset: { width: 0, height: 4 },
+                elevation: 4,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginTop: 2,
+                }}
+              >
+                <MaterialIcons name="access-time" size={14} color="#6B7280" style={{ marginRight: 6 }} />
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: "#111827",
+                    fontFamily: "interSemiBold",
+                  }}
+                >
+                  {formatTime(elapsed)}
+                </Text>
+              </View>
+            </View>
+
+            <Animated.View style={animatedStyle}>
+              <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={() => setOngoingModal(true)}
+                style={{
+                  width: 52,
+                  height: 52,
+                  borderRadius: 26,
+                  backgroundColor: "#0193e0",
+                  alignItems: "center",
+                  justifyContent: "center",
+
+                  shadowColor: "#0193e0",
+                  shadowOpacity: 0.35,
+                  shadowRadius: 12,
+                  shadowOffset: { width: 0, height: 6 },
+                  elevation: 6,
+                }}
+              >
+                <MaterialIcons name="directions-car" size={26} color="#fff" />
+              </TouchableOpacity>
+            </Animated.View>
+          </View>
         )}
 
         <Modal visible={ongoingModal} transparent animationType="slide" onRequestClose={() => setOngoingModal(false)}>
@@ -496,10 +600,10 @@ export default function FindRideScreen() {
                 <Text style={styles.locationValue}>{ongoingRide?.origin?.name}</Text>
               </View>
 
-              <View style={styles.locationCard}>
+              {/* <View style={styles.locationCard}>
                 <Text style={styles.locationLabel}>Destination</Text>
-                <Text style={styles.locationValue}>{ongoingRide?.destination?.name}</Text>
-              </View>
+                <Text style={styles.locationValue}>{ongoingRide?.destination?.name || "Ask the passenger for the destination"}</Text>
+              </View> */}
 
               <View style={styles.row}>
                 <View style={styles.infoCard}>
@@ -507,10 +611,10 @@ export default function FindRideScreen() {
                   <Text style={styles.infoValue}>₹ {appInfo?.baseFare} / hr</Text>
                 </View>
 
-                <View style={styles.infoCard}>
+                {/* <View style={styles.infoCard}>
                   <Text style={styles.infoLabel}>Distance</Text>
-                  <Text style={styles.infoValue}>{ongoingRide?.distance_km?.toFixed(1)} km</Text>
-                </View>
+                  <Text style={styles.infoValue}>{ongoingRide?.distance_km?.toFixed(1) || "0.00"} km</Text>
+                </View> */}
               </View>
 
               <CompleteRideConfirmation elapsed={elapsed} visible={openCompleteRide} onClose={() => setOpenCompleteRide(false)} onConfirm={() => completeRide(ongoingRide)} />
@@ -518,16 +622,17 @@ export default function FindRideScreen() {
               <TouchableOpacity style={styles.btnSuccessSolid} onPress={() => setOpenCompleteRide(true)}>
                 <Text style={styles.btnSuccessSolidText}>Complete Ride</Text>
               </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.primaryButton}
-                onPress={() => {
-                  getDirections(ongoingRide?.destination);
-                  setOngoingModal(false);
-                }}
-              >
-                <Text style={styles.primaryButtonText}>View Route</Text>
-              </TouchableOpacity>
+              {ongoingRide?.destination && (
+                <TouchableOpacity
+                  style={styles.primaryButton}
+                  onPress={() => {
+                    getDirections(ongoingRide?.destination);
+                    setOngoingModal(false);
+                  }}
+                >
+                  <Text style={styles.primaryButtonText}>View Route</Text>
+                </TouchableOpacity>
+              )}
 
               <TouchableOpacity style={styles.cancelSoftButton} onPress={() => setOngoingModal(false)}>
                 <Text style={styles.cancelSoftText}>Close</Text>
@@ -557,7 +662,7 @@ const styles = StyleSheet.create({
     borderRadius: 32,
     borderWidth: 1,
     borderColor: "#E5E4E2",
-    backgroundColor: PRIMARY,
+    backgroundColor: "#8FD3FF",
   },
 
   sheetContent: {
@@ -724,6 +829,7 @@ const styles = StyleSheet.create({
   emptyState: {
     alignItems: "center",
     marginTop: 40,
+    marginBottom: 20,
   },
 
   emptyTitle: {
@@ -815,7 +921,6 @@ const styles = StyleSheet.create({
     borderRadius: 24,
   },
 
-  /* Floating Button */
   floatingButton: {
     position: "absolute",
     bottom: 96,
@@ -831,7 +936,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  /* Ongoing Ride Modal */
   ongoingModal: {
     backgroundColor: Colors.whiteColor,
     padding: 24,
@@ -948,7 +1052,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     borderColor: "#E5E4E2",
     borderWidth: 1,
-    marginBottom: 45,
+    marginBottom: 55,
   },
 
   cancelSoftText: {

@@ -13,26 +13,21 @@ export default function CompleteRideConfirmation({ visible, onClose, onConfirm, 
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <View style={styles.overlay}>
         <View style={styles.container}>
-          {/* Icon */}
           <View style={styles.iconWrapper}>
             <View style={styles.iconCircle}>
               <Ionicons name="flag-outline" size={18} color={Colors.emerald_600} />
             </View>
           </View>
 
-          {/* Title */}
           <Text style={styles.title}>Complete Ride</Text>
 
-          {/* Description */}
           <Text style={styles.description}>This will stop the ride timer and proceed to payment collection.</Text>
 
-          {/* Time */}
           <View style={styles.timeCard}>
             <Text style={styles.timeLabel}>Total Ride Time</Text>
             <Text style={styles.timeValue}>{formatTime(elapsed)}</Text>
           </View>
 
-          {/* Actions */}
           <View style={styles.actions}>
             <TouchableOpacity activeOpacity={0.9} onPress={onConfirm} style={styles.confirmButton}>
               <Text style={styles.confirmText}>Complete Ride</Text>

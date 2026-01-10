@@ -17,8 +17,16 @@ export default function HelpCenterScreen() {
   const { appInfo } = useRide();
 
   const callSupport = () => {
-    Linking.openURL(`tel:${appInfo[0]?.supportContact}`);
+    Linking.openURL(`tel:${appInfo?.appData[0].supportContact}`);
   };
+
+  const extendedFaqs = [
+    ...(faqs || []),
+    {
+      question: "How do I contact customer support?",
+      answer: `You can reach out to us via email at ${appInfo?.appData[0].supportMail} or through the in-app chat feature.`,
+    },
+  ];
 
   return (
     <ScreenGradient>
@@ -26,7 +34,6 @@ export default function HelpCenterScreen() {
         <StatusBar barStyle="dark-content" />
 
         <ScrollView contentContainerStyle={styles.wrapper} showsVerticalScrollIndicator={false}>
-          {/* Header */}
           <View style={styles.headerRow}>
             <View style={styles.headerSide}>
               <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.9} style={styles.iconButton}>
@@ -42,9 +49,8 @@ export default function HelpCenterScreen() {
             <View style={styles.headerSide} />
           </View>
 
-          {/* FAQ Section */}
           <View style={styles.faqSection}>
-            {faqs?.map((item, index) => (
+            {extendedFaqs?.map((item, index) => (
               <View key={index} style={styles.faqCard}>
                 <View style={styles.faqRow}>
                   <View style={styles.faqIconWrapper}>

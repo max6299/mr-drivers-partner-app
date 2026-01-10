@@ -16,34 +16,43 @@ export const RideProvider = ({ children }) => {
   const [endTime, setEndTime] = useState(null);
   const [elapsed, setElapsed] = useState(0);
   const [currentRide, setCurrentRide] = useState(null);
-  const [otp, setOtp] = useState(null);
-  const [rideHistory, setRideHistory] = useState([]);
-  const [notifications, setNotifications] = useState([]);
   const [appInfo, setAppInfo] = useState(null);
 
   const timerRef = useRef();
 
   const { accessToken, mrDriverRefreshToken } = useAuth();
 
-  const getRideHistory = async (limit, page) => {
-    try {
-      const res = await ridePostFetch("driver/getRideHistory", { limit, page });
-      return res;
-    } catch (err) {
-      console.error("Failed to fetch your ride history:", err);
-      return null;
-    }
-  };
+  const updateCurrentRide = (data) => {
+    setCurrentRide(data)
+  }
+  const updateAssingedRide = (data) => {
+    setAssignedRides(data)
+  }
+  const updateStartTime = (data) => {
+    setStartTime(data)
+  }
+  const updateOngoingRide = (data) => {
+    setOngoingRide(data)
+  }
+  const updateElapsed = (data) => {
+    setElapsed(data)
+  }
+  const updateEndTime = (data) => {
+    setEndTime(data)
+  }
+  const updateCoords = (data) => {
+    setCoords(data)
+  }
+  const updateCurrentLocation = (data) => {
+    setCurrentLocation(data)
+  }
+  const updatePermissionAsked = (data) => {
+    setPermissionAsked(data)
+  }
+  const updateLoading = (data) => {
+    setIsLoading(data)
+  }
 
-  const getNotifications = async (limit, page) => {
-    try {
-      const res = await ridePostFetch("driver/getNotifications", { limit, page });
-      return res;
-    } catch (err) {
-      console.error("Failed to fetch your ride notifcations:", err);
-      return null;
-    }
-  };
 
   const getAppInfo = async () => {
     try {
@@ -85,18 +94,12 @@ export const RideProvider = ({ children }) => {
   useEffect(() => {
     const loadRides = async () => {
       if (!accessToken) return;
-      setNotifications([]);
-      setRideHistory([]);
 
       const rides = await getAssignedRides();
-      const history = await getRideHistory(10, 1);
-      const notifications = await getNotifications(10, 1);
       const app = await getAppInfo();
 
       setOngoingRide(rides.ongoingRide);
       setAssignedRides(rides.acceptedRides || []);
-      setRideHistory((prev) => [...prev, ...(history.history || [])]);
-      setNotifications((prev) => [...prev, ...(notifications.notifications || [])]);
       setAppInfo(app);
 
       if (rides?.ongoingRide?.rideStartTime) {
@@ -184,39 +187,32 @@ export const RideProvider = ({ children }) => {
     <RideContext.Provider
       value={{
         coords,
-        setCoords,
         currentLocation,
-        setCurrentLocation,
         isLoading,
-        setIsLoading,
         permissionAsked,
-        setPermissionAsked,
         assignedRides,
-        setAssignedRides,
         ongoingRide,
-        setOngoingRide,
         currentRide,
-        setCurrentRide,
-        rideHistory,
-        setRideHistory,
         startTime,
-        setStartTime,
         endTime,
-        setEndTime,
         elapsed,
-        setElapsed,
-        otp,
-        setOtp,
-        getRideHistory,
         mapboxDirections,
         formatTime,
+        updateCurrentLocation,
+        updateOngoingRide,
+        updatePermissionAsked,
+        updateAssingedRide,
+        setAssignedRides,
         ridePostFetch,
         startTimer,
+        updateCurrentRide,
+        updateEndTime,
+        updateStartTime,
+        updateElapsed,
         stopTimer,
+        updateCoords,
         timerRef,
-        notifications,
-        getNotifications,
-        setNotifications,
+        updateLoading,
         appInfo,
       }}
     >

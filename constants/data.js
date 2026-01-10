@@ -116,7 +116,7 @@ export const menuItems = [
   // { title: "Bank Information", route: "bank-info", icon: "card-outline" },
   { title: "Documents", route: "view-documents", icon: "document-text-outline" },
   { title: "Help Center", route: "help-center", icon: "help-circle-outline" },
-  { title: "Privacy Policy", route: "privacy-policy", icon: "shield-checkmark-outline" },
+  { title: "Legal Pages", route: "legal-pages", icon: "shield-checkmark-outline" },
 ];
 
 export const faqs = [
@@ -131,10 +131,6 @@ export const faqs = [
   {
     question: "I didn’t receive my OTP. What should I do?",
     answer: "Check your internet connection and make sure your number is correct. If the issue continues, contact support.",
-  },
-  {
-    question: "How do I contact customer support?",
-    answer: "You can reach out to us via email at support@yourapp.com or through the in-app chat feature.",
   },
 ];
 

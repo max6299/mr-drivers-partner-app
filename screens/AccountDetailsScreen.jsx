@@ -61,9 +61,7 @@ export default function AccountDetailsScreen({ navigation }) {
 
           <DetailRow icon="car-outline" label="Acting Driver" value={formatBoolean(ownUser.isActingDriver)} />
 
-          <DetailRow icon="time-outline" label="Created At" value={new Date(ownUser.createdAt).toLocaleString()} />
-
-          <DetailRow icon="refresh-outline" label="Last Updated" value={new Date(ownUser.updatedAt).toLocaleString()} isLast />
+          <DetailRow icon="time-outline" label="Created At" value={new Date(ownUser.createdAt).toDateString()} />
         </View>
       </ScrollView>
     </SafeAreaView>

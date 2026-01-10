@@ -6,6 +6,22 @@ import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context"
 import Toast from "react-native-toast-message";
 import { useAuth } from "../context/useAuth";
 import { useNavigation } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
+import { Fonts } from "../lib/style";
+
+function InputField({ icon, placeholder, value, onChangeText, secureTextEntry, keyboardType, maxLength, rightIcon, onRightIconPress }) {
+  return (
+    <View style={styles.inputWrapper}>
+      <Ionicons name={icon} size={20} color="#6B7280" />
+      <TextInput placeholder={placeholder} value={value} onChangeText={onChangeText} secureTextEntry={secureTextEntry} keyboardType={keyboardType} maxLength={maxLength} placeholderTextColor="#9CA3AF" style={styles.input} />
+      {rightIcon && (
+        <TouchableOpacity onPress={onRightIconPress}>
+          <Ionicons name={rightIcon} size={20} color="#6B7280" />
+        </TouchableOpacity>
+      )}
+    </View>
+  );
+}
 
 export default function SignUpScreen() {
   const { mrDriverPartnerSignup } = useAuth();
@@ -17,6 +33,8 @@ export default function SignUpScreen() {
   const [mobileNumber, setMobileNumber] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const showError = (title, message) => {
     Toast.show({
@@ -59,7 +77,6 @@ export default function SignUpScreen() {
 
       const res = await mrDriverPartnerSignup(bodyTxt);
       if (!res?.success) {
-        showError("Signup failed", res?.message);
         return;
       }
 
@@ -82,18 +99,19 @@ export default function SignUpScreen() {
         </View>
 
         <View style={styles.inputGroup}>
-          <TextInput placeholder="Full Name" value={fullName} onChangeText={setFullName} placeholderTextColor="#6B7280" style={styles.input} />
+          <InputField icon="person-outline" placeholder="Full Name" value={fullName} onChangeText={setFullName} />
 
-          <TextInput placeholder="Mobile Number" value={mobileNumber} onChangeText={setMobileNumber} keyboardType="number-pad" maxLength={10} placeholderTextColor="#6B7280" style={styles.input} />
+          <InputField icon="call-outline" placeholder="Mobile Number" value={mobileNumber} onChangeText={setMobileNumber} keyboardType="number-pad" maxLength={10} />
 
-          <TextInput placeholder="Password" value={password} onChangeText={setPassword} secureTextEntry placeholderTextColor="#6B7280" style={styles.input} />
+          <InputField icon="lock-closed-outline" placeholder="Password" value={password} onChangeText={setPassword} secureTextEntry={!showPassword} rightIcon={showPassword ? "eye-off-outline" : "eye-outline"} onRightIconPress={() => setShowPassword(!showPassword)} />
 
-          <TextInput placeholder="Confirm Password" value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry placeholderTextColor="#6B7280" style={styles.input} />
+          <InputField icon="shield-checkmark-outline" placeholder="Confirm Password" value={confirmPassword} onChangeText={setConfirmPassword} secureTextEntry={!showConfirmPassword} rightIcon={showConfirmPassword ? "eye-off-outline" : "eye-outline"} onRightIconPress={() => setShowConfirmPassword(!showConfirmPassword)} />
         </View>
 
-        <TouchableOpacity onPress={handleSignUp} disabled={isLoading} activeOpacity={0.9} style={styles.buttonWrapper}>
-          <LinearGradient colors={["#0193e0", "#00b4ff"]} style={styles.buttonGradient}>
-            <Text style={styles.buttonText}>{isLoading ? "Creating account..." : "Sign Up"}</Text>
+        <TouchableOpacity onPress={handleSignUp} disabled={isLoading} activeOpacity={0.85} style={styles.buttonWrapper}>
+          <LinearGradient colors={["#0193e0", "#00b4ff"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.buttonGradient}>
+            <Ionicons name="log-in-outline" size={20} color="#fff" />
+            <Text style={styles.buttonText}>{isLoading ? "Creating account..." : "Create Account"}</Text>
           </LinearGradient>
         </TouchableOpacity>
 
@@ -130,13 +148,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 30,
     color: "#111827",
-    fontFamily: "interBold",
+    fontFamily: Fonts.GoogleSansFlex,
   },
   subtitle: {
     marginTop: 8,
     fontSize: 16,
     color: "#6B7280",
-    fontFamily: "interMedium",
+    fontFamily: Fonts.GoogleSansFlex,
     textAlign: "center",
   },
 
@@ -144,43 +162,58 @@ const styles = StyleSheet.create({
   inputGroup: {
     gap: 16,
   },
-  input: {
-    width: "100%",
-    height: 56,
-    paddingHorizontal: 16,
-    fontSize: 18,
-    color: "#6B7280",
-    borderWidth: 1,
-    borderColor: "#D1D5DB",
-    borderRadius: 8,
-    fontFamily: "interRegular",
-  },
-
-  /* Button */
-  buttonWrapper: {
-    marginTop: 32,
-    borderRadius: 16,
-    overflow: "hidden",
-  },
-  buttonGradient: {
-    paddingVertical: 16,
-  },
-  buttonText: {
-    fontSize: 16,
-    textAlign: "center",
-    color: "#fff",
-    fontFamily: "interBold",
-  },
 
   /* Footer */
   footerText: {
     marginTop: 24,
     textAlign: "center",
     color: "#6B7280",
-    fontFamily: "interMedium",
+    fontFamily: Fonts.GoogleSansFlex,
   },
   signInText: {
     color: PRIMARY,
-    fontFamily: "interSemiBold",
+    fontFamily: Fonts.GoogleSansFlex,
+  },
+  inputWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 56,
+    paddingHorizontal: 14,
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    borderRadius: 14,
+    backgroundColor: "#fff",
+    gap: 10,
+  },
+
+  input: {
+    flex: 1,
+    fontSize: 16,
+    color: "#111827",
+    fontFamily: Fonts.GoogleSansFlex,
+  },
+
+  buttonWrapper: {
+    marginTop: 32,
+    borderRadius: 18,
+    overflow: "hidden",
+    shadowColor: "#0193e0",
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    elevation: 5,
+  },
+
+  buttonGradient: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    paddingVertical: 16,
+  },
+
+  buttonText: {
+    fontSize: 16,
+    color: "#fff",
+    fontFamily: Fonts.GoogleSansFlex,
   },
 });

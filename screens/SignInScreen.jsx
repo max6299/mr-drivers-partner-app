@@ -11,7 +11,6 @@ export default function SignInScreen() {
 
   const [mobileNumber, setMobileNumber] = useState("");
   const [password, setPassword] = useState("");
-  const insets = useSafeAreaInsets();
   const navigation = useNavigation();
 
   const handleSignIn = async () => {

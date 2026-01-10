@@ -139,7 +139,7 @@ export default function DrivingLicenseScreen() {
           backImage: backUrl,
         },
       };
-      const res = await authPostFetch("driver/update", bodyTxt);
+      const res = await authPostFetch("driver/update", bodyTxt, true);
 
       if (!res?.success) {
         Toast.show({

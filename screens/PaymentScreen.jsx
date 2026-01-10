@@ -11,7 +11,7 @@ const { Colors, Fonts } = appStyle;
 
 export default function PaymentScreen() {
   const [openPaymentSuccess, setOpenPaymentSuccess] = useState(false);
-  const { ridePostFetch } = useRide();
+  const { ridePostFetch, appInfo } = useRide();
 
   const navigation = useNavigation();
   const route = useRoute();
@@ -53,47 +53,42 @@ export default function PaymentScreen() {
       <StatusBar barStyle="dark-content" />
 
       <View style={styles.content}>
-        {/* Header */}
         <View style={styles.header}>
           <Text style={styles.title}>Collect Cash</Text>
           <Text style={styles.subtitle}>Confirm payment received from the rider</Text>
         </View>
 
-        {/* Fare */}
         <View style={styles.fareCard}>
           <Text style={styles.fareLabel}>Total Fare</Text>
-          <Text style={styles.fareAmount}>₹ {totalAmount}.00</Text>
+          <Text style={styles.fareAmount}>₹ {totalAmount ? `${totalAmount}.00` : `${appInfo?.baseFare}.00 / hr`} </Text>
 
           <View style={styles.paymentBadge}>
             <Text style={styles.paymentBadgeText}>CASH PAYMENT</Text>
           </View>
         </View>
 
-        {/* Trip Info */}
         <View style={styles.tripCard}>
           <View style={styles.tripSection}>
             <Text style={styles.tripLabel}>Pickup</Text>
             <Text style={styles.tripValue}>{origin}</Text>
           </View>
 
-          <View style={styles.tripSection}>
+          {/* <View style={styles.tripSection}>
             <Text style={styles.tripLabel}>Destination</Text>
             <Text style={styles.tripValue}>{destination}</Text>
-          </View>
+          </View> */}
 
-          <View style={styles.tripFooter}>
+          {/* <View style={styles.tripFooter}>
             <Text style={styles.distanceLabel}>Distance</Text>
             <Text style={styles.distanceValue}>{Number(distancekm).toFixed(1)} km</Text>
-          </View>
+          </View> */}
         </View>
 
-        {/* Action */}
         <TouchableOpacity activeOpacity={0.9} onPress={collectCash} style={styles.primaryButton}>
           <Text style={styles.primaryButtonText}>Cash Collected</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Success Modal */}
       <Modal animationType="fade" transparent visible={openPaymentSuccess} onRequestClose={() => setOpenPaymentSuccess(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalCard}>

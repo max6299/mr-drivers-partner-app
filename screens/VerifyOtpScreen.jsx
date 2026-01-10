@@ -11,7 +11,7 @@ const CELL_COUNT = 4;
 const PRIMARY = "#0193e0";
 
 export default function VerifyOtpScreen() {
-  const { ownUser, setOwnUser, authPostFetch } = useAuth();
+  const { ownUser, authPostFetch } = useAuth();
 
   const navigation = useNavigation();
   const OTP_DURATION = 120;

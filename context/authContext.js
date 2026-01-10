@@ -119,21 +119,6 @@ export const AuthProvider = ({ children }) => {
   }, [accessToken]);
 
   useEffect(() => {
-    if (!accessToken || !ownUser?.adminMobile || !deviceID || !pushToken) return;
-    // console.log(accessToken, ownUser, deviceID, pushToken);
-    const currentDevice = ownUser.deviceInfo?.find((d) => d.deviceID === deviceID);
-    const lastPushToken = currentDevice?.pushToken;
-    if (lastPushToken !== pushToken) {
-      const bodytxt = {
-        adminMobile: ownUser.adminMobile,
-        deviceID,
-        pushToken,
-      };
-      authPostFetch("admin/newPushToken", bodytxt);
-    }
-  }, [accessToken, ownUser, pushToken, deviceID]);
-
-  useEffect(() => {
     const subscription = AppState.addEventListener("change", (state) => {
       if (state === "active") {
         registerForPushNotifications();
@@ -198,6 +183,10 @@ export const AuthProvider = ({ children }) => {
         return "home";
     }
   };
+
+  const updateDriverStatus = (data) => {
+    setIsOnline(data)
+  }
 
   const mrDriverPartnerSignin = async ({ mobileNumber, pass }) => {
     setEventLoading(true);
@@ -277,8 +266,8 @@ export const AuthProvider = ({ children }) => {
       } else {
         Toast.show({
           type: "error",
-          text1: res.data.message,
-          text2: res.data.subMess,
+          text1: 'Sign up Failed',
+          text2: res.data.message,
         });
       }
     } catch (err) {
@@ -339,8 +328,8 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await axios.post(`${process.env.EXPO_PUBLIC_BASE_URL}${url}`, options, config);
       if (res.data.success) {
-        if (updateUser && res.data.ownuser !== undefined) {
-          setOwnUser(res.data.ownuser);
+        if (updateUser && res.data.userData !== undefined) {
+          setOwnUser(res.data.userData);
         }
         return res.data;
       } else {
@@ -371,5 +360,5 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  return <AuthContext.Provider value={{ ownUser, mrDriverPartnerSignin, mrDriverPartnerSignup, mrDriverPartnerLogout, mrDriverRefreshToken, authPostFetch, setOwnUser, accessToken, isInitLoading, eventLoading, pushToken, deviceID, pendingNotification, setPendingNotification, setInitialRoute, initialRoute, setNotificaitons, notificaitons, setIsOnline, isOnline }}>{children}</AuthContext.Provider>;
+  return <AuthContext.Provider value={{ ownUser, mrDriverPartnerSignin, mrDriverPartnerSignup, mrDriverPartnerLogout, mrDriverRefreshToken, authPostFetch, accessToken, isInitLoading, eventLoading, pushToken, deviceID, pendingNotification, setPendingNotification, setInitialRoute, initialRoute, setNotificaitons, notificaitons, updateDriverStatus, isOnline }}>{children}</AuthContext.Provider>;
 };

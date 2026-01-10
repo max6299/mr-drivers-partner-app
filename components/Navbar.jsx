@@ -13,16 +13,16 @@ const OFFLINE_BG = "#FEE2E2";
 const OFFLINE_BORDER = "#FCA5A5";
 
 export default function Navbar() {
-  const { isOnline, setIsOnline, authPostFetch } = useAuth();
+  const { isOnline, updateDriverStatus, authPostFetch } = useAuth();
 
   const switchStatus = async () => {
     try {
       const status = isOnline === "Offline" ? "Online" : "Offline";
 
-      const res = await authPostFetch("driver/updateDriverStaus", { currentStatus: status });
+      const res = await authPostFetch("driver/updateDriverStaus", { currentStatus: status }, true);
 
       if (res?.success) {
-        setIsOnline(status);
+        updateDriverStatus(status);
       } else {
         Toast.show({
           type: "error",

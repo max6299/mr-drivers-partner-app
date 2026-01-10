@@ -19,7 +19,6 @@ export default function ViewDocumentsScreen() {
       <StatusBar barStyle="dark-content" />
 
       <View style={styles.wrapper}>
-        {/* Header */}
         <View style={styles.headerRow}>
           <View style={styles.headerSide}>
             <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.9} style={styles.iconButton}>
@@ -34,7 +33,6 @@ export default function ViewDocumentsScreen() {
           <View style={styles.headerSide} />
         </View>
 
-        {/* Card */}
         <View style={styles.card}>
           <View style={styles.cardHeader}>
             <View style={styles.cardIcon}>

@@ -1,12 +1,34 @@
-import React, { useEffect, useRef, useState } from "react";
-import { FlatList, StatusBar, Text, TouchableOpacity, View, StyleSheet, SectionList } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useAuth } from "../context/useAuth";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { FlatList, StatusBar, Text, TouchableOpacity, View, StyleSheet, SectionList, ActivityIndicator } from "react-native";
 import { useRide } from "../context/useRide";
 import appStyle from "../lib/style";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import Toast from "react-native-toast-message";
+
+const PRIMARY = "#0193e0";
 
 const { Colors, Fonts } = appStyle;
+
+const getRideDuration = (start, end) => {
+  if (!start) return "--";
+
+  const startTime = new Date(start);
+  const endTime = end ? new Date(end) : new Date();
+
+  const diffMs = endTime - startTime;
+  if (diffMs <= 0) return "--";
+
+  const totalMinutes = Math.floor(diffMs / 60000);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  if (hours > 0) {
+    return `${hours}h ${minutes}m`;
+  }
+
+  return `${minutes}m`;
+};
+
 const groupRidesByDate = (rides = []) => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -69,11 +91,17 @@ function RideCard({ ride }) {
       hour12: true,
     });
 
+  const formatDate = (iso) => {
+    if (!iso) return "Ongoing";
+
+    const d = new Date(iso);
+    return `${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}`;
+  };
+
   return (
     <TouchableOpacity activeOpacity={0.92} style={[styles.card, isOngoing && styles.priorityCard]}>
       {isOngoing && <View style={styles.priorityStrip} />}
 
-      {/* Ride ID + Status */}
       <View style={styles.headerRow}>
         <Text style={styles.rideIdTop}>Ride ID • {ride.rideId}</Text>
 
@@ -82,26 +110,29 @@ function RideCard({ ride }) {
         </View>
       </View>
 
-      {/* Route */}
       <View style={styles.routeBlock}>
         <Text style={styles.locationLabel}>From</Text>
         <Text style={styles.locationText}>{ride.origin?.name}</Text>
-
-        <Ionicons name="arrow-down" size={16} color={Colors.asbestos} style={{ marginVertical: 6 }} />
-
-        <Text style={styles.locationLabel}>To</Text>
-        <Text style={styles.locationText}>{ride.destination?.name}</Text>
       </View>
 
-      {/* Time + Distance */}
       <View style={styles.bottomRow}>
+        <Text
+          style={{
+            fontSize: 14,
+            fontFamily: Fonts.GoogleSansFlex,
+            color: "#6B7280",
+            fontWeight: "500",
+          }}
+        >
+          {formatDate(ride.rideEndTime)}
+        </Text>
         <Text style={styles.time}>
           {formatIST(ride.rideStartTime)} – {ride.rideEndTime ? formatIST(ride.rideEndTime) : "Now"}
         </Text>
 
         <View style={styles.distanceChip}>
-          <Ionicons name="navigate" size={12} color={Colors.peter_river_600} />
-          <Text style={styles.distanceText}>{ride.distancekm?.toFixed(1)} km</Text>
+          <Ionicons name="time-outline" size={12} color={Colors.peter_river_600} />
+          <Text style={styles.distanceText}>{getRideDuration(ride.rideStartTime, ride.rideEndTime)}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -109,43 +140,78 @@ function RideCard({ ride }) {
 }
 
 export default function RidesScreen() {
-  const { rideHistory, getRideHistory, setRideHistory } = useRide();
-  const [page, setPage] = useState(2);
+  const { ridePostFetch } = useRide();
+  const [rideHistory, setRideHistory] = useState([]);
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const onEndReachedCalledDuringMomentum = useRef(false);
 
-  const loadMoreHistory = async () => {
+  const fetchRideHistory = async () => {
     if (loading || !hasMore) return;
-
     setLoading(true);
 
-    const res = await getRideHistory(10, page);
+    try {
+      const res = await ridePostFetch("driver/getRideHistory", { limit: 10, page });
 
-    if (res?.history?.length > 0) {
-      setRideHistory((prev) => {
-        const existingIds = new Set(prev.map((r) => r._id));
-        const uniqueNew = res.history.filter((r) => !existingIds.has(r._id));
-        return [...prev, ...uniqueNew];
+      if (res.success) {
+        if (res.history.length === 0) {
+          setHasMore(false);
+          return;
+        }
+
+        if (!res.hasMore) {
+          Toast.show({
+            type: "info",
+            text1: "You're all caught up 🎉",
+            text2: "No more rides to show",
+          });
+        }
+
+        setRideHistory((prev) => {
+          const ids = new Set(prev.map((r) => r._id));
+          const newItems = res.history.filter((r) => !ids.has(r._id));
+          return [...prev, ...newItems];
+        });
+
+        setHasMore(res.hasMore);
+        setPage((prev) => prev + 1);
+      } else {
+        Toast.show({
+          type: "error",
+          text1: "Failed to load ride history",
+          text2: res.message || "Please try again later",
+        });
+      }
+    } catch (err) {
+      console.error("Failed to fetch your ride history:", err);
+      Toast.show({
+        type: "error",
+        text1: "Network error",
+        text2: "Unable to fetch ride history",
       });
-
-      const nextPage = page + 1;
-      setPage(nextPage);
-      setHasMore(nextPage <= res.pagination.totalPages);
-    } else {
-      setHasMore(false);
+      return null;
+    } finally {
+      setLoading(false);
     }
+  };
 
-    setLoading(false);
+  const sections = useMemo(() => {
+    if (!rideHistory || rideHistory.length === 0) {
+      return [];
+    }
+    return groupRidesByDate(rideHistory);
+  }, [rideHistory]);
+
+  const loadMore = () => {
+    if (!loading && hasMore) {
+      fetchRideHistory();
+    }
   };
 
   useEffect(() => {
-    loadMoreHistory();
+    fetchRideHistory();
   }, []);
-
-  const sections = React.useMemo(() => {
-    return groupRidesByDate(rideHistory);
-  }, [rideHistory]);
 
   return (
     <View style={styles.container}>
@@ -166,7 +232,7 @@ export default function RidesScreen() {
           contentContainerStyle={styles.listContent}
           onEndReached={() => {
             if (!onEndReachedCalledDuringMomentum.current) {
-              loadMoreHistory();
+              loadMore();
               onEndReachedCalledDuringMomentum.current = true;
             }
           }}
@@ -174,7 +240,7 @@ export default function RidesScreen() {
             onEndReachedCalledDuringMomentum.current = false;
           }}
           onEndReachedThreshold={0.5}
-          ListFooterComponent={loading ? <Text style={{ textAlign: "center" }}>Loading...</Text> : null}
+          ListFooterComponent={loading ? <ActivityIndicator style={{ paddingVertical: 20 }} size="small" color={PRIMARY} /> : null}
         />
       ) : (
         <View style={styles.emptyState}>
@@ -340,7 +406,7 @@ const styles = StyleSheet.create({
     color: Colors.asbestos,
   },
   sectionHeader: {
-    marginTop: 18,
+    marginTop: 10,
     marginBottom: 10,
     marginLeft: 4,
     fontSize: 13,

@@ -8,7 +8,7 @@ import appStyle from "../lib/style";
 const { Colors, Fonts } = appStyle;
 
 export default function EditProfileScreen({ navigation }) {
-  const { ownUser, setOwnUser, authPostFetch } = useAuth();
+  const { ownUser, authPostFetch } = useAuth();
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -25,12 +25,10 @@ export default function EditProfileScreen({ navigation }) {
       fullName,
     };
 
-    const res = await authPostFetch("driver/update", bodyTxt);
+    const res = await authPostFetch("driver/update", bodyTxt, true);
     if (res?.success) {
-      setOwnUser(res.data);
+      navigation.goBack();
     }
-
-    navigation.goBack();
   };
 
   if (!ownUser) {
@@ -49,9 +47,7 @@ export default function EditProfileScreen({ navigation }) {
     try {
       setDeleting(true);
 
-      const res = await authPostFetch("driver/deleteAccount", bodyTxt);
-      setOwnUser(null);
-
+      const res = await authPostFetch("driver/deleteAccount", bodyTxt, true);
       navigation.reset({
         index: 0,
         routes: [{ name: "sign-in" }],
@@ -67,7 +63,6 @@ export default function EditProfileScreen({ navigation }) {
       <StatusBar barStyle="dark-content" />
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Header */}
         <View style={styles.headerRow}>
           <View style={styles.headerSide}>
             <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.9} style={styles.iconButton}>
@@ -82,7 +77,6 @@ export default function EditProfileScreen({ navigation }) {
           <View style={styles.headerSide} />
         </View>
 
-        {/* Card */}
         <View style={styles.card}>
           <View style={styles.inputGroup}>
             <View style={styles.labelRow}>
@@ -96,13 +90,8 @@ export default function EditProfileScreen({ navigation }) {
           <TouchableOpacity onPress={handleSave} style={styles.saveButton}>
             <Text style={styles.saveButtonText}>Save Changes</Text>
           </TouchableOpacity>
-
-          <TouchableOpacity onPress={handleDeleteAccount} style={styles.deleteButton}>
-            <Text style={styles.deleteButtonText}>Delete Account</Text>
-          </TouchableOpacity>
         </View>
 
-        {/* Delete Modal */}
         <Modal visible={showDeleteModal} transparent animationType="fade" statusBarTranslucent>
           <View style={styles.modalOverlay}>
             <View style={styles.modalCard}>
@@ -122,6 +111,14 @@ export default function EditProfileScreen({ navigation }) {
             </View>
           </View>
         </Modal>
+        <View style={styles.dangerHeader}>
+          <Ionicons name="warning-outline" size={16} color={Colors.alizarin_600} />
+          <Text style={styles.dangerHeaderText}>Danger Zone</Text>
+        </View>
+
+        <TouchableOpacity onPress={handleDeleteAccount} style={styles.deleteButton}>
+          <Text style={styles.deleteButtonText}>Delete Account</Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
@@ -308,5 +305,23 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.GoogleSansFlex,
     fontWeight: "700",
     color: Colors.whiteColor,
+  },
+  dangerHeader: {
+    marginTop: 40,
+    marginBottom: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    paddingVertical: 17,
+    borderRadius: 12,
+    backgroundColor: Colors.alizarin_50,
+  },
+
+  dangerHeaderText: {
+    fontSize: 13,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "600",
+    color: Colors.alizarin_700,
   },
 });

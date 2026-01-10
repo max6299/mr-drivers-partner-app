@@ -1,6 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { useNavigation } from "@react-navigation/native";
 import Mapbox from "@rnmapbox/maps";
 import * as Location from "expo-location";
 import React, { useEffect, useState } from "react";
@@ -11,13 +10,12 @@ import { useRide } from "../context/useRide";
 Mapbox.setAccessToken(process.env.EXPO_PUBLIC_MAPBOX_TOKEN);
 
 const DragableMap = ({ destination, cameraRef }) => {
-  const { coords, setCoords, currentLocation, setCurrentLocation, isLoading, setIsLoading, permissionAsked, setPermissionAsked } = useRide();
-  const navigation = useNavigation();
+  const { coords, currentLocation, updateCurrentLocation, isLoading, updateLoading, permissionAsked, updatePermissionAsked } = useRide();
 
   const requestPermission = async () => {
     if (isLoading) return;
 
-    setIsLoading(true);
+    updateLoading(true);
 
     try {
       const existing = await Location.getForegroundPermissionsAsync();
@@ -27,7 +25,7 @@ const DragableMap = ({ destination, cameraRef }) => {
           accuracy: Location.Accuracy.Balanced,
         });
 
-        setCurrentLocation({
+        updateCurrentLocation({
           latitude: pos.coords.latitude,
           longitude: pos.coords.longitude,
         });
@@ -37,7 +35,7 @@ const DragableMap = ({ destination, cameraRef }) => {
       const perm = await Location.requestForegroundPermissionsAsync();
 
       if (perm.status !== "granted") {
-        setPermissionAsked(true);
+        updatePermissionAsked(true);
         return;
       }
 
@@ -45,14 +43,14 @@ const DragableMap = ({ destination, cameraRef }) => {
         accuracy: Location.Accuracy.Balanced,
       });
 
-      setCurrentLocation({
+      updateCurrentLocation({
         latitude: pos.coords.latitude,
         longitude: pos.coords.longitude,
       });
     } catch (err) {
       console.warn("Location error:", err);
     } finally {
-      setIsLoading(false);
+      updateLoading(false);
     }
   };
 
@@ -73,7 +71,7 @@ const DragableMap = ({ destination, cameraRef }) => {
 
   useEffect(() => {
     if (!currentLocation && !permissionAsked) {
-      setPermissionAsked(true);
+      updatePermissionAsked(true);
       requestPermission();
     }
   }, [currentLocation, permissionAsked]);

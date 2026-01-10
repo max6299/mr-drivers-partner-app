@@ -17,7 +17,6 @@ export default function PrivacyPolicyScreen() {
         <StatusBar barStyle="dark-content" />
 
         <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-          {/* Header */}
           <View style={styles.headerRow}>
             <View style={styles.headerSide}>
               <TouchableOpacity onPress={() => navigation.goBack()} activeOpacity={0.9} style={styles.iconButton}>
@@ -33,12 +32,10 @@ export default function PrivacyPolicyScreen() {
             <View style={styles.headerSide} />
           </View>
 
-          {/* Intro */}
           <View style={styles.card}>
             <Text style={styles.cardText}>Your privacy is important to us. This Privacy Policy explains how we collect, use, and protect your personal information when you use our app.</Text>
           </View>
 
-          {/* Sections */}
           <PolicySection number="1" title="Information We Collect" text="We may collect personal information such as your name, email address, phone number, and payment details when you register or use our services." />
 
           <PolicySection number="2" title="How We Use Information" text="The information collected is used to provide, maintain, and improve our services, communicate with you, and ensure account security." />
@@ -82,7 +79,6 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
 
-  /* Header */
   headerRow: {
     flexDirection: "row",
     alignItems: "center",

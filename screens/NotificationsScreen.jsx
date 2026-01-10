@@ -1,8 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { FlatList, StatusBar, Text, TouchableOpacity, View, StyleSheet, SectionList } from "react-native";
+import { FlatList, StatusBar, Text, TouchableOpacity, View, StyleSheet, SectionList, ActivityIndicator } from "react-native";
 import { useRide } from "../context/useRide";
 import { Colors, Fonts } from "../lib/style";
+import Toast from "react-native-toast-message";
 
 const PRIMARY = "#0193e0";
 
@@ -33,7 +34,7 @@ const notificationIconMap = {
 
   ongoing: {
     icon: "time-outline",
-    color: "#EF6C00", 
+    color: "#EF6C00",
     bg: "#FFF3E0",
   },
 };
@@ -129,44 +130,66 @@ function NotificationCard({ item }) {
 }
 
 export default function NotificationsScreen() {
-  const { notifications, getNotifications, setNotifications } = useRide();
+  const { ridePostFetch } = useRide();
 
-  const [page, setPage] = useState(2);
+  const [notifications, setNotifications] = useState([]);
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const onEndReachedCalledDuringMomentum = useRef(false);
 
-  const loadMoreNotifications = async () => {
+  const fetchNotifications = async () => {
     if (loading || !hasMore) return;
 
     setLoading(true);
 
-    const res = await getNotifications(10, page);
-
-    if (res?.notifications?.length > 0) {
-      setNotifications((prev) => {
-        const existingIds = new Set(prev.map((n) => n._id));
-        const uniqueNew = res.notifications.filter((n) => !existingIds.has(n._id));
-        return [...prev, ...uniqueNew];
+    try {
+      const res = await ridePostFetch("driver/getNotifications", {
+        limit: 10,
+        page,
       });
 
-      setPage((prev) => prev + 1);
-      setHasMore(res.hasMore);
-    } else {
-      setHasMore(false);
-    }
+      if (res.success) {
+        if (res.notifications.length === 0) {
+          setHasMore(false);
+          return;
+        }
+        if (!res.hasMore) {
+          Toast.show({
+            type: "info",
+            text1: "You're all caught up 🎉",
+            text2: "No more notifications to show",
+          });
+        }
+        setNotifications((prev) => {
+          const ids = new Set(prev.map((n) => n._id));
+          const newItems = res.notifications.filter((n) => !ids.has(n._id));
+          return [...prev, ...newItems];
+        });
+        setHasMore(res.hasMore);
+        setPage((prev) => prev + 1);
+      } else {
+        Toast.show({
+          type: "error",
+          text1: "Failed to load notifications",
+          text2: res.message || "Please try again later",
+        });
+      }
+    } catch (err) {
+      console.error("Failed to fetch your ride notifications:", err);
 
-    setLoading(false);
+      Toast.show({
+        type: "error",
+        text1: "Network error",
+        text2: "Unable to fetch notifications",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  useEffect(() => {
-    if (notifications.length === 0 && page === 2) {
-      loadMoreNotifications();
-    }
-  }, [notifications, page]);
-
   const sections = useMemo(() => {
-    if (notifications.length === 0) {
+    if (!notifications || notifications.length === 0) {
       return [
         {
           title: "Today",
@@ -177,6 +200,16 @@ export default function NotificationsScreen() {
 
     return groupNotificationsByDate(notifications);
   }, [notifications]);
+
+  const loadMore = () => {
+    if (!loading && hasMore) {
+      fetchNotifications();
+    }
+  };
+
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -196,7 +229,7 @@ export default function NotificationsScreen() {
         contentContainerStyle={styles.listContent}
         onEndReached={() => {
           if (!onEndReachedCalledDuringMomentum.current) {
-            loadMoreNotifications();
+            loadMore();
             onEndReachedCalledDuringMomentum.current = true;
           }
         }}
@@ -204,6 +237,7 @@ export default function NotificationsScreen() {
           onEndReachedCalledDuringMomentum.current = false;
         }}
         onEndReachedThreshold={0.4}
+        ListFooterComponent={loading ? <ActivityIndicator style={{ paddingVertical: 20 }} size="small" color={PRIMARY} /> : null}
       />
     </View>
   );
@@ -314,7 +348,7 @@ const styles = StyleSheet.create({
     color: Colors.asbestos,
   },
   sectionHeader: {
-    marginTop: 18,
+    marginTop: 10,
     marginBottom: 10,
     marginLeft: 4,
     fontSize: 13,

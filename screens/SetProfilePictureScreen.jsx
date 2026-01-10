@@ -20,7 +20,7 @@ if (!getApps().length) {
 }
 
 export default function SetProfilePictureScreen() {
-  const { ownUser, setOwnUser, authPostFetch } = useAuth();
+  const { ownUser, authPostFetch } = useAuth();
   const navigation = useNavigation();
 
   const [image, setImage] = useState(null);
@@ -171,7 +171,7 @@ export default function SetProfilePictureScreen() {
         profilePictureSquare: sqrUrl,
       };
 
-      const res = await authPostFetch("driver/update", bodyTxt);
+      const res = await authPostFetch("driver/update", bodyTxt, true);
       if (res.success) {
         Toast.show({
           type: "success",
