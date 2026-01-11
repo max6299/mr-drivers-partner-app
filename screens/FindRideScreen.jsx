@@ -391,7 +391,7 @@ export default function FindRideScreen() {
                             fontWeight: "500",
                           }}
                         >
-                          Date: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.startDate}</Text>
+                          Date: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.startDate ? ride.startDate : '-'}</Text>
                         </Text>
 
                         <Text
@@ -402,7 +402,7 @@ export default function FindRideScreen() {
                             fontWeight: "500",
                           }}
                         >
-                          Time: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.startTime}</Text>
+                          Time: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.startTime ? ride.startTime : '-'}</Text>
                         </Text>
                         <Text
                           style={{
@@ -412,7 +412,7 @@ export default function FindRideScreen() {
                             fontWeight: "500",
                           }}
                         >
-                          Car Model: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.car?.model}</Text>
+                          Car Model: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.car?.model ? ride.car.model : '-'}</Text>
                         </Text>
                         <Text
                           style={{
@@ -422,7 +422,7 @@ export default function FindRideScreen() {
                             fontWeight: "500",
                           }}
                         >
-                          Transmission: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.car?.transmission}</Text>
+                          Transmission: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.car?.transmission ? ride.car.transmission : '-'}</Text>
                         </Text>
                         <Text
                           style={{
@@ -432,7 +432,17 @@ export default function FindRideScreen() {
                             fontWeight: "500",
                           }}
                         >
-                          Estimated Time: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.driverworkingHours}hrs</Text>
+                          Estimated Time: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.driverworkingHours ? ride.driverworkingHours : '-'} hrs</Text>
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            color: "#374151",
+                            marginVertical: 6,
+                            fontWeight: "500",
+                          }}
+                        >
+                          Allocated Fare: <Text style={{ fontWeight: "400", color: "#6B7280" }}>₹ {ride?.allocatedAmount ? ride.allocatedAmount : `${appInfo.baseFare}.00 /hr`}</Text>
                         </Text>
                         {/* <Text style={styles.sectionTitle}>Destination</Text>
 
@@ -621,7 +631,7 @@ export default function FindRideScreen() {
                 <View style={styles.row}>
                   <View style={styles.infoCard}>
                     <Text style={styles.infoLabel}>Fare</Text>
-                    <Text style={styles.infoValue}>₹ {appInfo?.baseFare} / hr</Text>
+                    <Text style={styles.infoValue}>₹ {ongoingRide?.allocatedAmount ? ongoingRide.allocatedAmount : `${appInfo?.baseFare}.00 /hr`}</Text>
                   </View>
 
                   {/* <View style={styles.infoCard}>
