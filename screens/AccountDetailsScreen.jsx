@@ -58,7 +58,6 @@ export default function AccountDetailsScreen({ navigation }) {
 
           <DetailRow icon="shield-checkmark-outline" label="Verified Account" value={formatBoolean(ownUser.isVerified)} />
 
-          <DetailRow icon="car-outline" label="Acting Driver" value={formatBoolean(ownUser.isActingDriver)} />
           <DetailRow icon="car-outline" label="Car Model" value={ownUser?.carType?.join(", ")} />
 
           <DetailRow icon="car-outline" label="Skill" value={ownUser.skill} />
