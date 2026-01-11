@@ -144,7 +144,7 @@ export const AuthProvider = ({ children }) => {
     const result = await authPostFetch("driver/getuser");
     if (result.success) {
       setOwnUser(result.data);
-      setPushToken(result.data.userData.pushToken)
+      setPushToken(result.data.pushToken)
       setRating(result.averageRating);
       setTotalRatings(result.totalRatings);
       setInitialRoute(getInitialRoute(result.data));
