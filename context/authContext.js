@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
   const [deviceID, setDeviceID] = useState(null);
   const [pendingNotification, setPendingNotification] = useState(null);
   const [initialRoute, setInitialRoute] = useState(null);
-  const [isOnline, setIsOnline] = useState("Offline");
+  const [isOnline, setIsOnline] = useState("");
   const [rating, setRating] = useState(0);
   const [totalRatings, setTotalRatings] = useState(0);
 
@@ -117,9 +117,9 @@ export const AuthProvider = ({ children }) => {
     const lastPushToken = ownUser?.pushToken;
     if (lastPushToken !== pushToken) {
       const bodytxt = {
-        pushToken
+        pushToken,
       };
-      authPostFetch("driver/newPushToken", bodytxt,true);
+      authPostFetch("driver/newPushToken", bodytxt, true);
     }
   }, [accessToken, ownUser, pushToken]);
 
@@ -144,7 +144,8 @@ export const AuthProvider = ({ children }) => {
     const result = await authPostFetch("driver/getuser");
     if (result.success) {
       setOwnUser(result.data);
-      setPushToken(result.data.pushToken)
+      setIsOnline(result.data.currentStatus);
+      setPushToken(result.data.pushToken);
       setRating(result.averageRating);
       setTotalRatings(result.totalRatings);
       setInitialRoute(getInitialRoute(result.data));
@@ -202,6 +203,7 @@ export const AuthProvider = ({ children }) => {
         setAccessToken(res.data.accessToken);
         setRefreshToken(res.data.refreshToken);
         setOwnUser(res.data.userData);
+        setIsOnline(result.data.userData.currentStatus);
       } else {
         Toast.show({
           type: "error",
@@ -244,7 +246,8 @@ export const AuthProvider = ({ children }) => {
         setAccessToken(res.data.accessToken);
         setRefreshToken(res.data.refreshToken);
         setOwnUser(res.data.userData);
-        setPushToken(res.data.userData.pushToken)
+        setPushToken(res.data.userData.pushToken);
+        setIsOnline(res.data.userData.currentStatus);
 
         if (res.data.userData.regiStatus === "verif") {
           const res1 = await axios.post(`${process.env.EXPO_PUBLIC_BASE_URL}driver/sendOTP`, { mobileNumber: res.data.userData.mobileNumber });
