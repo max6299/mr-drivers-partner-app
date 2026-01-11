@@ -95,7 +95,10 @@ function RideCard({ ride }) {
     if (!iso) return "Ongoing";
 
     const d = new Date(iso);
-    return `${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}`;
+
+    const month = d.toLocaleString("en-US", { month: "short" }); 
+
+    return `${d.getDate()} ${month} ${d.getFullYear()}`;
   };
 
   return (
@@ -111,7 +114,7 @@ function RideCard({ ride }) {
       </View>
 
       <View style={styles.routeBlock}>
-        <Text style={styles.locationLabel}>From</Text>
+        <Text style={styles.locationLabel}>Location</Text>
         <Text style={styles.locationText}>{ride.origin?.name}</Text>
       </View>
 

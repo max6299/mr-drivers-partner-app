@@ -67,16 +67,20 @@ export default function CompleteProfileScreen() {
     setIsSubmitting(true);
 
     try {
-      const res = await authPostFetch("driver/update", {
-        regiStatus: "setprof",
-        gender,
-        city,
-        age: ageNum,
-        experience: expNum,
-        carModel: carModelsSelected,
-        skill,
-        email,
-      }, true);
+      const res = await authPostFetch(
+        "driver/update",
+        {
+          regiStatus: "setprof",
+          gender,
+          city,
+          age: ageNum,
+          experience: expNum,
+          carType: carModelsSelected,
+          skill,
+          email,
+        },
+        true
+      );
 
       if (!res?.success) {
         return showError("Update failed", res?.message || "Please try again.");
@@ -91,36 +95,27 @@ export default function CompleteProfileScreen() {
   };
 
   function MultiSelectField({ label, items, selectedValues, onChange }) {
-  const toggleItem = (value) => {
-    if (selectedValues.includes(value)) {
-      onChange(selectedValues.filter((v) => v !== value));
-    } else {
-      onChange([...selectedValues, value]);
-    }
-  };
+    const toggleItem = (value) => {
+      if (selectedValues.includes(value)) {
+        onChange(selectedValues.filter((v) => v !== value));
+      } else {
+        onChange([...selectedValues, value]);
+      }
+    };
 
-  return (
-    <View>
-      <Text style={styles.label}>{label}</Text>
+    return (
+      <View>
+        <Text style={styles.label}>{label}</Text>
 
-      {items.map((item, index) => (
-        <TouchableOpacity
-          key={index}
-          style={styles.multiSelectRow}
-          onPress={() => toggleItem(item.value)}
-          activeOpacity={0.7}
-        >
-          <Checkbox
-            value={selectedValues.includes(item.value)}
-            onValueChange={() => toggleItem(item.value)}
-            color={PRIMARY}
-          />
-          <Text style={styles.multiSelectText}>{item.label}</Text>
-        </TouchableOpacity>
-      ))}
-    </View>
-  );
-}
+        {items.map((item, index) => (
+          <TouchableOpacity key={index} style={styles.multiSelectRow} onPress={() => toggleItem(item.value)} activeOpacity={0.7}>
+            <Checkbox value={selectedValues.includes(item.value)} onValueChange={() => toggleItem(item.value)} color={PRIMARY} />
+            <Text style={styles.multiSelectText}>{item.label}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -166,15 +161,14 @@ export default function CompleteProfileScreen() {
           /> */}
 
           <MultiSelectField
-  label="Car Models"
-  selectedValues={carModelsSelected}
-  onChange={setCarModelsSelected}
-  items={carModels.map((model) => ({
-    label: model,
-    value: model,
-  }))}
-/>
-
+            label="Car Types"
+            selectedValues={carModelsSelected}
+            onChange={setCarModelsSelected}
+            items={carModels.map((model) => ({
+              label: model,
+              value: model,
+            }))}
+          />
 
           <PickerField
             label="Driving Skill"
@@ -366,17 +360,16 @@ const styles = StyleSheet.create({
   },
 
   multiSelectRow: {
-  flexDirection: "row",
-  alignItems: "center",
-  paddingVertical: 12,
-},
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+  },
 
-multiSelectText: {
-  marginLeft: 12,
-  fontSize: 15,
-  color: Colors.midnight_blue_900,
-  fontFamily: Fonts.GoogleSansFlex,
-  fontWeight: "500",
-},
-
+  multiSelectText: {
+    marginLeft: 12,
+    fontSize: 15,
+    color: Colors.midnight_blue_900,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "500",
+  },
 });

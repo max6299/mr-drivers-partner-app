@@ -58,17 +58,19 @@ export default function ProfileScreen() {
 
             <Text style={styles.userName}>{ownUser?.fullName}</Text>
             <View style={{ flexDirection: "row", alignItems: "center", marginTop: 6 }}>
-              <Text style={{ fontSize: 16, fontWeight: "600", color: "#111827" }}>⭐ {rating}</Text>
+              <Text style={{ fontSize: 16, fontWeight: "600", color: "#111827" }}>{rating === 0 ? "⭐ No ratings yet" : `⭐ ${rating}`}</Text>
 
-              <Text
-                style={{
-                  marginLeft: 6,
-                  fontSize: 13,
-                  color: "#6B7280",
-                }}
-              >
-                ({totalRatings} ratings)
-              </Text>
+              {rating !== 0 && (
+                <Text
+                  style={{
+                    marginLeft: 6,
+                    fontSize: 13,
+                    color: "#6B7280",
+                  }}
+                >
+                  ({totalRatings} ratings)
+                </Text>
+              )}
             </View>
 
             <View

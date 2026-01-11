@@ -13,7 +13,7 @@ const OFFLINE_BG = "#FEE2E2";
 const OFFLINE_BORDER = "#FCA5A5";
 
 export default function Navbar() {
-  const { isOnline, updateDriverStatus, authPostFetch } = useAuth();
+  const { isOnline, updateDriverStatus, authPostFetch, ownUser } = useAuth();
 
   const switchStatus = async () => {
     try {
@@ -51,8 +51,8 @@ export default function Navbar() {
   return (
     <View style={styles.wrapper}>
       <View style={styles.container}>
-        <Image source={require("../assets/logos/mr-driver-partner-logo.png")} resizeMode="contain" style={styles.logo} />
-        <Text style={styles.infoLabel}>Mr Driver Partner</Text>
+        <Image source={ownUser?.profilePictureSquare ? { uri: ownUser.profilePictureSquare } : require("../assets/logos/mr-driver-partner-logo.png")} resizeMode="contain" style={styles.logo} />
+        <Text style={styles.infoLabel}>{ownUser?.fullName}</Text>
         <TouchableOpacity activeOpacity={0.8} onPress={switchStatus} style={[styles.statusButton, isDriverOnline ? styles.onlineButton : styles.offlineButton]}>
           <Text style={[styles.statusText, isDriverOnline ? styles.onlineText : styles.offlineText]}>{isOnline}</Text>
         </TouchableOpacity>

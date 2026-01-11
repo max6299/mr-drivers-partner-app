@@ -6,7 +6,7 @@ import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import * as Location from "expo-location";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { Alert, Modal, StatusBar, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Modal, ScrollView, StatusBar, Text, TouchableOpacity, View } from "react-native";
 import { CodeField, Cursor, useBlurOnFulfill, useClearByFocusCell } from "react-native-confirmation-code-field";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Animated, { Easing, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from "react-native-reanimated";
@@ -36,12 +36,7 @@ const getDistance = (lat1, lon1, lat2, lon2) => {
 };
 
 export default function FindRideScreen() {
-  const { coords, currentLocation, 
-    startTimer, stopTimer, assignedRides, 
-    ongoingRide, updateOngoingRide, currentRide, 
-    ridePostFetch, elapsed, mapboxDirections, formatTime, 
-    appInfo, updateCurrentRide, updateAssingedRide, 
-    updateStartTime, updateElapsed, updateEndTime, updateCoords } = useRide();
+  const { coords, currentLocation, startTimer, stopTimer, assignedRides, ongoingRide, updateOngoingRide, currentRide, ridePostFetch, elapsed, mapboxDirections, formatTime, appInfo, updateCurrentRide, updateAssingedRide, updateStartTime, updateElapsed, updateEndTime, updateCoords } = useRide();
 
   const navigation = useNavigation();
 
@@ -258,12 +253,7 @@ export default function FindRideScreen() {
         throw new Error("Failed to complete ride");
       }
 
-      navigation.navigate("payment", { rideId: ongoingRide?.rideId, 
-        userId: ongoingRide?.userId, totalAmount: res.ride.totalAmount, origin: ongoingRide?.origin?.name, 
-        destination: ongoingRide?.destination?.name, distancekm: ongoingRide?.distancekm, 
-        rideStartTime : ongoingRide?.rideStartTime, rideEndTime : ongoingRide?.rideEndTime,
-        carModel : ongoingRide?.car.model, carTransmisssion : ongoingRide?.car.transmission
-      });
+      navigation.navigate("payment", { rideId: ongoingRide?.rideId, userId: ongoingRide?.userId, totalAmount: res.ride.totalAmount, origin: ongoingRide?.origin?.name, destination: ongoingRide?.destination?.name, distancekm: ongoingRide?.distancekm, rideStartTime: ongoingRide?.rideStartTime, rideEndTime: ongoingRide?.rideEndTime, carModel: ongoingRide?.car.model, carTransmisssion: ongoingRide?.car.transmission });
 
       setOpenCompleteRide(false);
       setOngoingModal(false);
@@ -442,7 +432,7 @@ export default function FindRideScreen() {
                             fontWeight: "500",
                           }}
                         >
-                          Estimated Time: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.driverWorkingHours}hrs</Text>
+                          Estimated Time: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.driverworkingHours}hrs</Text>
                         </Text>
                         {/* <Text style={styles.sectionTitle}>Destination</Text>
 
@@ -586,7 +576,7 @@ export default function FindRideScreen() {
                   width: 52,
                   height: 52,
                   borderRadius: 26,
-                  backgroundColor: "#0193e0",
+                  backgroundColor: "#228B22", // OR (228B22)
                   alignItems: "center",
                   justifyContent: "center",
 
@@ -604,63 +594,141 @@ export default function FindRideScreen() {
         )}
 
         <Modal visible={ongoingModal} transparent animationType="slide" onRequestClose={() => setOngoingModal(false)}>
-          <View style={styles.modalOverlayDarkOngoing}>
-            <View style={styles.ongoingModalCard}>
-              <View style={styles.dragHandle} />
+          <ScrollView contentContainerStyle={styles.modalOverlayDarkOngoing}>
+            <View>
+              <View style={styles.ongoingModalCard}>
+                <View style={styles.dragHandle} />
 
-              <View style={styles.rideTimeCard}>
-                <Text style={styles.rideTimeLabel}>Ride Time</Text>
-                <Text style={styles.rideTimeValue}>{formatTime(elapsed)}</Text>
+                <View style={styles.rideTimeCard}>
+                  <Text style={styles.rideTimeLabel}>Ride Time</Text>
+                  <Text style={styles.rideTimeValue}>{formatTime(elapsed)}</Text>
 
-                <View style={styles.activeBadge}>
-                  <Text style={styles.activeBadgeText}>● ACTIVE</Text>
+                  <View style={styles.activeBadge}>
+                    <Text style={styles.activeBadgeText}>● ACTIVE</Text>
+                  </View>
                 </View>
-              </View>
 
-              <View style={styles.locationCard}>
-                <Text style={styles.locationLabel}>Pickup</Text>
-                <Text style={styles.locationValue}>{ongoingRide?.origin?.name}</Text>
-              </View>
+                <View style={styles.locationCard}>
+                  <Text style={styles.locationLabel}>Pickup</Text>
+                  <Text style={styles.locationValue}>{ongoingRide?.origin?.name}</Text>
+                </View>
 
-              {/* <View style={styles.locationCard}>
+                {/* <View style={styles.locationCard}>
                 <Text style={styles.locationLabel}>Destination</Text>
                 <Text style={styles.locationValue}>{ongoingRide?.destination?.name || "Ask the passenger for the destination"}</Text>
               </View> */}
 
-              <View style={styles.row}>
-                <View style={styles.infoCard}>
-                  <Text style={styles.infoLabel}>Fare</Text>
-                  <Text style={styles.infoValue}>₹ {appInfo?.baseFare} / hr</Text>
-                </View>
+                <View style={styles.row}>
+                  <View style={styles.infoCard}>
+                    <Text style={styles.infoLabel}>Fare</Text>
+                    <Text style={styles.infoValue}>₹ {appInfo?.baseFare} / hr</Text>
+                  </View>
 
-                {/* <View style={styles.infoCard}>
+                  {/* <View style={styles.infoCard}>
                   <Text style={styles.infoLabel}>Distance</Text>
                   <Text style={styles.infoValue}>{ongoingRide?.distance_km?.toFixed(1) || "0.00"} km</Text>
                 </View> */}
-              </View>
-
-              <CompleteRideConfirmation elapsed={elapsed} visible={openCompleteRide} onClose={() => setOpenCompleteRide(false)} onConfirm={() => completeRide(ongoingRide)} />
-
-              <TouchableOpacity style={styles.btnSuccessSolid} onPress={() => setOpenCompleteRide(true)}>
-                <Text style={styles.btnSuccessSolidText}>Complete Ride</Text>
-              </TouchableOpacity>
-              {ongoingRide?.destination && (
-                <TouchableOpacity
-                  style={styles.primaryButton}
-                  onPress={() => {
-                    getDirections(ongoingRide?.destination);
-                    setOngoingModal(false);
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    borderColor: Colors.clouds_500,
+                    backgroundColor: Colors.clouds_300,
+                    borderRadius: 16,
                   }}
                 >
-                  <Text style={styles.primaryButtonText}>View Route</Text>
-                </TouchableOpacity>
-              )}
+                  <View
+                    style={{
+                      flex: 1,
+                      borderRadius: 12,
+                      padding: 16,
+                      shadowColor: "#000",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: "#8E8E93",
+                        marginBottom: 4,
+                      }}
+                    >
+                      Car Type
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: "600",
+                        color: "#111827",
+                        marginBottom: 12,
+                      }}
+                    >
+                      {ongoingRide?.car?.model}
+                    </Text>
 
-              <TouchableOpacity style={styles.cancelSoftButton} onPress={() => setOngoingModal(false)}>
-                <Text style={styles.cancelSoftText}>Close</Text>
-              </TouchableOpacity>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: "#8E8E93",
+                        marginBottom: 4,
+                      }}
+                    >
+                      Car Transmission
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: "600",
+                        color: "#111827",
+                        marginBottom: 12,
+                      }}
+                    >
+                      {ongoingRide?.car?.transmission}
+                    </Text>
+
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: "#8E8E93",
+                        marginBottom: 4,
+                      }}
+                    >
+                      Vehicle Registration No
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: "600",
+                        color: "#111827",
+                      }}
+                    >
+                      {ongoingRide?.car?.registrationNumber || "Test"}
+                    </Text>
+                  </View>
+                </View>
+
+                <CompleteRideConfirmation elapsed={elapsed} visible={openCompleteRide} onClose={() => setOpenCompleteRide(false)} onConfirm={() => completeRide(ongoingRide)} />
+
+                <TouchableOpacity style={styles.btnSuccessSolid} onPress={() => setOpenCompleteRide(true)}>
+                  <Text style={styles.btnSuccessSolidText}>Complete Ride</Text>
+                </TouchableOpacity>
+                {ongoingRide?.destination && (
+                  <TouchableOpacity
+                    style={styles.primaryButton}
+                    onPress={() => {
+                      getDirections(ongoingRide?.destination);
+                      setOngoingModal(false);
+                    }}
+                  >
+                    <Text style={styles.primaryButtonText}>View Route</Text>
+                  </TouchableOpacity>
+                )}
+
+                <TouchableOpacity style={styles.cancelSoftButton} onPress={() => setOngoingModal(false)}>
+                  <Text style={styles.cancelSoftText}>Close</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
+          </ScrollView>
         </Modal>
       </View>
     </GestureHandlerRootView>
@@ -940,7 +1008,8 @@ const styles = StyleSheet.create({
     width: "100%",
     backgroundColor: Colors.whiteColor,
     padding: 24,
-    borderRadius: 24,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
   },
 
   floatingButton: {
@@ -1103,6 +1172,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.emerald_600,
     paddingVertical: 16,
     borderRadius: 16,
+    marginTop: 10,
     alignItems: "center",
     marginBottom: 12,
   },
