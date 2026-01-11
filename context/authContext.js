@@ -113,6 +113,17 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    if (!accessToken || !ownUser?._id || !pushToken) return;
+    const lastPushToken = ownUser?.pushToken;
+    if (lastPushToken !== pushToken) {
+      const bodytxt = {
+        pushToken
+      };
+      authPostFetch("driver/newPushToken", bodytxt,true);
+    }
+  }, [accessToken, ownUser, pushToken]);
+
+  useEffect(() => {
     if (accessToken !== null) {
       getInitData();
     }
@@ -133,8 +144,9 @@ export const AuthProvider = ({ children }) => {
     const result = await authPostFetch("driver/getuser");
     if (result.success) {
       setOwnUser(result.data);
-      setRating(result.averageRating)
-      setTotalRatings(result.totalRatings)
+      setPushToken(result.data.userData.pushToken)
+      setRating(result.averageRating);
+      setTotalRatings(result.totalRatings);
       setInitialRoute(getInitialRoute(result.data));
       setEventLoading(false);
       setIsInitLoading(false);
@@ -167,8 +179,8 @@ export const AuthProvider = ({ children }) => {
   };
 
   const updateDriverStatus = (data) => {
-    setIsOnline(data)
-  }
+    setIsOnline(data);
+  };
 
   const mrDriverPartnerSignin = async ({ mobileNumber, pass }) => {
     setEventLoading(true);
@@ -232,6 +244,7 @@ export const AuthProvider = ({ children }) => {
         setAccessToken(res.data.accessToken);
         setRefreshToken(res.data.refreshToken);
         setOwnUser(res.data.userData);
+        setPushToken(res.data.userData.pushToken)
 
         if (res.data.userData.regiStatus === "verif") {
           const res1 = await axios.post(`${process.env.EXPO_PUBLIC_BASE_URL}driver/sendOTP`, { mobileNumber: res.data.userData.mobileNumber });
@@ -248,7 +261,7 @@ export const AuthProvider = ({ children }) => {
       } else {
         Toast.show({
           type: "error",
-          text1: 'Sign up Failed',
+          text1: "Sign up Failed",
           text2: res.data.message,
         });
       }
@@ -300,7 +313,6 @@ export const AuthProvider = ({ children }) => {
       return null;
     }
   };
-
 
   const authPostFetch = async (url, options = {}, updateUser = false) => {
     const config = {

@@ -432,6 +432,16 @@ export default function FindRideScreen() {
                         >
                           Transmission: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.car?.transmission}</Text>
                         </Text>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            color: "#374151",
+                            marginVertical: 6,
+                            fontWeight: "500",
+                          }}
+                        >
+                          Estimated Time: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.driverWorkingHours}hrs</Text>
+                        </Text>
                         {/* <Text style={styles.sectionTitle}>Destination</Text>
 
                         <View style={styles.locationRow}>

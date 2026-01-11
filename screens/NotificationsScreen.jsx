@@ -13,19 +13,19 @@ const notificationIconMap = {
     color: "#2E7D32",
     bg: "#E8F5E9",
   },
-
+  
   cancelled: {
     icon: "close-circle",
     color: "#C62828",
     bg: "#FDECEA",
   },
-
+  
   payment: {
     icon: "card-outline",
     color: "#1565C0",
     bg: "#E3F2FD",
   },
-
+  
   completed: {
     icon: "checkmark-circle",
     color: "#00695C",
