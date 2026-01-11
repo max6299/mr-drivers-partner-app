@@ -9,7 +9,7 @@ const PRIMARY = "#0193e0";
 
 const notificationIconMap = {
   accepted: {
-    icon: "checkmark-circle",
+    icon: "flag-outline",
     color: "#2E7D32",
     bg: "#E8F5E9",
   },
@@ -27,7 +27,7 @@ const notificationIconMap = {
   },
 
   completed: {
-    icon: "flag-outline",
+    icon: "checkmark-circle",
     color: "#00695C",
     bg: "#E0F2F1",
   },

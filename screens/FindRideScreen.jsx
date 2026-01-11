@@ -258,7 +258,10 @@ export default function FindRideScreen() {
         throw new Error("Failed to complete ride");
       }
 
-      navigation.navigate("payment", { rideId: ongoingRide?.rideId, userId: ongoingRide?.userId, totalAmount: res.ride.totalAmount, origin: ongoingRide?.origin?.name, destination: ongoingRide?.destination?.name, distancekm: ongoingRide?.distancekm });
+      navigation.navigate("payment", { rideId: ongoingRide?.rideId, 
+        userId: ongoingRide?.userId, totalAmount: res.ride.totalAmount, origin: ongoingRide?.origin?.name, 
+        destination: ongoingRide?.destination?.name, distancekm: ongoingRide?.distancekm, 
+        rideStartTime : ongoingRide?.rideStartTime, rideEndTime : ongoingRide?.rideEndTime });
 
       setOpenCompleteRide(false);
       setOngoingModal(false);

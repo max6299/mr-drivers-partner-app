@@ -9,13 +9,34 @@ import appStyle from "../lib/style";
 
 const { Colors, Fonts } = appStyle;
 
+const getRideDuration = (start, end) => {
+  if (!start) return "--";
+
+  const startTime = new Date(start);
+  const endTime = end ? new Date(end) : new Date();
+
+  const diffMs = endTime - startTime;
+  if (diffMs <= 0) return "--";
+
+  const totalMinutes = Math.floor(diffMs / 60000);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+
+  if (hours > 0) {
+    return `${hours}h ${minutes}m`;
+  }
+
+  return `${minutes}m`;
+};
+
+
 export default function PaymentScreen() {
   const [openPaymentSuccess, setOpenPaymentSuccess] = useState(false);
   const { ridePostFetch, appInfo } = useRide();
 
   const navigation = useNavigation();
   const route = useRoute();
-  const { rideId, origin, destination, distancekm, totalAmount } = route.params || {};
+  const { rideId, origin, destination, distancekm, totalAmount,rideStartTime, rideEndTime } = route.params || {};
 
   const collectCash = async () => {
     try {
@@ -55,7 +76,7 @@ export default function PaymentScreen() {
       <View style={styles.content}>
         <View style={styles.header}>
           <Text style={styles.title}>Collect Cash</Text>
-          <Text style={styles.subtitle}>Confirm payment received from the rider</Text>
+          <Text style={styles.subtitle}>Confirm payment received from the passenger</Text>
         </View>
 
         <View style={styles.fareCard}>
@@ -77,6 +98,11 @@ export default function PaymentScreen() {
             <Text style={styles.tripLabel}>Destination</Text>
             <Text style={styles.tripValue}>{destination}</Text>
           </View> */}
+
+          <View style={styles.tripSection}>
+            <Text style={styles.tripLabel}>Trip Duration</Text>
+            <Text style={styles.tripValue}>{getRideDuration(rideStartTime, rideEndTime)}</Text>
+          </View>
 
           {/* <View style={styles.tripFooter}>
             <Text style={styles.distanceLabel}>Distance</Text>
