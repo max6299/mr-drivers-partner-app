@@ -23,7 +23,7 @@ export default function CompleteProfileScreen() {
   const [exp, setExp] = useState("");
   const [gender, setGender] = useState("");
   const [city, setCity] = useState("");
-  const [carModel, setCarModel] = useState("");
+  const [carModelsSelected, setCarModelsSelected] = useState([]);
   const [accepted, setAccepted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -41,7 +41,7 @@ export default function CompleteProfileScreen() {
   const handleContinue = async () => {
     if (isSubmitting) return;
 
-    if (!age || !exp || !gender || !city || !skill) {
+    if (!age || !exp || !gender || !city || !skill || carModelsSelected.length === 0) {
       return showError("Incomplete profile", "Please fill all required fields.");
     }
 
@@ -73,7 +73,7 @@ export default function CompleteProfileScreen() {
         city,
         age: ageNum,
         experience: expNum,
-        carModel,
+        carModel: carModelsSelected,
         skill,
         email,
       }, true);
@@ -89,6 +89,38 @@ export default function CompleteProfileScreen() {
       setIsSubmitting(false);
     }
   };
+
+  function MultiSelectField({ label, items, selectedValues, onChange }) {
+  const toggleItem = (value) => {
+    if (selectedValues.includes(value)) {
+      onChange(selectedValues.filter((v) => v !== value));
+    } else {
+      onChange([...selectedValues, value]);
+    }
+  };
+
+  return (
+    <View>
+      <Text style={styles.label}>{label}</Text>
+
+      {items.map((item, index) => (
+        <TouchableOpacity
+          key={index}
+          style={styles.multiSelectRow}
+          onPress={() => toggleItem(item.value)}
+          activeOpacity={0.7}
+        >
+          <Checkbox
+            value={selectedValues.includes(item.value)}
+            onValueChange={() => toggleItem(item.value)}
+            color={PRIMARY}
+          />
+          <Text style={styles.multiSelectText}>{item.label}</Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+  );
+}
 
   return (
     <SafeAreaView style={styles.container}>
@@ -120,7 +152,7 @@ export default function CompleteProfileScreen() {
             ]}
           />
 
-          <PickerField
+          {/* <PickerField
             label="Car Model"
             selectedValue={carModel}
             onValueChange={setCarModel}
@@ -131,7 +163,18 @@ export default function CompleteProfileScreen() {
                 value: model,
               })),
             ]}
-          />
+          /> */}
+
+          <MultiSelectField
+  label="Car Models"
+  selectedValues={carModelsSelected}
+  onChange={setCarModelsSelected}
+  items={carModels.map((model) => ({
+    label: model,
+    value: model,
+  }))}
+/>
+
 
           <PickerField
             label="Driving Skill"
@@ -321,4 +364,19 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     letterSpacing: 0.3,
   },
+
+  multiSelectRow: {
+  flexDirection: "row",
+  alignItems: "center",
+  paddingVertical: 12,
+},
+
+multiSelectText: {
+  marginLeft: 12,
+  fontSize: 15,
+  color: Colors.midnight_blue_900,
+  fontFamily: Fonts.GoogleSansFlex,
+  fontWeight: "500",
+},
+
 });

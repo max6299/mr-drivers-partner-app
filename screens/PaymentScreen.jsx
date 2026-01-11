@@ -36,7 +36,8 @@ export default function PaymentScreen() {
 
   const navigation = useNavigation();
   const route = useRoute();
-  const { rideId, origin, destination, distancekm, totalAmount,rideStartTime, rideEndTime } = route.params || {};
+  const { rideId, origin, destination, distancekm, 
+    totalAmount,rideStartTime, rideEndTime, carModel, carTransmisssion } = route.params || {};
 
   const collectCash = async () => {
     try {
@@ -102,6 +103,11 @@ export default function PaymentScreen() {
           <View style={styles.tripSection}>
             <Text style={styles.tripLabel}>Trip Duration</Text>
             <Text style={styles.tripValue}>{getRideDuration(rideStartTime, rideEndTime)}</Text>
+          </View>
+
+          <View style={styles.tripSection}>
+            <Text style={styles.tripLabel}>Car Details</Text>
+            <Text style={styles.tripValue}>{carModel} - {carTransmisssion}</Text>
           </View>
 
           {/* <View style={styles.tripFooter}>

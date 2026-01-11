@@ -261,7 +261,9 @@ export default function FindRideScreen() {
       navigation.navigate("payment", { rideId: ongoingRide?.rideId, 
         userId: ongoingRide?.userId, totalAmount: res.ride.totalAmount, origin: ongoingRide?.origin?.name, 
         destination: ongoingRide?.destination?.name, distancekm: ongoingRide?.distancekm, 
-        rideStartTime : ongoingRide?.rideStartTime, rideEndTime : ongoingRide?.rideEndTime });
+        rideStartTime : ongoingRide?.rideStartTime, rideEndTime : ongoingRide?.rideEndTime,
+        carModel : ongoingRide?.car.model, carTransmisssion : ongoingRide?.car.transmission
+      });
 
       setOpenCompleteRide(false);
       setOngoingModal(false);
