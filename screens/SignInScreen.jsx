@@ -55,7 +55,7 @@ export default function SignInScreen() {
           <TextInput placeholder="Password" placeholderTextColor={Colors.asbestos} secureTextEntry value={password} onChangeText={setPassword} style={styles.input} />
         </View>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('forgot-password')}>
           <Text style={styles.forgotPassword}>Forgot password?</Text>
         </TouchableOpacity>
 

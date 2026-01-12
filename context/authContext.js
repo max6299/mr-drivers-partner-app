@@ -174,6 +174,8 @@ export const AuthProvider = ({ children }) => {
         return "add-driving-license";
       case "submited":
         return "submit-application";
+      case "Rejected":
+        return "rejected";
       default:
         return "home";
     }
@@ -203,7 +205,7 @@ export const AuthProvider = ({ children }) => {
         setAccessToken(res.data.accessToken);
         setRefreshToken(res.data.refreshToken);
         setOwnUser(res.data.userData);
-        setIsOnline(result.data.userData.currentStatus);
+        setIsOnline(res.data.userData.currentStatus);
       } else {
         Toast.show({
           type: "error",

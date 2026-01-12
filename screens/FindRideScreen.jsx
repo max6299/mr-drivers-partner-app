@@ -391,7 +391,7 @@ export default function FindRideScreen() {
                             fontWeight: "500",
                           }}
                         >
-                          Date: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.startDate ? ride.startDate : '-'}</Text>
+                          Date: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.startDate ? ride.startDate : "-"}</Text>
                         </Text>
 
                         <Text
@@ -402,7 +402,7 @@ export default function FindRideScreen() {
                             fontWeight: "500",
                           }}
                         >
-                          Time: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.startTime ? ride.startTime : '-'}</Text>
+                          Time: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.startTime ? ride.startTime : "-"}</Text>
                         </Text>
                         <Text
                           style={{
@@ -412,7 +412,7 @@ export default function FindRideScreen() {
                             fontWeight: "500",
                           }}
                         >
-                          Car Model: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.car?.model ? ride.car.model : '-'}</Text>
+                          Car Name: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.car?.carName ? ride.car.carName : "-"}</Text>
                         </Text>
                         <Text
                           style={{
@@ -422,7 +422,7 @@ export default function FindRideScreen() {
                             fontWeight: "500",
                           }}
                         >
-                          Transmission: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.car?.transmission ? ride.car.transmission : '-'}</Text>
+                          Car Type: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.car?.carType ? ride.car.carType : "-"}</Text>
                         </Text>
                         <Text
                           style={{
@@ -432,7 +432,37 @@ export default function FindRideScreen() {
                             fontWeight: "500",
                           }}
                         >
-                          Estimated Time: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.driverworkingHours ? ride.driverworkingHours : '-'} hrs</Text>
+                          Car Model: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.car?.carModelNo ? ride.car.carModelNo : "-"}</Text>
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            color: "#374151",
+                            marginVertical: 6,
+                            fontWeight: "500",
+                          }}
+                        >
+                          Car Number : <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.car?.carNumber ? ride.car.carNumber : "-"}</Text>
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            color: "#374151",
+                            marginVertical: 6,
+                            fontWeight: "500",
+                          }}
+                        >
+                          Transmission: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.car?.transmission ? ride.car.transmission : "-"}</Text>
+                        </Text>
+                        <Text
+                          style={{
+                            fontSize: 14,
+                            color: "#374151",
+                            marginVertical: 6,
+                            fontWeight: "500",
+                          }}
+                        >
+                          Estimated Time: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.driverWorkingHours ? ride.driverWorkingHours : "-"} hrs</Text>
                         </Text>
                         <Text
                           style={{
