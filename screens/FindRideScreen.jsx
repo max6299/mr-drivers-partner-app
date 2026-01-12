@@ -253,16 +253,22 @@ export default function FindRideScreen() {
         throw new Error("Failed to complete ride");
       }
 
-      navigation.navigate("payment", { rideId: ongoingRide?.rideId, 
-        userId: ongoingRide?.userId, totalAmount: res.ride.totalAmount, 
-        allocatedAmount: ongoingRide?.allocatedAmount, 
-        origin: ongoingRide?.origin?.name, 
-        destination: ongoingRide?.destination?.name, 
-        distancekm: ongoingRide?.distancekm, 
-        rideStartTime: ongoingRide?.rideStartTime, 
-        rideEndTime: ongoingRide?.rideEndTime, 
-        carModel: ongoingRide?.car.model, 
-        carTransmisssion: ongoingRide?.car.transmission });
+
+      navigation.navigate("payment", {
+        rideId: ongoingRide?.rideId,
+        userId: ongoingRide?.userId,
+        totalAmount: res.ride.totalAmount,
+        allocatedAmount: ongoingRide?.allocatedAmount,
+        origin: ongoingRide?.origin?.name,
+        destination: ongoingRide?.destination?.name,
+        distancekm: ongoingRide?.distancekm,
+        rideStartTime: ongoingRide?.rideStartTime,
+        rideEndTime: ongoingRide?.rideEndTime,
+        carType: ongoingRide?.car.carType,
+        carName: ongoingRide?.car.carName,
+        carNumber: ongoingRide?.car.carNumber,
+        carTransmisssion: ongoingRide?.car.transmission,
+      });
 
       setOpenCompleteRide(false);
       setOngoingModal(false);
@@ -696,6 +702,26 @@ export default function FindRideScreen() {
                         marginBottom: 4,
                       }}
                     >
+                      Car Name
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: "600",
+                        color: "#111827",
+                        marginBottom: 12,
+                      }}
+                    >
+                      {ongoingRide?.car?.carName}
+                    </Text>
+
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: "#8E8E93",
+                        marginBottom: 4,
+                      }}
+                    >
                       Car Type
                     </Text>
                     <Text
@@ -706,7 +732,7 @@ export default function FindRideScreen() {
                         marginBottom: 12,
                       }}
                     >
-                      {ongoingRide?.car?.model}
+                      {ongoingRide?.car?.carType}
                     </Text>
 
                     <Text
@@ -745,7 +771,7 @@ export default function FindRideScreen() {
                         color: "#111827",
                       }}
                     >
-                      {ongoingRide?.car?.registrationNumber || "Test"}
+                      {ongoingRide?.car?.carNumber}
                     </Text>
                   </View>
                 </View>

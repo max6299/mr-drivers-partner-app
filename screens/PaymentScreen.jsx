@@ -36,7 +36,8 @@ export default function PaymentScreen() {
 
   const navigation = useNavigation();
   const route = useRoute();
-  const { rideId, origin, destination, distancekm, allocatedAmount, totalAmount, rideStartTime, rideEndTime, carModel, carTransmisssion } = route.params || {};
+  const { rideId, origin, destination, distancekm, allocatedAmount, totalAmount, rideStartTime, carType,
+     rideEndTime, carNumber, carName, carTransmisssion } = route.params || {};
 
   const collectCash = async () => {
     try {
@@ -68,6 +69,8 @@ export default function PaymentScreen() {
     setOpenPaymentSuccess(false);
     navigation.navigate("dashboard");
   };
+
+  console.log(rideStartTime)
 
   return (
     <SafeAreaView style={styles.container}>
@@ -108,7 +111,8 @@ export default function PaymentScreen() {
           <View style={styles.tripSection}>
             <Text style={styles.tripLabel}>Car Details</Text>
             <Text style={styles.tripValue}>
-              {carModel} - {carTransmisssion}
+              {carName} - {carNumber}
+              {carType} - {carTransmisssion}
             </Text>
           </View>
 
