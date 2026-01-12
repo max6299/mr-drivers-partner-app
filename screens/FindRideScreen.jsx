@@ -253,7 +253,16 @@ export default function FindRideScreen() {
         throw new Error("Failed to complete ride");
       }
 
-      navigation.navigate("payment", { rideId: ongoingRide?.rideId, userId: ongoingRide?.userId, totalAmount: res.ride.totalAmount, origin: ongoingRide?.origin?.name, destination: ongoingRide?.destination?.name, distancekm: ongoingRide?.distancekm, rideStartTime: ongoingRide?.rideStartTime, rideEndTime: ongoingRide?.rideEndTime, carModel: ongoingRide?.car.model, carTransmisssion: ongoingRide?.car.transmission });
+      navigation.navigate("payment", { rideId: ongoingRide?.rideId, 
+        userId: ongoingRide?.userId, totalAmount: res.ride.totalAmount, 
+        allocatedAmount: ongoingRide?.allocatedAmount, 
+        origin: ongoingRide?.origin?.name, 
+        destination: ongoingRide?.destination?.name, 
+        distancekm: ongoingRide?.distancekm, 
+        rideStartTime: ongoingRide?.rideStartTime, 
+        rideEndTime: ongoingRide?.rideEndTime, 
+        carModel: ongoingRide?.car.model, 
+        carTransmisssion: ongoingRide?.car.transmission });
 
       setOpenCompleteRide(false);
       setOngoingModal(false);
@@ -369,8 +378,13 @@ export default function FindRideScreen() {
                     <View style={styles.sectionRow}>
                       <View style={styles.primaryLine} />
                       <View style={{ flex: 1 }}>
-                        <Text style={styles.sectionTitle}>Passenger Start Location</Text>
-
+                        <Text style={styles.sectionTitle}>Passenger Details</Text>
+                        <View style={[styles.infoRow, { flexDirection: "row", alignItems: "center", marginVertical: 4, marginTop: 13 }]}>
+                          <View style={styles.iconBoxGreen}>
+                            <Entypo name="user" size={16} color="#1DB954" />
+                          </View>
+                          <Text style={styles.locationText}>{ride?.userId?.fullName || "N/A"}</Text>
+                        </View>
                         <View style={styles.locationRow}>
                           <View style={styles.iconBoxBlue}>
                             <Entypo name="location-pin" size={16} color="#0193e0" />
@@ -432,16 +446,6 @@ export default function FindRideScreen() {
                             fontWeight: "500",
                           }}
                         >
-                          Car Model: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.car?.carModelNo ? ride.car.carModelNo : "-"}</Text>
-                        </Text>
-                        <Text
-                          style={{
-                            fontSize: 14,
-                            color: "#374151",
-                            marginVertical: 6,
-                            fontWeight: "500",
-                          }}
-                        >
                           Car Number : <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.car?.carNumber ? ride.car.carNumber : "-"}</Text>
                         </Text>
                         <Text
@@ -462,7 +466,7 @@ export default function FindRideScreen() {
                             fontWeight: "500",
                           }}
                         >
-                          Estimated Time: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.driverWorkingHours ? ride.driverWorkingHours : "-"} hrs</Text>
+                          Estimated Time: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{ride?.driverWorkingHours ? ride.driverWorkingHours : "-"}</Text>
                         </Text>
                         <Text
                           style={{

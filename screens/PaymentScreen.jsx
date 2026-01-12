@@ -36,8 +36,7 @@ export default function PaymentScreen() {
 
   const navigation = useNavigation();
   const route = useRoute();
-  const { rideId, origin, destination, distancekm, 
-    totalAmount,rideStartTime, rideEndTime, carModel, carTransmisssion } = route.params || {};
+  const { rideId, origin, destination, distancekm, allocatedAmount, totalAmount, rideStartTime, rideEndTime, carModel, carTransmisssion } = route.params || {};
 
   const collectCash = async () => {
     try {
@@ -82,7 +81,8 @@ export default function PaymentScreen() {
 
         <View style={styles.fareCard}>
           <Text style={styles.fareLabel}>Total Fare</Text>
-          <Text style={styles.fareAmount}>₹ {totalAmount ? `${totalAmount}.00` : `${appInfo?.baseFare}.00 / hr`} </Text>
+          <Text style={styles.fareAmount}>₹ {allocatedAmount != null ? allocatedAmount : 
+          totalAmount != null ? totalAmount : `${appInfo?.baseFare?.toFixed(2)} / hr`}</Text>
 
           <View style={styles.paymentBadge}>
             <Text style={styles.paymentBadgeText}>CASH PAYMENT</Text>
@@ -107,7 +107,9 @@ export default function PaymentScreen() {
 
           <View style={styles.tripSection}>
             <Text style={styles.tripLabel}>Car Details</Text>
-            <Text style={styles.tripValue}>{carModel} - {carTransmisssion}</Text>
+            <Text style={styles.tripValue}>
+              {carModel} - {carTransmisssion}
+            </Text>
           </View>
 
           {/* <View style={styles.tripFooter}>

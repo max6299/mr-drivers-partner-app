@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     fontSize: 32,
     color: Colors.midnight_blue_900,
     fontFamily: Fonts.GoogleSansFlex,
-    fontWeight: "700",
+    fontWeight: "500",
     letterSpacing: -0.4,
   },
 
