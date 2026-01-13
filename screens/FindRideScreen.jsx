@@ -253,6 +253,7 @@ export default function FindRideScreen() {
         throw new Error("Failed to complete ride");
       }
 
+
       navigation.navigate("payment", {
         rideId: ongoingRide?.rideId,
         userId: ongoingRide?.userId,
