@@ -111,8 +111,16 @@ export default function PaymentScreen() {
           <View style={styles.tripSection}>
             <Text style={styles.tripLabel}>Car Details</Text>
             <Text style={styles.tripValue}>
-              {carName} - {carNumber}
-              {carType} - {carTransmisssion}
+             Car Name - {carName} 
+            </Text>
+            <Text style={styles.tripValue}>
+             Car Number - {carNumber}
+            </Text>
+            <Text style={styles.tripValue}>
+             Car Type - {carType} 
+            </Text>
+            <Text style={styles.tripValue}>
+             Car Transmission - {carTransmisssion}
             </Text>
           </View>
 
