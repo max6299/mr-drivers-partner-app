@@ -162,8 +162,6 @@ export default function SetProfilePictureScreen() {
       fullBlob.close?.();
       sqrBlob.close?.();
       const [fullUrl, sqrUrl] = await Promise.all([getDownloadURL(fullFileRef), getDownloadURL(sqrFileRef)]);
-      // console.log("Full:", fullUrl);
-      // console.log("Square:", sqrUrl);
 
       const bodyTxt = {
         regiStatus: "drivlic",

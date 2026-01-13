@@ -70,8 +70,6 @@ export default function PaymentScreen() {
     navigation.navigate("dashboard");
   };
 
-  console.log(rideStartTime)
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
