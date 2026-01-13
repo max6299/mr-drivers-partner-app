@@ -64,7 +64,6 @@ export const AuthProvider = ({ children }) => {
   // Foreground Notification while it running
   useEffect(() => {
     const unsubscribe = onMessage(messagingInstance, async (remoteMessage) => {
-      console.log("FCM Foreground Message:", remoteMessage);
       await displayNotification(remoteMessage);
     });
     return unsubscribe;

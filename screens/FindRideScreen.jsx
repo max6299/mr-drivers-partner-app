@@ -262,8 +262,8 @@ export default function FindRideScreen() {
         origin: ongoingRide?.origin?.name,
         destination: ongoingRide?.destination?.name,
         distancekm: ongoingRide?.distancekm,
-        rideStartTime: ongoingRide?.rideStartTime,
-        rideEndTime: ongoingRide?.rideEndTime,
+        rideStartTime: res?.ride?.rideStartTime,
+        rideEndTime: res?.ride?.rideEndTime,
         carType: ongoingRide?.car.carType,
         carName: ongoingRide?.car.carName,
         carNumber: ongoingRide?.car.carNumber,
@@ -644,8 +644,14 @@ export default function FindRideScreen() {
         )}
 
         <Modal visible={ongoingModal} transparent animationType="slide" onRequestClose={() => setOngoingModal(false)}>
-          <ScrollView contentContainerStyle={styles.modalOverlayDarkOngoing}>
-            <View>
+          <ScrollView style={{ flex: 1, backgroundColor: "rgba(23,32,42,0.5)" }} contentContainerStyle={{ paddingBottom: 24 }} showsVerticalScrollIndicator={false}>
+            <View
+              style={{
+                minHeight: "100%",
+                justifyContent: "flex-end",
+                alignItems: "flex-end",
+              }}
+            >
               <View style={styles.ongoingModalCard}>
                 <View style={styles.dragHandle} />
 
@@ -1068,7 +1074,6 @@ const styles = StyleSheet.create({
   },
 
   modalOverlayDarkOngoing: {
-    flex: 1,
     justifyContent: "flex-end",
     alignItems: "flex-end",
     backgroundColor: "rgba(23,32,42,0.5)",

@@ -70,8 +70,6 @@ export default function PaymentScreen() {
     navigation.navigate("dashboard");
   };
 
-  console.log(rideStartTime)
-
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
@@ -111,8 +109,16 @@ export default function PaymentScreen() {
           <View style={styles.tripSection}>
             <Text style={styles.tripLabel}>Car Details</Text>
             <Text style={styles.tripValue}>
-              {carName} - {carNumber}
-              {carType} - {carTransmisssion}
+             Car Name - {carName} 
+            </Text>
+            <Text style={styles.tripValue}>
+             Car Number - {carNumber}
+            </Text>
+            <Text style={styles.tripValue}>
+             Car Type - {carType} 
+            </Text>
+            <Text style={styles.tripValue}>
+             Car Transmission - {carTransmisssion}
             </Text>
           </View>
 
