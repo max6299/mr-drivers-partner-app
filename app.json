@@ -2,13 +2,13 @@
   "expo": {
     "name": "Mr Driver Partner",
     "slug": "mr-driver-partner-app",
-    "version": "1.0.0",
+    "version": "1.1.2",
     "orientation": "portrait",
-    "icon": "./assets/logos/mr-driver-partner-logo.png",
+    "icon": "./assets/logos/mr-driver-partner-and-icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "assets/logos/spash-screen.jpg",
+      "image": "./assets/logos/mr-driver-partner-ios-logo.png",
       "resizeMode": "cover",
       "backgroundColor": "#0092df"
     },
@@ -18,9 +18,10 @@
     "android": {
       "package": "in.co.mrdriver.partnerapp",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/logos/mr-driver-partner-logo.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/logos/mr-driver-partner-and-icon.png",
+        "backgroundColor": "#0092df"
       },
+      "versionCode": 7,
       "edgeToEdgeEnabled": true,
       "googleServicesFile": "./google-services.json",
       "permissions": [
