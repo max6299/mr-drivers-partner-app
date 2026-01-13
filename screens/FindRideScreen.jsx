@@ -253,7 +253,6 @@ export default function FindRideScreen() {
         throw new Error("Failed to complete ride");
       }
 
-
       navigation.navigate("payment", {
         rideId: ongoingRide?.rideId,
         userId: ongoingRide?.userId,
@@ -644,8 +643,14 @@ export default function FindRideScreen() {
         )}
 
         <Modal visible={ongoingModal} transparent animationType="slide" onRequestClose={() => setOngoingModal(false)}>
-          <ScrollView contentContainerStyle={styles.modalOverlayDarkOngoing}>
-            <View>
+          <ScrollView style={{ flex: 1, backgroundColor: "rgba(23,32,42,0.5)" }} contentContainerStyle={{ paddingBottom: 24 }} showsVerticalScrollIndicator={false}>
+            <View
+              style={{
+                minHeight: "100%",
+                justifyContent: "flex-end",
+                alignItems: "flex-end",
+              }}
+            >
               <View style={styles.ongoingModalCard}>
                 <View style={styles.dragHandle} />
 
@@ -1068,7 +1073,6 @@ const styles = StyleSheet.create({
   },
 
   modalOverlayDarkOngoing: {
-    flex: 1,
     justifyContent: "flex-end",
     alignItems: "flex-end",
     backgroundColor: "rgba(23,32,42,0.5)",
