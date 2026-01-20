@@ -37,10 +37,7 @@
         "android.permission.RECORD_AUDIO"
       ]
     },
-    "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/logos/mr-driver-partner-logo.png"
+    "web": {      "favicon": "./assets/logos/mr-driver-partner-logo.png"
     },
     "plugins": [
       "./plugins/withFirebase.js",

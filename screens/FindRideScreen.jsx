@@ -16,7 +16,6 @@ import { useAuth } from "../context/useAuth";
 import { useRide } from "../context/useRide";
 import DragableMap from "../components/DragableMap";
 import CompleteRideConfirmation from "../components/CompleteRideConfirmation";
-import { rideFarePerHour } from "../constants/data";
 import Navbar from "../components/Navbar";
 import { StyleSheet } from "react-native";
 import { Colors, Fonts } from "../lib/style";
@@ -216,7 +215,7 @@ export default function FindRideScreen() {
     const rideRef = doc(db, "rides", ongoingRide.rideId);
 
     const unsub = onSnapshot(rideRef, (snapshot) => {
-      if (!snapshot.exists()) return;
+      if (!snapshot.exists) return;
 
       const data = snapshot.data();
 
@@ -482,7 +481,7 @@ export default function FindRideScreen() {
                             fontWeight: "500",
                           }}
                         >
-                          Allocated Fare: <Text style={{ fontWeight: "400", color: "#6B7280" }}>₹ {ride?.allocatedAmount ? ride.allocatedAmount : `${appInfo.baseFare}.00 /hr`}</Text>
+                          Allocated Fare: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{`₹ ${ride?.allocatedAmountPerHour}.00 /hr`}</Text>
                         </Text>
                         {/* <Text style={styles.sectionTitle}>Destination</Text>
 
@@ -677,7 +676,7 @@ export default function FindRideScreen() {
                 <View style={styles.row}>
                   <View style={styles.infoCard}>
                     <Text style={styles.infoLabel}>Fare</Text>
-                    <Text style={styles.infoValue}>₹ {ongoingRide?.allocatedAmount ? ongoingRide.allocatedAmount : `${appInfo?.baseFare}.00 /hr`}</Text>
+                    <Text style={styles.infoValue}>{`₹ ${ongoingRide?.allocatedAmountPerHour}.00 /hr`}</Text>
                   </View>
 
                   {/* <View style={styles.infoCard}>

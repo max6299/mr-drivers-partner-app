@@ -355,6 +355,8 @@ const styles = StyleSheet.create({
     color: Colors.asbestos,
     textTransform: "uppercase",
     letterSpacing: 0.6,
+    fontWeight : 800,
+    marginBottom : 7
   },
 
   locationText: {
