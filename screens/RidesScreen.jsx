@@ -233,6 +233,8 @@ export default function RidesScreen() {
           renderSectionHeader={({ section: { title } }) => <Text style={styles.sectionHeader}>{title}</Text>}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.listContent}
+          refreshing={loading}
+          onRefresh={fetchRideHistory}
           onEndReached={() => {
             if (!onEndReachedCalledDuringMomentum.current) {
               loadMore();

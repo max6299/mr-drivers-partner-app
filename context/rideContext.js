@@ -214,6 +214,7 @@ export const RideProvider = ({ children }) => {
         timerRef,
         updateLoading,
         appInfo,
+        getAssignedRides
       }}
     >
       {children}

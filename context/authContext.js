@@ -199,6 +199,8 @@ export const AuthProvider = ({ children }) => {
     try {
       const res = await axios.post(`${process.env.EXPO_PUBLIC_BASE_URL}driver/signin`, bodytxt);
       if (res.data.success) {
+        setEventLoading(false);
+
         await SecureStore.setItemAsync("AccessToken", res.data.accessToken);
         await SecureStore.setItemAsync("RefreshToken", res.data.refreshToken);
         setAccessToken(res.data.accessToken);

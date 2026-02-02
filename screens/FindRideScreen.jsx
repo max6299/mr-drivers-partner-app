@@ -1,4 +1,4 @@
-import { Entypo, MaterialIcons } from "@expo/vector-icons";
+import { Entypo, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { getApp } from "@react-native-firebase/app";
 import { doc, getFirestore, onSnapshot } from "@react-native-firebase/firestore";
@@ -35,7 +35,7 @@ const getDistance = (lat1, lon1, lat2, lon2) => {
 };
 
 export default function FindRideScreen() {
-  const { coords, currentLocation, startTimer, stopTimer, assignedRides, ongoingRide, updateOngoingRide, currentRide, ridePostFetch, elapsed, mapboxDirections, formatTime, appInfo, updateCurrentRide, updateAssingedRide, updateStartTime, updateElapsed, updateEndTime, updateCoords } = useRide();
+  const { coords, currentLocation, startTimer, stopTimer, assignedRides, ongoingRide, updateOngoingRide, currentRide, ridePostFetch, elapsed, mapboxDirections, formatTime, appInfo, updateCurrentRide, updateAssingedRide, updateStartTime, updateElapsed, getAssignedRides, updateEndTime, updateCoords } = useRide();
 
   const navigation = useNavigation();
 
@@ -47,10 +47,11 @@ export default function FindRideScreen() {
   const [otp, setOtp] = useState(null);
 
   const [openCompleteRide, setOpenCompleteRide] = useState(false);
-
+  const [refreshing, setRefreshing] = useState(false);
   const mapRef = useRef();
   const cameraRef = useRef(null);
-
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [selectRideCancel, setSelectRideCancel] = useState(null);
   const db = getFirestore(getApp());
 
   const CELL_COUNT = 4;
@@ -141,7 +142,7 @@ export default function FindRideScreen() {
         easing: Easing.inOut(Easing.ease),
       }),
       -1,
-      true
+      true,
     );
   }, []);
 
@@ -209,6 +210,16 @@ export default function FindRideScreen() {
     }
   };
 
+  const onRefresh = async () => {
+    try {
+      setRefreshing(true);
+      const res = await getAssignedRides();
+      updateAssingedRide(res.acceptedRides);
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
   useEffect(() => {
     if (!ongoingRide?.rideId) return;
 
@@ -245,13 +256,12 @@ export default function FindRideScreen() {
   const completeRide = async (ongoingRide) => {
     try {
       const bodyTxt = { rideId: ongoingRide?.rideId, userId: ongoingRide?.userId, driverId: ongoingRide?.driverId };
-
+      console.log(bodyTxt);
       const res = await ridePostFetch("driver/end", bodyTxt);
 
       if (!res?.success) {
         throw new Error("Failed to complete ride");
       }
-
 
       navigation.navigate("payment", {
         rideId: ongoingRide?.rideId,
@@ -302,7 +312,7 @@ export default function FindRideScreen() {
         ne,
         sw,
         70, // padding
-        1000 // animation duration
+        1000, // animation duration
       );
     }
   }, [coords]);
@@ -342,6 +352,36 @@ export default function FindRideScreen() {
     }
   };
 
+  const cancelRide = async () => {
+    try {
+      const bodyTxt = {
+        rideId: selectRideCancel.rideId,
+        status: "cancelled",
+      };
+
+      const res = await ridePostFetch("driver/updateRide", bodyTxt);
+
+      if (!res.success) {
+        throw new Error(res.message || "Failed to update ride");
+      }
+
+      Toast.show({
+        type: "success",
+        text1: "Ride cancelled successfully",
+        text2: "You can now start a new ride.",
+      });
+      updateAssingedRide((prev) => prev.filter((ride) => ride._id !== res.ride._id));
+    } catch (err) {
+      console.error("Cancel ride error:", err);
+
+      Toast.show({
+        type: "error",
+        text1: "Unable to start ride",
+        text2: err.message || "Please try again",
+      });
+    }
+  };
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.screen}>
@@ -361,12 +401,42 @@ export default function FindRideScreen() {
               <TouchableOpacity onPress={() => bottomSheetRef.current.snapToIndex(1)} style={{ alignItems: "center" }}>
                 <Text style={{ textAlign: "center", marginVertical: 12, fontSize: 14, lineHeight: 20, color: "#000", fontFamily: Fonts.GoogleSansFlex, fontWeight: "500", letterSpacing: 0.2 }}>Track your Ride Request Here</Text>
               </TouchableOpacity>
+              <TouchableOpacity
+                onPress={onRefresh}
+                disabled={refreshing}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  alignSelf: "center",
+                  paddingHorizontal: 12,
+                  paddingVertical: 6,
+                  marginBottom: 10,
+                  borderRadius: 20,
+                  backgroundColor: refreshing ? "#E5E7EB" : "#F3F4F6",
+                  opacity: refreshing ? 0.7 : 1,
+                }}
+              >
+                {refreshing && (
+                  <Text
+                    style={{
+                      marginRight: 6,
+                      fontSize: 13,
+                      fontWeight: "600",
+                      color: "#374151",
+                    }}
+                  >
+                    Refreshing
+                  </Text>
+                )}
+
+                <Ionicons name="refresh" size={18} color={refreshing ? "#6B7280" : "#111827"} />
+              </TouchableOpacity>
 
               {assignedRides?.length > 0 ? (
                 assignedRides.map((ride, index) => (
                   <View key={ride._id} style={styles.rideCard}>
                     <View style={styles.rideHeader}>
-                      <Text style={styles.rideTitle}>Ride Request #{index + 1}</Text>
+                      <Text style={styles.rideTitle}>#{ride.rideId}</Text>
 
                       <View style={styles.badgeRow}>
                         {/* <View style={styles.badge}>
@@ -481,7 +551,7 @@ export default function FindRideScreen() {
                             fontWeight: "500",
                           }}
                         >
-                          Allocated Fare: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{`₹ ${ride?.allocatedAmountPerHour}.00 /hr`}</Text>
+                          Allocated Fare: <Text style={{ fontWeight: "400", color: "#6B7280" }}>{`₹ ${ride?.allocatedAmount}`}</Text>
                         </Text>
                         {/* <Text style={styles.sectionTitle}>Destination</Text>
 
@@ -508,6 +578,17 @@ export default function FindRideScreen() {
                         </TouchableOpacity>
                       )}
 
+                      <TouchableOpacity
+                        style={styles.secondaryButton}
+                        onPress={() => {
+                          setShowCancelModal(true);
+                          setSelectRideCancel(ride);
+                        }}
+                      >
+                        <Entypo name="circle-with-cross" size={18} color="#374151" />
+                        <Text style={styles.secondaryButtonText}>Cancel</Text>
+                      </TouchableOpacity>
+
                       <TouchableOpacity disabled={ongoingRide !== null} onPress={() => sendOTP(ride)} style={[styles.secondaryButton, ongoingRide && styles.disabledButton]}>
                         <Entypo name="key" size={18} color={ongoingRide ? "#9ca3af" : "#374151"} />
                         <Text style={[styles.secondaryButtonText, ongoingRide && styles.disabledText]}>Start Ride</Text>
@@ -525,6 +606,95 @@ export default function FindRideScreen() {
             </View>
           </BottomSheetScrollView>
         </BottomSheet>
+        <Modal visible={showCancelModal} transparent animationType="fade" onRequestClose={() => setShowCancelModal(false)}>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: "rgba(0,0,0,0.4)",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <View
+              style={{
+                width: "85%",
+                backgroundColor: "#fff",
+                borderRadius: 12,
+                padding: 20,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: "600",
+                  marginBottom: 8,
+                  color: "#111827",
+                }}
+              >
+                Cancel Ride?
+              </Text>
+
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: "#6B7280",
+                  marginBottom: 20,
+                }}
+              >
+                Are you sure you want to cancel this ride?
+              </Text>
+
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "flex-end",
+                }}
+              >
+                <TouchableOpacity
+                  onPress={() => setShowCancelModal(false)}
+                  style={{
+                    paddingVertical: 10,
+                    paddingHorizontal: 16,
+                    marginRight: 10,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "#374151",
+                      fontSize: 14,
+                      fontWeight: "500",
+                    }}
+                  >
+                    No
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => {
+                    setShowCancelModal(false);
+                    cancelRide();
+                  }}
+                  style={{
+                    paddingVertical: 10,
+                    paddingHorizontal: 16,
+                    backgroundColor: "#EF4444",
+                    borderRadius: 8,
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "#fff",
+                      fontSize: 14,
+                      fontWeight: "600",
+                    }}
+                  >
+                    Yes, Cancel
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
 
         <Modal visible={otpModal} transparent animationType="fade" onRequestClose={() => setOtpModal(false)}>
           <View style={styles.modalOverlayDark}>
@@ -676,7 +846,7 @@ export default function FindRideScreen() {
                 <View style={styles.row}>
                   <View style={styles.infoCard}>
                     <Text style={styles.infoLabel}>Fare</Text>
-                    <Text style={styles.infoValue}>{`₹ ${ongoingRide?.allocatedAmountPerHour}.00 /hr`}</Text>
+                    <Text style={styles.infoValue}>{`₹ ${ongoingRide?.allocatedAmount}`}</Text>
                   </View>
 
                   {/* <View style={styles.infoCard}>
@@ -851,9 +1021,9 @@ const styles = StyleSheet.create({
   },
 
   rideTitle: {
-    fontSize: 17,
+    fontSize: 15,
     fontFamily: Fonts.GoogleSansFlex,
-    fontWeight: "700",
+    fontWeight: "600",
     color: Colors.midnight_blue_900,
   },
 
