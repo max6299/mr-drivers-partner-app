@@ -835,6 +835,10 @@ export default function FindRideScreen() {
                 </View>
 
                 <View style={styles.locationCard}>
+                  <Text style={styles.locationLabel}>RIDE ID</Text>
+                  <Text style={styles.locationValue}>{ongoingRide?.rideId}</Text>
+                </View>
+                <View style={styles.locationCard}>
                   <Text style={styles.locationLabel}>Pickup</Text>
                   <Text style={styles.locationValue}>{ongoingRide?.origin?.name}</Text>
                 </View>

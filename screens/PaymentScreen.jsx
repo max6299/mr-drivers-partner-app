@@ -82,8 +82,12 @@ export default function PaymentScreen() {
 
         <View style={styles.fareCard}>
           <Text style={styles.fareLabel}>Total Fare</Text>
-          <Text style={styles.fareAmount}>₹ {allocatedAmount != null ? allocatedAmount : 
-          totalAmount != null ? totalAmount : `${appInfo?.baseFare?.toFixed(2)} / hr`}</Text>
+          {/* <Text style={styles.fareAmount}>₹ {
+          allocatedAmount != null ? allocatedAmount : 
+          totalAmount != null ? totalAmount : `${appInfo?.baseFare?.toFixed(2)} / hr`}
+          </Text> */}
+          <Text style={styles.fareAmount}>₹ {totalAmount}
+          </Text>
 
           <View style={styles.paymentBadge}>
             <Text style={styles.paymentBadgeText}>CASH PAYMENT</Text>
