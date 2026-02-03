@@ -256,8 +256,9 @@ export default function FindRideScreen() {
   const completeRide = async (ongoingRide) => {
     try {
       const bodyTxt = { rideId: ongoingRide?.rideId, userId: ongoingRide?.userId, driverId: ongoingRide?.driverId };
-      console.log(bodyTxt);
+      // console.log(bodyTxt);
       const res = await ridePostFetch("driver/end", bodyTxt);
+      // console.log(res)
 
       if (!res?.success) {
         throw new Error("Failed to complete ride");

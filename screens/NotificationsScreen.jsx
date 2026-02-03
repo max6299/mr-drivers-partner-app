@@ -227,6 +227,8 @@ export default function NotificationsScreen() {
         renderSectionHeader={({ section: { title } }) => <Text style={styles.sectionHeader}>{title}</Text>}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
+        refreshing={loading}
+        onRefresh={fetchNotifications}
         onEndReached={() => {
           if (!onEndReachedCalledDuringMomentum.current) {
             loadMore();
