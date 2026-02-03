@@ -206,6 +206,7 @@ export const AuthProvider = ({ children }) => {
         setAccessToken(res.data.accessToken);
         setRefreshToken(res.data.refreshToken);
         setOwnUser(res.data.userData);
+        setPushToken(res.data.userData.pushToken);
         setIsOnline(res.data.userData.currentStatus);
       } else {
         Toast.show({
