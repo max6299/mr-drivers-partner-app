@@ -6,13 +6,13 @@ import { getStorage } from "firebase/storage";
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
-export const firebaseConfig = {
+const firebaseConfig = {
   apiKey: "AIzaSyB7JEJgCv8s8r3OM18puSLAqA4-W7vmE5Y",
   authDomain: "mr-driver-admin.firebaseapp.com",
   projectId: "mr-driver-admin",
   storageBucket: "mr-driver-admin.firebasestorage.app",
   messagingSenderId: "841436137028",
-  appId: "1:841436137028:web:70f7a49e4d024682b7de11",
+  appId: "1:841436137028:web:70f7a49e4d024682b7de11"
 };
 
 // Initialize Firebase
