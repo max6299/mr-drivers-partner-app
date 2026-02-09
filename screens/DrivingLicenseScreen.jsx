@@ -8,15 +8,9 @@ import { useAuth } from "../context/useAuth";
 import { useNavigation } from "@react-navigation/native";
 import { Colors, Fonts } from "../lib/style";
 import * as ImageManipulator from "expo-image-manipulator";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { firebaseConfig } from "../firebase";
-import { initializeApp, getApps } from "firebase/app";
+import storage from "@react-native-firebase/storage";
 
 const PRIMARY = "#0193e0";
-
-if (!getApps().length) {
-  initializeApp(firebaseConfig);
-}
 
 export default function DrivingLicenseScreen() {
   const { ownUser, authPostFetch } = useAuth();
@@ -104,14 +98,13 @@ export default function DrivingLicenseScreen() {
     const compressedUri = await createThumbnail(image.uri);
     const blob = await uriToBlob(compressedUri);
 
-    const storage = getStorage();
     const path = `mrDriverPartnerLicenses/${ownUser._id}/${label}_${Date.now()}.jpg`;
-    const fileRef = ref(storage, path);
+    const fileRef = storage().ref(path);
 
-    await uploadBytes(fileRef, blob);
+    await fileRef.put(blob);
     blob.close?.();
 
-    return await getDownloadURL(fileRef);
+    return await fileRef.getDownloadURL();
   };
 
   const handleDrivingLicense = async () => {

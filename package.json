@@ -16,6 +16,7 @@
     "@react-native-firebase/app": "21.9.0",
     "@react-native-firebase/firestore": "21.9.0",
     "@react-native-firebase/messaging": "21.9.0",
+    "@react-native-firebase/storage": "^21.9.0",
     "@react-native-picker/picker": "2.11.1",
     "@react-navigation/bottom-tabs": "^7.9.0",
     "@react-navigation/native": "^7.1.26",
