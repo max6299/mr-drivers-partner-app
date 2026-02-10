@@ -8,16 +8,10 @@ import { useAuth } from "../context/useAuth";
 import { useNavigation } from "@react-navigation/native";
 import { Colors, Fonts } from "../lib/style";
 import * as ImageManipulator from "expo-image-manipulator";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { firebaseConfig } from "../firebase";
-import { initializeApp, getApps } from "firebase/app";
+import storage from "@react-native-firebase/storage";
 import { LinearGradient } from "expo-linear-gradient";
 
 const PRIMARY = "#0193e0";
-
-if (!getApps().length) {
-  initializeApp(firebaseConfig);
-}
 
 export default function SetProfilePictureScreen() {
   const { ownUser, authPostFetch } = useAuth();
@@ -153,15 +147,14 @@ export default function SetProfilePictureScreen() {
       const { fullImage, sqrImage } = await createThumbnail(uri);
 
       const [fullBlob, sqrBlob] = await Promise.all([uriToBlob(fullImage), uriToBlob(sqrImage)]);
-      const storage = getStorage();
       const basePath = `mrDriverPartnerProfile/${ownUser._id}-${ownUser.mobileNumber}`;
 
-      const fullFileRef = ref(storage, `${basePath}/port_${Date.now()}.jpg`);
-      const sqrFileRef = ref(storage, `${basePath}/sqr_${Date.now()}.jpg`);
-      await Promise.all([uploadBytes(fullFileRef, fullBlob), uploadBytes(sqrFileRef, sqrBlob)]);
+      const fullFileRef = storage().ref(`${basePath}/port_${Date.now()}.jpg`);
+      const sqrFileRef = storage().ref(`${basePath}/sqr_${Date.now()}.jpg`);
+      await Promise.all([fullFileRef.put(fullBlob), sqrFileRef.put(sqrBlob)]);
       fullBlob.close?.();
       sqrBlob.close?.();
-      const [fullUrl, sqrUrl] = await Promise.all([getDownloadURL(fullFileRef), getDownloadURL(sqrFileRef)]);
+      const [fullUrl, sqrUrl] = await Promise.all([fullFileRef.getDownloadURL(), sqrFileRef.getDownloadURL()]);
 
       const bodyTxt = {
         regiStatus: "drivlic",
