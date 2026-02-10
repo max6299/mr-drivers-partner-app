@@ -96,7 +96,7 @@ function RideCard({ ride }) {
 
     const d = new Date(iso);
 
-    const month = d.toLocaleString("en-US", { month: "short" }); 
+    const month = d.toLocaleString("en-US", { month: "short" });
 
     return `${d.getDate()} ${month} ${d.getFullYear()}`;
   };
@@ -117,7 +117,42 @@ function RideCard({ ride }) {
         <Text style={styles.locationLabel}>Location</Text>
         <Text style={styles.locationText}>{ride.origin?.name}</Text>
       </View>
+      {ride.status === "completed" && (
+        <View
+          style={{
+            backgroundColor: "#8FD0F6",
+            paddingVertical: 12,
+            paddingHorizontal: 16,
+            borderRadius: 10,
+            marginTop: 12,
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            borderWidth: 1,
+            borderColor: "#E5E7EB",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 13,
+              color: "#fff",
+              fontWeight: "500",
+            }}
+          >
+            Total Amount
+          </Text>
 
+          <Text
+            style={{
+              fontSize: 17,
+              color: "#fff",
+              fontWeight: "600",
+            }}
+          >
+            ₹ {ride.totalAmount}.00
+          </Text>
+        </View>
+      )}
       <View style={styles.bottomRow}>
         <Text
           style={{
@@ -357,8 +392,8 @@ const styles = StyleSheet.create({
     color: Colors.asbestos,
     textTransform: "uppercase",
     letterSpacing: 0.6,
-    fontWeight : 800,
-    marginBottom : 7
+    fontWeight: 800,
+    marginBottom: 7,
   },
 
   locationText: {
