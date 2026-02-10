@@ -120,7 +120,7 @@ function RideCard({ ride }) {
       {ride.status === "completed" && (
         <View
           style={{
-            backgroundColor: "#8FD0F6",
+            backgroundColor: "#E3EEFA",
             paddingVertical: 12,
             paddingHorizontal: 16,
             borderRadius: 10,
@@ -129,13 +129,13 @@ function RideCard({ ride }) {
             justifyContent: "space-between",
             alignItems: "center",
             borderWidth: 1,
-            borderColor: "#8FD0F6",
+            borderColor: "#E5E7EB",
           }}
         >
           <Text
             style={{
               fontSize: 13,
-              color: "#fff",
+              color: Colors.concrete,
               fontWeight: "500",
             }}
           >
@@ -144,8 +144,8 @@ function RideCard({ ride }) {
 
           <Text
             style={{
-              fontSize: 17,
-              color: "#fff",
+              fontSize: 13,
+              color: Colors.concrete,
               fontWeight: "600",
             }}
           >
@@ -356,8 +356,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     paddingVertical: 9,
     paddingHorizontal: 10,
-    borderRadius: 10,
-    backgroundColor: "#E3EEFA",
+    borderRadius: 11,
+    backgroundColor: "#8FD0F6",
     accentColor: "#3A7BD5",
     textColor: "#243B5A",
   },
@@ -365,7 +365,7 @@ const styles = StyleSheet.create({
   rideIdTop: {
     fontSize: 12,
     fontFamily: Fonts.GoogleSansFlex,
-    color: Colors.concrete,
+    color: Colors.whiteColor,
     fontWeight: "500",
   },
 
