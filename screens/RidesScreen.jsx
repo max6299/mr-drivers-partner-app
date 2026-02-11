@@ -104,7 +104,6 @@ function RideCard({ ride }) {
   return (
     <TouchableOpacity activeOpacity={0.92} style={[styles.card, isOngoing && styles.priorityCard]}>
       {isOngoing && <View style={styles.priorityStrip} />}
-
       <View style={styles.headerRow}>
         <Text style={styles.rideIdTop}>Ride ID • {ride.rideId}</Text>
 
@@ -112,67 +111,70 @@ function RideCard({ ride }) {
           <Text style={[styles.statusText, { color: status?.text }]}>{status?.label}</Text>
         </View>
       </View>
-
       <View style={styles.routeBlock}>
         <Text style={styles.locationLabel}>Location</Text>
         <Text style={styles.locationText}>{ride.origin?.name}</Text>
       </View>
       {ride.status === "completed" && (
-        <View
-          style={{
-            backgroundColor: "#E3EEFA",
-            paddingVertical: 12,
-            paddingHorizontal: 16,
-            borderRadius: 10,
-            marginTop: 12,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            borderWidth: 1,
-            borderColor: "#E5E7EB",
-          }}
-        >
+        <>
+          <View
+            style={{
+              backgroundColor: "#E3EEFA",
+              paddingVertical: 12,
+              paddingHorizontal: 16,
+              borderRadius: 10,
+              marginTop: 12,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              borderWidth: 1,
+              borderColor: "#E5E7EB",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 13,
+                color: Colors.concrete,
+                fontWeight: "500",
+              }}
+            >
+              Total Amount
+            </Text>
+
+            <Text
+              style={{
+                fontSize: 13,
+                color: Colors.concrete,
+                fontWeight: "600",
+              }}
+            >
+              ₹ {ride.totalAmount}.00
+            </Text>
+          </View>
+        </>
+      )}
+      {ride.status !== "cancelled" && (
+        <View style={styles.bottomRow}>
           <Text
             style={{
-              fontSize: 13,
-              color: Colors.concrete,
+              fontSize: 14,
+              fontFamily: Fonts.GoogleSansFlex,
+              color: "#6B7280",
               fontWeight: "500",
             }}
           >
-            Total Amount
+            {formatDate(ride.rideEndTime)}
+          </Text>
+          <Text style={styles.time}>
+            {formatIST(ride.rideStartTime)} – {ride.rideEndTime ? formatIST(ride.rideEndTime) : "Now"}
           </Text>
 
-          <Text
-            style={{
-              fontSize: 13,
-              color: Colors.concrete,
-              fontWeight: "600",
-            }}
-          >
-            ₹ {ride.totalAmount}.00
-          </Text>
+          <View style={styles.distanceChip}>
+            <Ionicons name="time-outline" size={12} color={Colors.peter_river_600} />
+            <Text style={styles.distanceText}>{getRideDuration(ride.rideStartTime, ride.rideEndTime)}</Text>
+          </View>
         </View>
       )}
-      <View style={styles.bottomRow}>
-        <Text
-          style={{
-            fontSize: 14,
-            fontFamily: Fonts.GoogleSansFlex,
-            color: "#6B7280",
-            fontWeight: "500",
-          }}
-        >
-          {formatDate(ride.rideEndTime)}
-        </Text>
-        <Text style={styles.time}>
-          {formatIST(ride.rideStartTime)} – {ride.rideEndTime ? formatIST(ride.rideEndTime) : "Now"}
-        </Text>
-
-        <View style={styles.distanceChip}>
-          <Ionicons name="time-outline" size={12} color={Colors.peter_river_600} />
-          <Text style={styles.distanceText}>{getRideDuration(ride.rideStartTime, ride.rideEndTime)}</Text>
-        </View>
-      </View>
     </TouchableOpacity>
   );
 }
