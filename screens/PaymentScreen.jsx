@@ -97,6 +97,7 @@ export default function PaymentScreen() {
         <View style={styles.tripCard}>
           <View style={styles.tripSection}>
             <Text style={styles.tripLabel}>Pickup</Text>
+            <Text style={styles.tripValue}>{rideId}</Text>
             <Text style={styles.tripValue}>{origin}</Text>
           </View>
 
