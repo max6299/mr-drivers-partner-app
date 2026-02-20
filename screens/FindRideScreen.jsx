@@ -461,13 +461,32 @@ export default function FindRideScreen() {
                           </View>
                           <Text style={styles.locationText}>{ride?.userId?.fullName || "N/A"}</Text>
                         </View>
+                        <View style={[styles.infoRow, { flexDirection: "row", alignItems: "center", marginVertical: 4, marginTop: 13 }]}>
+                          <View style={styles.iconBoxPurple}>
+                            <Entypo name="old-phone" size={16} color="#1DB954" />
+                          </View>
+                          <Text style={styles.locationText}>{ride?.userId?.phoneNumber || "N/A"}</Text>
+                        </View>
+
                         <View style={styles.locationRow}>
                           <View style={styles.iconBoxBlue}>
                             <Entypo name="location-pin" size={16} color="#0193e0" />
                           </View>
                           <Text style={styles.locationText}>{ride?.origin?.name}</Text>
                         </View>
+                                                {
+                          ride?.destination && (
+                            <View style={styles.locationRow}>
+                              <View style={styles.iconBoxBlue}>
+                                <Entypo name="location-pin" size={16} color="#0193e0" />
+                              </View>
+                              <Text style={styles.locationText}>{ride?.destination?.name || "-"}</Text>
+                            </View>
+                          )
+                        }
+
                       </View>
+
                     </View>
 
                     <View style={styles.sectionRow}>
@@ -1053,7 +1072,14 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: Colors.peter_river_700,
   },
-
+  iconBoxPurple: {
+    backgroundColor: Colors.peter_river_50,
+    width: 32,
+    height: 32,
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   /* Sections */
   sectionRow: {
     flexDirection: "row",

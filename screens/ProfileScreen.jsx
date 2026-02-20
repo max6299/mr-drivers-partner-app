@@ -90,7 +90,11 @@ export default function ProfileScreen() {
                   },
                 ]}
               >
-                {ownUser?.isVerified ? "Verified Driver" : "Not Verified"}
+                                <Text style={styles.driverID}>
+                {ownUser?.driverID}
+                </Text>
+
+                {/* {ownUser?.isVerified ? "Verified Driver" : "Not Verified"} */}
               </Text>
             </View>
           </View>
