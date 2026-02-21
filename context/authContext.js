@@ -1,7 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import * as Device from "expo-device";
 import { AppState, Platform, PermissionsAndroid } from "react-native";
-import { displayNotification, registerNotificationClicks } from "../lib/notificationService";
+import { displayNotification, registerNotificationClicks, ensureNotificationChannels } from "../lib/notificationService";
 import * as SecureStore from "expo-secure-store";
 // Firebase Messaging Imports
 import { getMessaging, requestPermission, getToken, onTokenRefresh, onMessage, onNotificationOpenedApp, getInitialNotification, AuthorizationStatus } from "@react-native-firebase/messaging";
@@ -32,21 +32,43 @@ export const AuthProvider = ({ children }) => {
 
   const registerForPushNotifications = async () => {
     if (!Device.isDevice) return null;
-    const authStatus = await requestPermission(messagingInstance);
-    const enabled = authStatus === AuthorizationStatus.AUTHORIZED || authStatus === AuthorizationStatus.PROVISIONAL;
-    if (!enabled) return null;
-    if (Platform.OS === "android" && Platform.Version >= 33) {
-      try {
-        const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
-        if (granted !== PermissionsAndroid.RESULTS.GRANTED) return null;
-      } catch (err) {
-        console.log("Notification permission error", err);
-        return null;
+
+    try {
+      if (Platform.OS === "android" && Platform.Version >= 33) {
+        const hasPermission = await PermissionsAndroid.check(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+
+        if (!hasPermission) {
+          const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS, {
+            title: "Allow Notifications",
+            message: "Mr Driver Partner uses notifications for new ride assignments and trip updates.",
+            buttonPositive: "Allow",
+            buttonNegative: "Deny",
+          });
+
+          if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+            return null;
+          }
+        }
       }
+
+      if (Platform.OS === "ios") {
+        const authStatus = await requestPermission(messagingInstance);
+        const enabled = authStatus === AuthorizationStatus.AUTHORIZED || authStatus === AuthorizationStatus.PROVISIONAL;
+        if (!enabled) return null;
+      }
+
+      const token = await getToken(messagingInstance);
+      setPushToken(token);
+      return token;
+    } catch (err) {
+      console.log("Notification permission error", err);
+      return null;
     }
-    const token = await getToken(messagingInstance);
-    setPushToken(token);
-    return token;
+  };
+
+  const setServerPushTokenIfNeeded = (serverPushToken) => {
+    if (!serverPushToken) return;
+    setPushToken((currentToken) => currentToken || serverPushToken);
   };
 
   const handleNotificationNavigation = (data) => {
@@ -108,6 +130,9 @@ export const AuthProvider = ({ children }) => {
       }
     };
     loadTokens();
+    ensureNotificationChannels().catch((error) => {
+      console.log("Notification channel setup error", error);
+    });
     registerForPushNotifications();
   }, []);
 
@@ -144,7 +169,7 @@ export const AuthProvider = ({ children }) => {
     if (result.success) {
       setOwnUser(result.data);
       setIsOnline(result.data.currentStatus);
-      setPushToken(result.data.pushToken);
+      setServerPushTokenIfNeeded(result.data.pushToken);
       setRating(result.averageRating);
       setTotalRatings(result.totalRatings);
       setInitialRoute(getInitialRoute(result.data));
@@ -206,7 +231,7 @@ export const AuthProvider = ({ children }) => {
         setAccessToken(res.data.accessToken);
         setRefreshToken(res.data.refreshToken);
         setOwnUser(res.data.userData);
-        setPushToken(res.data.userData.pushToken);
+        setServerPushTokenIfNeeded(res.data.userData.pushToken);
         setIsOnline(res.data.userData.currentStatus);
       } else {
         Toast.show({
@@ -250,7 +275,7 @@ export const AuthProvider = ({ children }) => {
         setAccessToken(res.data.accessToken);
         setRefreshToken(res.data.refreshToken);
         setOwnUser(res.data.userData);
-        setPushToken(res.data.userData.pushToken);
+        setServerPushTokenIfNeeded(res.data.userData.pushToken);
         setIsOnline(res.data.userData.currentStatus);
 
         if (res.data.userData.regiStatus === "verif") {
