@@ -23,36 +23,35 @@ export const RideProvider = ({ children }) => {
   const { accessToken, mrDriverRefreshToken } = useAuth();
 
   const updateCurrentRide = (data) => {
-    setCurrentRide(data)
-  }
+    setCurrentRide(data);
+  };
   const updateAssingedRide = (data) => {
-    setAssignedRides(data)
-  }
+    setAssignedRides(data);
+  };
   const updateStartTime = (data) => {
-    setStartTime(data)
-  }
+    setStartTime(data);
+  };
   const updateOngoingRide = (data) => {
-    setOngoingRide(data)
-  }
+    setOngoingRide(data);
+  };
   const updateElapsed = (data) => {
-    setElapsed(data)
-  }
+    setElapsed(data);
+  };
   const updateEndTime = (data) => {
-    setEndTime(data)
-  }
+    setEndTime(data);
+  };
   const updateCoords = (data) => {
-    setCoords(data)
-  }
+    setCoords(data);
+  };
   const updateCurrentLocation = (data) => {
-    setCurrentLocation(data)
-  }
+    setCurrentLocation(data);
+  };
   const updatePermissionAsked = (data) => {
-    setPermissionAsked(data)
-  }
+    setPermissionAsked(data);
+  };
   const updateLoading = (data) => {
-    setIsLoading(data)
-  }
-
+    setIsLoading(data);
+  };
 
   const getAppInfo = async () => {
     try {
@@ -149,6 +148,24 @@ export const RideProvider = ({ children }) => {
     }
   };
 
+  const getLocationName = async (latitude, longitude) => {
+    try {
+      const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${process.env.EXPO_PUBLIC_MAPBOX_TOKEN}`;
+
+      const res = await axios.get(url);
+      
+      if (res?.data?.features?.length > 0) {
+        return res.data.features[0].place_name; 
+      }
+
+      console.warn("No location found");
+      return null;
+    } catch (error) {
+      console.error("Mapbox error:", error.response?.data || error.message);
+      return null;
+    }
+  };
+
   const ridePostFetch = async (url, options = {}) => {
     const config = {
       headers: { Authorization: "Bearer " + accessToken },
@@ -214,7 +231,8 @@ export const RideProvider = ({ children }) => {
         timerRef,
         updateLoading,
         appInfo,
-        getAssignedRides
+        getAssignedRides,
+        getLocationName,
       }}
     >
       {children}

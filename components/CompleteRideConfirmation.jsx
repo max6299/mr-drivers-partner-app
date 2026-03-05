@@ -6,7 +6,7 @@ import appStyle from "../lib/style";
 
 const { Colors, Fonts } = appStyle;
 
-export default function CompleteRideConfirmation({ visible, onClose, onConfirm, elapsed }) {
+export default function CompleteRideConfirmation({ visible, onClose, onConfirm, elapsed, completeRideLoading }) {
   const { formatTime } = useRide();
 
   return (
@@ -29,8 +29,8 @@ export default function CompleteRideConfirmation({ visible, onClose, onConfirm, 
           </View>
 
           <View style={styles.actions}>
-            <TouchableOpacity activeOpacity={0.9} onPress={onConfirm} style={styles.confirmButton}>
-              <Text style={styles.confirmText}>Complete Ride</Text>
+            <TouchableOpacity activeOpacity={0.9} onPress={onConfirm} style={styles.confirmButton} disabled={completeRideLoading}>
+              <Text style={styles.confirmText}>{completeRideLoading ? "Loading..." : "Complete Ride"}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity activeOpacity={0.7} onPress={onClose} style={styles.cancelButton}>

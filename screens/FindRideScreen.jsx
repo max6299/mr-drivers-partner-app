@@ -35,7 +35,10 @@ const getDistance = (lat1, lon1, lat2, lon2) => {
 };
 
 export default function FindRideScreen() {
-  const { coords, currentLocation, startTimer, stopTimer, assignedRides, ongoingRide, updateOngoingRide, currentRide, ridePostFetch, elapsed, mapboxDirections, formatTime, appInfo, updateCurrentRide, updateAssingedRide, updateStartTime, updateElapsed, getAssignedRides, updateEndTime, updateCoords } = useRide();
+  const { coords, currentLocation, startTimer, stopTimer, assignedRides, 
+    ongoingRide, updateOngoingRide, currentRide, ridePostFetch, elapsed, 
+    mapboxDirections, formatTime, appInfo, updateCurrentRide, 
+    updateAssingedRide, updateStartTime, updateElapsed, getAssignedRides, updateEndTime, updateCoords, getLocationName } = useRide();
 
   const navigation = useNavigation();
 
@@ -52,6 +55,11 @@ export default function FindRideScreen() {
   const cameraRef = useRef(null);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [selectRideCancel, setSelectRideCancel] = useState(null);
+
+  const [completeRideLoading, setCompleteRideLoading] = useState(false);
+  const [sendOtpLoading, setSendOtpLoading] = useState(false);
+  const [verifyOtpLoading, setVerifyOtpLoading] = useState(false);
+
   const db = getFirestore(getApp());
 
   const CELL_COUNT = 4;
@@ -190,6 +198,7 @@ export default function FindRideScreen() {
     };
 
     try {
+      setVerifyOtpLoading(true);
       const res = await ridePostFetch("driver/verifyRideOtp", bodyTxt);
 
       if (res.success) {
@@ -207,6 +216,8 @@ export default function FindRideScreen() {
         type: "error",
         text1: "Error verifying OTP",
       });
+    } finally {
+      setVerifyOtpLoading(true);
     }
   };
 
@@ -253,10 +264,45 @@ export default function FindRideScreen() {
     };
   }, [ongoingRide?.rideId]);
 
-  const completeRide = async (ongoingRide) => {
+  const getDestination = async () => {
     try {
-      const bodyTxt = { rideId: ongoingRide?.rideId, userId: ongoingRide?.userId, driverId: ongoingRide?.driverId };
-      // console.log(bodyTxt);
+      const existing = await Location.getForegroundPermissionsAsync();
+
+      if (existing.status === "granted") {
+        const pos = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.Balanced,
+        });
+
+        const destination = await getLocationName(pos.coords.latitude, pos.coords.longitude);
+
+        return destination;
+      }
+
+      const perm = await Location.requestForegroundPermissionsAsync();
+
+      if (perm.status !== "granted") {
+        return "No destination";
+      }
+
+      const pos = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Balanced,
+      });
+
+      const destination = await getLocationName(pos.coords.latitude, pos.coords.longitude);
+
+      return destination;
+    } catch (err) {
+      console.warn("Location error:", err);
+      return null;
+    }
+  };
+
+  const completeRide = async (ongoingRide) => {
+    setCompleteRideLoading(true);
+    try {
+      const destination = await getDestination();
+      const bodyTxt = { rideId: ongoingRide?.rideId, userId: ongoingRide?.userId, driverId: ongoingRide?.driverId, completeDestination: destination ? destination : "Unable to get destination" };
+      // console.log("bodyTxt", bodyTxt);
       const res = await ridePostFetch("driver/end", bodyTxt);
       // console.log(res)
 
@@ -279,7 +325,7 @@ export default function FindRideScreen() {
         carNumber: ongoingRide?.car.carNumber,
         carTransmisssion: ongoingRide?.car.transmission,
       });
-
+      setCompleteRideLoading(false);
       setOpenCompleteRide(false);
       setOngoingModal(false);
       updateElapsed(0);
@@ -291,12 +337,14 @@ export default function FindRideScreen() {
       stopTimer();
     } catch (err) {
       console.error("Complete ride error:", err);
-
       Toast.show({
         type: "error",
         text1: "Unable to complete ride",
         text2: "Please try again",
       });
+      setCompleteRideLoading(false);
+    } finally {
+      setCompleteRideLoading(false);
     }
   };
 
@@ -319,6 +367,7 @@ export default function FindRideScreen() {
   }, [coords]);
 
   const sendOTP = async (ride) => {
+    setSendOtpLoading(true);
     try {
       updateCurrentRide(ride);
 
@@ -350,6 +399,8 @@ export default function FindRideScreen() {
         text1: "Network error",
         text2: "Please check your internet connection.",
       });
+    } finally {
+      setSendOtpLoading(true);
     }
   };
 
@@ -474,19 +525,15 @@ export default function FindRideScreen() {
                           </View>
                           <Text style={styles.locationText}>{ride?.origin?.name}</Text>
                         </View>
-                                                {
-                          ride?.destination && (
-                            <View style={styles.locationRow}>
-                              <View style={styles.iconBoxBlue}>
-                                <Entypo name="location-pin" size={16} color="#0193e0" />
-                              </View>
-                              <Text style={styles.locationText}>{ride?.destination?.name || "-"}</Text>
+                        {ride?.destination && (
+                          <View style={styles.locationRow}>
+                            <View style={styles.iconBoxBlue}>
+                              <Entypo name="location-pin" size={16} color="#0193e0" />
                             </View>
-                          )
-                        }
-
+                            <Text style={styles.locationText}>{ride?.destination?.name || "-"}</Text>
+                          </View>
+                        )}
                       </View>
-
                     </View>
 
                     <View style={styles.sectionRow}>
@@ -611,7 +658,7 @@ export default function FindRideScreen() {
 
                       <TouchableOpacity disabled={ongoingRide !== null} onPress={() => sendOTP(ride)} style={[styles.secondaryButton, ongoingRide && styles.disabledButton]}>
                         <Entypo name="key" size={18} color={ongoingRide ? "#9ca3af" : "#374151"} />
-                        <Text style={[styles.secondaryButtonText, ongoingRide && styles.disabledText]}>Start Ride</Text>
+                        <Text style={[styles.secondaryButtonText, ongoingRide && styles.disabledText]}>{sendOtpLoading ? "Loading..." : "Start Ride"}</Text>
                       </TouchableOpacity>
                     </View>
                   </View>
@@ -745,8 +792,8 @@ export default function FindRideScreen() {
                 />
               </View>
 
-              <TouchableOpacity style={styles.btnPrimarySolid} onPress={verifyOtp}>
-                <Text style={styles.btnPrimarySolidText}>Verify & Start Ride</Text>
+              <TouchableOpacity style={styles.btnPrimarySolid} onPress={verifyOtp} disabled={verifyOtpLoading}>
+                <Text style={styles.btnPrimarySolidText}>{verifyOtpLoading ? "Verifying..." : "Verify & Start Ride"}</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -975,7 +1022,7 @@ export default function FindRideScreen() {
                   </View>
                 </View>
 
-                <CompleteRideConfirmation elapsed={elapsed} visible={openCompleteRide} onClose={() => setOpenCompleteRide(false)} onConfirm={() => completeRide(ongoingRide)} />
+                <CompleteRideConfirmation elapsed={elapsed} visible={openCompleteRide} onClose={() => setOpenCompleteRide(false)} onConfirm={() => completeRide(ongoingRide)} completeRideLoading={completeRideLoading} />
 
                 <TouchableOpacity style={styles.btnSuccessSolid} onPress={() => setOpenCompleteRide(true)}>
                   <Text style={styles.btnSuccessSolidText}>Complete Ride</Text>
