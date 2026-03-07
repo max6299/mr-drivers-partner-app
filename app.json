@@ -2,11 +2,10 @@
   "expo": {
     "name": "Mr Driver Partner",
     "slug": "mr-driver-partner-app",
-    "version": "1.1.5",
+    "version": "1.1.6",
     "orientation": "portrait",
     "icon": "./assets/logos/mr-driver-partner-and-icon.png",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "splash": {
       "image": "./assets/logos/mr-driver-partner-ios-logo.png",
       "resizeMode": "cover",
@@ -14,7 +13,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "buildNumber": "1.1.5",
+      "buildNumber": "1.1.6",
       "bundleIdentifier": "in.co.mrdriver.partnerapp"
     },
     "android": {
