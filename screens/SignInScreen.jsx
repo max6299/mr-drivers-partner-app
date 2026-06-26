@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { StatusBar, Text, TextInput, TouchableOpacity, View, StyleSheet } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import { useAuth } from "../context/useAuth";
@@ -11,6 +12,7 @@ export default function SignInScreen() {
 
   const [mobileNumber, setMobileNumber] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation();
 
   const handleSignIn = async () => {
@@ -52,7 +54,12 @@ export default function SignInScreen() {
         <View style={styles.inputGroup}>
           <TextInput placeholder="Mobile number" placeholderTextColor={Colors.asbestos} keyboardType="number-pad" maxLength={10} value={mobileNumber} onChangeText={setMobileNumber} style={styles.input} />
 
-          <TextInput placeholder="Password" placeholderTextColor={Colors.asbestos} secureTextEntry value={password} onChangeText={setPassword} style={styles.input} />
+          <View style={styles.passwordWrap}>
+            <TextInput placeholder="Password" placeholderTextColor={Colors.asbestos} secureTextEntry={!showPassword} value={password} onChangeText={setPassword} style={styles.passwordInput} />
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeButton} activeOpacity={0.7}>
+              <Ionicons name={showPassword ? "eye-outline" : "eye-off-outline"} size={22} color={Colors.asbestos} />
+            </TouchableOpacity>
+          </View>
         </View>
 
         <TouchableOpacity onPress={() => navigation.navigate('forgot-password')}>
@@ -126,6 +133,33 @@ const styles = StyleSheet.create({
     color: Colors.midnight_blue_900,
     fontFamily: Fonts.GoogleSansFlex,
     fontWeight: "500",
+  },
+
+  passwordWrap: {
+    flexDirection: "row",
+    alignItems: "center",
+    height: 56,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: Colors.clouds_600,
+    backgroundColor: Colors.clouds_100,
+  },
+
+  passwordInput: {
+    flex: 1,
+    height: "100%",
+    paddingHorizontal: 16,
+    fontSize: 16,
+    fontFamily: Fonts.GoogleSansFlex,
+    fontWeight: "500",
+    color: Colors.midnight_blue_900,
+  },
+
+  eyeButton: {
+    paddingHorizontal: 12,
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   forgotPassword: {

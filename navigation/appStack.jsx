@@ -6,6 +6,7 @@ import PrivacyPolicyScreen from "../screens/PrivacyPolicyScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import AccountDetailsScreen from "../screens/AccountDetailsScreen";
 import EditProfileScreen from "../screens/EditProfileScreen";
+import DeactivateAccountScreen from "../screens/DeactivateAccountScreen";
 import PaymentScreen from "../screens/PaymentScreen";
 import ViewDocumentsScreen from "../screens/ViewDocumentsScreen";
 import DashboardTabs from "../screens/DashboardTabs";
@@ -28,6 +29,7 @@ function AppStack() {
       <Stack.Screen name="payment" component={PaymentScreen} />
       <Stack.Screen name="profile-details" component={AccountDetailsScreen} />
       <Stack.Screen name="edit-profile" component={EditProfileScreen} />
+      <Stack.Screen name="deactivate-account" component={DeactivateAccountScreen} />
       <Stack.Screen name="privacy-policy" component={PrivacyPolicyScreen} />
       <Stack.Screen name="legal-pages" component={LegalPagesScreen} />
       <Stack.Screen name="terms-profile" component={TermsAndConditionsScreenProfile} />

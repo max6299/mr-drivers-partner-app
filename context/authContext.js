@@ -236,8 +236,8 @@ export const AuthProvider = ({ children }) => {
       } else {
         Toast.show({
           type: "error",
-          text1: res.data.message,
-          text2: res.data.subMess,
+          text1: "Sign In Failed",
+          text2: res.data.message,
         });
       }
     } catch (err) {
