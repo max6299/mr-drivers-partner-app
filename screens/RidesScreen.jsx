@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { FlatList, StatusBar, Text, TouchableOpacity, View, StyleSheet, SectionList, ActivityIndicator } from "react-native";
+import React, { useEffect, useState } from "react";
+import { FlatList, StatusBar, Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import { useRide } from "../context/useRide";
 import appStyle from "../lib/style";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
@@ -27,39 +27,6 @@ const getRideDuration = (start, end) => {
   }
 
   return `${minutes}m`;
-};
-
-const groupRidesByDate = (rides = []) => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  const sections = {
-    Today: [],
-    Earlier: [],
-  };
-
-  rides.forEach((ride) => {
-    if (!ride.rideStartTime) {
-      sections.Earlier.push(ride);
-      return;
-    }
-
-    const rideDate = new Date(ride.rideStartTime);
-    rideDate.setHours(0, 0, 0, 0);
-
-    if (rideDate.getTime() === today.getTime()) {
-      sections.Today.push(ride);
-    } else {
-      sections.Earlier.push(ride);
-    }
-  });
-
-  return Object.entries(sections)
-    .filter(([, data]) => data.length > 0)
-    .map(([title, data]) => ({
-      title,
-      data,
-    }));
 };
 
 function RideCard({ ride }) {
@@ -182,40 +149,16 @@ function RideCard({ ride }) {
 export default function RidesScreen() {
   const { ridePostFetch } = useRide();
   const [rideHistory, setRideHistory] = useState([]);
-  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
-  const onEndReachedCalledDuringMomentum = useRef(false);
 
   const fetchRideHistory = async () => {
-    if (loading || !hasMore) return;
     setLoading(true);
 
     try {
-      const res = await ridePostFetch("driver/getRideHistory", { limit: 10, page });
+      const res = await ridePostFetch("driver/getRideHistory");
 
       if (res.success) {
-        if (res.history.length === 0) {
-          setHasMore(false);
-          return;
-        }
-
-        if (!res.hasMore) {
-          Toast.show({
-            type: "info",
-            text1: "You're all caught up 🎉",
-            text2: "No more rides to show",
-          });
-        }
-
-        setRideHistory((prev) => {
-          const ids = new Set(prev.map((r) => r._id));
-          const newItems = res.history.filter((r) => !ids.has(r._id));
-          return [...prev, ...newItems];
-        });
-
-        setHasMore(res.hasMore);
-        setPage((prev) => prev + 1);
+        setRideHistory(res.history);
       } else {
         Toast.show({
           type: "error",
@@ -230,22 +173,8 @@ export default function RidesScreen() {
         text1: "Network error",
         text2: "Unable to fetch ride history",
       });
-      return null;
     } finally {
       setLoading(false);
-    }
-  };
-
-  const sections = useMemo(() => {
-    if (!rideHistory || rideHistory.length === 0) {
-      return [];
-    }
-    return groupRidesByDate(rideHistory);
-  }, [rideHistory]);
-
-  const loadMore = () => {
-    if (!loading && hasMore) {
-      fetchRideHistory();
     }
   };
 
@@ -263,26 +192,14 @@ export default function RidesScreen() {
       </View>
 
       {rideHistory.length > 0 || loading ? (
-        <SectionList
-          sections={sections}
+        <FlatList
+          data={rideHistory}
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => <RideCard ride={item} />}
-          renderSectionHeader={({ section: { title } }) => <Text style={styles.sectionHeader}>{title}</Text>}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.listContent}
           refreshing={loading}
           onRefresh={fetchRideHistory}
-          onEndReached={() => {
-            if (!onEndReachedCalledDuringMomentum.current) {
-              loadMore();
-              onEndReachedCalledDuringMomentum.current = true;
-            }
-          }}
-          onMomentumScrollBegin={() => {
-            onEndReachedCalledDuringMomentum.current = false;
-          }}
-          onEndReachedThreshold={0.5}
-          ListFooterComponent={loading ? <ActivityIndicator style={{ paddingVertical: 20 }} size="small" color={PRIMARY} /> : null}
         />
       ) : (
         <View style={styles.emptyState}>
@@ -449,15 +366,5 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.GoogleSansFlex,
     color: Colors.asbestos,
   },
-  sectionHeader: {
-    marginTop: 10,
-    marginBottom: 10,
-    marginLeft: 4,
-    fontSize: 13,
-    fontFamily: Fonts.GoogleSansFlex,
-    fontWeight: "600",
-    color: Colors.concrete,
-    textTransform: "uppercase",
-    letterSpacing: 0.8,
-  },
+
 });

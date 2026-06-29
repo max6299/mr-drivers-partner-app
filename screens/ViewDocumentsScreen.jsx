@@ -1,6 +1,7 @@
-import React from "react";
-import { Image, StatusBar, Text, TouchableOpacity, View, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { Image, Modal, StatusBar, Text, TouchableOpacity, View, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../context/useAuth";
@@ -11,6 +12,7 @@ const { Colors, Fonts } = appStyle;
 export default function ViewDocumentsScreen() {
   const { ownUser } = useAuth();
   const navigation = useNavigation();
+  const [fullScreenImage, setFullScreenImage] = useState(null);
 
   const license = ownUser?.drivingLicence;
 
@@ -49,8 +51,8 @@ export default function ViewDocumentsScreen() {
               </View>
 
               <View style={styles.imagesRow}>
-                <DocumentImage uri={license.frontImage} label="Front Side" />
-                <DocumentImage uri={license.backImage} label="Back Side" />
+                <DocumentImage uri={license.frontImage} label="Front Side" onPress={() => setFullScreenImage(license.frontImage)} />
+                <DocumentImage uri={license.backImage} label="Back Side" onPress={() => setFullScreenImage(license.backImage)} />
               </View>
             </>
           ) : (
@@ -58,14 +60,28 @@ export default function ViewDocumentsScreen() {
           )}
         </View>
       </View>
+
+      <Modal visible={!!fullScreenImage} transparent animationType="fade" onRequestClose={() => setFullScreenImage(null)}>
+        <View style={styles.modalOverlay}>
+          <TouchableOpacity style={styles.modalClose} onPress={() => setFullScreenImage(null)}>
+            <Ionicons name="close" size={28} color="#fff" />
+          </TouchableOpacity>
+
+          {fullScreenImage && (
+            <Image source={{ uri: fullScreenImage }} style={styles.modalImage} resizeMode="contain" />
+          )}
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
-function DocumentImage({ uri, label }) {
+function DocumentImage({ uri, label, onPress }) {
   return (
     <View style={styles.documentWrapper}>
       {uri ? (
-        <Image source={{ uri }} style={styles.documentImage} resizeMode="cover" />
+        <TouchableOpacity activeOpacity={0.85} onPress={onPress}>
+          <Image source={{ uri }} style={styles.documentImage} resizeMode="cover" />
+        </TouchableOpacity>
       ) : (
         <View style={styles.documentPlaceholder}>
           <Ionicons name="image-outline" size={24} color={Colors.concrete} />
@@ -221,6 +237,32 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: Fonts.GoogleSansFlex,
     color: Colors.asbestos,
+  },
+
+  /* Full-Screen Image Viewer */
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.92)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  modalImage: {
+    width: "100%",
+    height: "100%",
+  },
+
+  modalClose: {
+    position: "absolute",
+    top: 60,
+    right: 20,
+    zIndex: 10,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "rgba(255,255,255,0.2)",
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   /* Empty State */
