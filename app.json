@@ -26,10 +26,13 @@
       "permissions": [
         "android.permission.POST_NOTIFICATIONS",
         "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.ACCESS_FINE_LOCATION"
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.CAMERA"
       ]
     },
-    "web": {      "favicon": "./assets/logos/mr-driver-partner-logo.png"
+    "web": {
+      "favicon": "./assets/logos/mr-driver-partner-logo.png"
     },
     "plugins": [
       "./plugins/withFirebase.js",
